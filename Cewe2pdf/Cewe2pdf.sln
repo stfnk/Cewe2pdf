@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29926.136
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Cewe2pdf", "Cewe2pdf.csproj", "{559330CE-D80B-4700-BFBD-89567DD2104B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{559330CE-D80B-4700-BFBD-89567DD2104B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{559330CE-D80B-4700-BFBD-89567DD2104B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{559330CE-D80B-4700-BFBD-89567DD2104B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{559330CE-D80B-4700-BFBD-89567DD2104B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {4F13E4E1-3A11-4C09-B181-498C3A670992}
+	EndGlobalSection
+EndGlobal
