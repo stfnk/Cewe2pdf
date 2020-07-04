@@ -43,11 +43,11 @@ Back in the commandline, type `Cewe2pdf.exe "` paste the filename with **Ctrl**+
     
     Cewe2pdf.exe "C:\Users\username\Documents\MyPhotobook.mcf"
 
-add one Space and type `MyPhotobookConverted.pdf`
+add one Space and type `"MyPhotobookConverted.pdf"`
 
 The full command should look similar to this:
 
-    Cewe2pdf.exe "C:\Users\username\Documents\MyPhotobook.mcf" MyPhotobookConverted.pdf
+    Cewe2pdf.exe "C:\Users\username\Documents\MyPhotobook.mcf" "MyPhotobookConverted.pdf"
 
 Now hit **Enter** and Conversion should start. This may take several minutes.
 Once finished, the `.pdf` is located right next to the `Cewe2pdf.exe`, in this case on your Desktop in the Cewe2pdf folder, named `MyPhotobookConverted.pdf`
