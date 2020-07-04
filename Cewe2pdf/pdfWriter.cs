@@ -58,7 +58,7 @@ namespace Cewe2pdf {
             } catch (Exception e) {
                 // in case a background designID is not found in DesignIdData.cs, print information to console
                 canvas.SetColorFill(BaseColor.MAGENTA);
-                Console.WriteLine("[Error] Missing background DesignID: <" + pPage.backgroundLeft + "> Please report this as an issue.");
+                Log.Error("Missing background DesignID: <" + pPage.backgroundLeft + "> Please report this as an issue.");
             }
             canvas.Fill();
 
@@ -70,7 +70,7 @@ namespace Cewe2pdf {
             } catch (Exception e) {
                 // in case a background designID is not found in DesignIdData.cs, print information to console
                 canvas.SetColorFill(BaseColor.MAGENTA);
-                Console.WriteLine("[Error] Missing background DesignID: <" + pPage.backgroundLeft + "> Please report this as an issue.");
+                Log.Error("Missing background DesignID: <" + pPage.backgroundLeft + "> Please report this as an issue.");
             }
             canvas.Fill();
 
@@ -97,7 +97,7 @@ namespace Cewe2pdf {
                         // draw to document
                         _writer.DirectContent.Rectangle(nullRect);
 
-                        Console.WriteLine("[Error] Image path was NULL.");
+                        Log.Error("Image path was NULL.");
                         continue;
                     }
 
@@ -166,7 +166,7 @@ namespace Cewe2pdf {
 
                     // just in case something went wrong
                     if (textArea.text == "") {
-                        Console.WriteLine("[Error] Text was empty.");
+                        Log.Error("Text was empty.");
                         continue;
                     }
 

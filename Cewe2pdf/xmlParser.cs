@@ -82,7 +82,7 @@ namespace Cewe2pdf {
             try {
                 _xmlDoc.Load(pFilePath);
             } catch (Exception e) {
-                Console.WriteLine("[Error] Loading .mcf File: '" + pFilePath + "' failed with message: " + e.Message);
+                Log.Error("Loading .mcf File: '" + pFilePath + "' failed with message: " + e.Message);
             }
 
             // store filepath
@@ -110,7 +110,7 @@ namespace Cewe2pdf {
 
                     default:
                         // these are not needed
-                        Console.WriteLine("[Warning] Unhandled Node in <fotobook> '" + node.Name + "'.");
+                        Log.Warning("Unhandled Node in <fotobook> '" + node.Name + "'.");
                         break;
                 }
             }
@@ -235,7 +235,7 @@ namespace Cewe2pdf {
                                     // there are more areatypes, for now just create an empty area that wont draw anything
                                     // and inform user.
                                     newArea = new Area();
-                                    Console.WriteLine("[Warning] Unhandled area type in <page/area> '" + type + "'.");
+                                    Log.Warning("Unhandled area type in <page/area> '" + type + "'.");
                                     break;
                             }
                             
@@ -259,7 +259,7 @@ namespace Cewe2pdf {
 
                         default:
                             // inform user about unhandled node
-                            Console.WriteLine("[Warning] Unhandled Node in <page> '" + node.Name + "'.");
+                            Log.Warning("Unhandled Node in <page> '" + node.Name + "'.");
                             break;
                     }
                 }
@@ -348,6 +348,6 @@ namespace Cewe2pdf {
             return attr.Value; // return string directly
         }
 
-        public int pageCount() => _pages.Count; // return page count
+        public int pageCount() => _pages.Count/2; // return page count, account for double pages
     }
 }

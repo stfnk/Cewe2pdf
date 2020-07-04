@@ -10,46 +10,51 @@ namespace Cewe2pdf {
             string pdfPath = "Converted.pdf";
 
             // basic commandline interface
-            if (args.Length <= 1) {
-                Console.WriteLine("\n\tUsage: cewe2pdf <source.mcf> <destination.pdf>\n");
-               return;
-            } else if (args.Length >= 2) {
-               mcfPath = args[0];
-               pdfPath = args[1];
-            } else {
-               Console.WriteLine("\tinvalid arguments.");
-               return;
-            }
+            //if (args.Length <= 1) {
+            //    Log.Info("\n\tUsage: cewe2pdf <source.mcf> <destination.pdf>\n");
+            //   return;
+            //} else if (args.Length >= 2) {
+            //   mcfPath = args[0];
+            //   pdfPath = args[1];
+            //} else {
+            //   Log.Error("\tinvalid arguments.");
+            //   return;
+            //}
 
             // at least some error checking...
-            if (mcfPath.EndsWith(".mcf")) { Console.WriteLine("\ninvalid argument (" + mcfPath + "); file is not a .mcf file."); return; }
-            if (pdfPath.EndsWith(".pdf")) { Console.WriteLine("\ninvalid argument (" + pdfPath + "); file is not a .pdf file."); return; }
+            if (!mcfPath.EndsWith(".mcf")) { Log.Error("\ninvalid argument (" + mcfPath + "); file is not a .mcf file."); return; }
+            if (!pdfPath.EndsWith(".pdf")) { Log.Error("\ninvalid argument (" + pdfPath + "); file is not a .pdf file."); return; }
 
             // for user information only
             System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
 
-            Console.WriteLine("Loading '" + mcfPath + "'...");
+            Log.Info("Loading '" + mcfPath + "'...");
 
             // initialize with given files
             mcfParser parser = new mcfParser(mcfPath);
             pdfWriter writer = new pdfWriter(pdfPath);
 
-            Console.WriteLine("Starting conversion. This can take several minutes.");
+            Log.Info("Starting conversion. This can take several minutes.");
 
-            // for user information again
+            // for user information
             int count = 0;
-
+            float pageAverageTime = 0.0f;
+            
             //  iterate through all pages
-            while (count < parser.pageCount()) {
+            while (true) {
+                long lastTime = timer.ElapsedMilliseconds;
                 Page next = parser.nextPage();
+                if (next == null) break;
                 writer.writePage(next);
+                float pageTime = (timer.ElapsedMilliseconds - lastTime) / 1000.0f;
+                pageAverageTime = count == 0 ? pageTime : (pageAverageTime + pageTime) / 2.0f;
                 count++;
-                Console.WriteLine("\t...processing Page " + count + "/" + parser.pageCount() + "; " + (timer.ElapsedMilliseconds/1000.0f/count) * (parser.totalPages - count) + " seconds remaining.");
+                Log.Info("\t...processing Page " + count + "/" + parser.pageCount() + "; " + (pageAverageTime * (parser.pageCount()-count)) + " seconds remaining.");
             }
 
             // close files
             writer.close();
-            Console.WriteLine("Finished in " + timer.ElapsedMilliseconds/1000.0f + "seconds.");
+            Log.Info("Finished in " + timer.ElapsedMilliseconds/1000.0f + "seconds.");
         }
     }
 }
