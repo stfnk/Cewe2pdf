@@ -4,9 +4,6 @@ namespace Cewe2pdf {
 
     class Program {
 
-        static private mcfParser _parser;
-        static private pdfWriter _writer;
-
         static void Main(string[] args) {
 
             string mcfPath = "Test.mcf";
@@ -28,17 +25,31 @@ namespace Cewe2pdf {
             if (mcfPath.EndsWith(".mcf")) { Console.WriteLine("\ninvalid argument (" + mcfPath + "); file is not a .mcf file."); return; }
             if (pdfPath.EndsWith(".pdf")) { Console.WriteLine("\ninvalid argument (" + pdfPath + "); file is not a .pdf file."); return; }
 
-            _parser = new mcfParser(mcfPath);
-            _writer = new pdfWriter(pdfPath);
+            // for user information only
+            System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
 
-            Page next = _parser.nextPage();
+            Console.WriteLine("Loading '" + mcfPath + "'...");
 
-            while (next != null) {
-               _writer.writePage(next);
-               next = _parser.nextPage();
+            // initialize with given files
+            mcfParser parser = new mcfParser(mcfPath);
+            pdfWriter writer = new pdfWriter(pdfPath);
+
+            Console.WriteLine("Starting conversion. This can take several minutes.");
+
+            // for user information again
+            int count = 0;
+
+            //  iterate through all pages
+            while (count < parser.totalPages) {
+                Page next = parser.nextPage();
+                writer.writePage(next);
+                count++;
+                Console.WriteLine("\t...processing Page " + count + "/" + parser.totalPages + "; " + (timer.ElapsedMilliseconds/1000.0f/count) * (parser.totalPages - count) + " seconds remaining.");
             }
 
-            _writer.close();
+            // close files
+            writer.close();
+            Console.WriteLine("Finished in " + timer.ElapsedMilliseconds/1000.0f + "seconds.");
         }
     }
 }
