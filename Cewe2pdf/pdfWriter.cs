@@ -101,8 +101,11 @@ namespace Cewe2pdf {
                         continue;
                     }
 
-                    // load image file. This takes exif orientation into account
+                    // load image file
                     System.Drawing.Image sysImg = System.Drawing.Image.FromFile(imgArea.path);
+
+                    // fix exif orientation
+                    ExifRotate(sysImg);
 
                     // calculate somewhat good resizing TODO this should be improved to ensure consistent dpi for all images.
                     float scale = sysImg.Width / (float)imgArea.rect.Width * 0.5f; // magic number literally defines resolution, the smaller, the higher pixel resolution in final pdf.
@@ -246,7 +249,6 @@ namespace Cewe2pdf {
             const int exifOrientationID = 0x112; //274
 
             if (!img.PropertyIdList.Contains(exifOrientationID)) {
-                Console.WriteLine("no exif info found.");
                 return System.Drawing.RotateFlipType.RotateNoneFlipNone;
             }
 
