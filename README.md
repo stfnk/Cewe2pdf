@@ -5,11 +5,12 @@ It's still a very early version with lots of missing features, see the [Known Is
 
 If you encounter a bug or the generated pdf contains errors please [report an Issue](https://github.com/stfnk/Cewe2pdf/issues)
 Describe the problem and attach the `cewe2pdf.log` file, located next to the `Cewe2pdf.exe`.
-_This file may contain file- and foldernames from your computer. Open it in Wordpad to review its content._
+_This file may contain file- and foldernames from your computer. Open it in Notepad to review its content._
 
 ## Installation
 Head over to the [release](https://github.com/stfnk/Cewe2pdf/releases) section and download the latest build for your platform.</br>
 **Note:** *Currently only Windows Binaries provided.*</br>
+
 To run, this program requires the `.NET Core 3.1` runtime installed on your System. Get the appropriate version from:</br>
 https://dotnet.microsoft.com/download/dotnet-core/3.1
 </br>(`.NET Core Runtime 3.1.5` is probably enough, but any version should work.)
@@ -60,7 +61,7 @@ _Currently only the following features are supported!_
 * Single colored Backgrounds
 
 This works for my usecase, please report missing elements [here](https://github.com/stfnk/Cewe2pdf/issues).</br>
-Please also attach the `cewe2pdf.log` file, which is located next to the `Cewe2pdf.exe` _This file may contain file and foldernames from your computer. Open it in Wordpad to review its content._
+Please also attach the `cewe2pdf.log` file, which is located next to the `Cewe2pdf.exe` _This file may contain file- and foldernames from your computer. Open it in Notepad to review its content._
 
 
 ## Development
