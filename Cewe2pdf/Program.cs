@@ -49,7 +49,7 @@ namespace Cewe2pdf {
                 float pageTime = (timer.ElapsedMilliseconds - lastTime) / 1000.0f;
                 pageAverageTime = count == 0 ? pageTime : (pageAverageTime + pageTime) / 2.0f;
                 count++;
-                Log.Info("\tprocessing Page " + count + "/" + parser.pageCount() + "; " + (pageAverageTime * (parser.pageCount()-count)) + " seconds remaining.");
+                Log.Info("\tprocessing Page " + count + "/" + parser.pageCount()/* + "; " + (pageAverageTime * (parser.pageCount()-count)) + " seconds remaining."*/);
             }
 
             // close files
