@@ -9,17 +9,17 @@ namespace Cewe2pdf {
             string mcfPath = "Test.mcf";
             string pdfPath = "Converted.pdf";
 
-            // basic commandline interface
-            //if (args.Length <= 1) {
-            //    Log.Info("\n\tUsage: cewe2pdf <source.mcf> <destination.pdf>\n");
-            //   return;
-            //} else if (args.Length >= 2) {
-            //   mcfPath = args[0];
-            //   pdfPath = args[1];
-            //} else {
-            //   Log.Error("\tinvalid arguments.");
-            //   return;
-            //}
+            basic commandline interface
+            if (args.Length <= 1) {
+                Log.Info("\n\tUsage: cewe2pdf <source.mcf> <destination.pdf>\n");
+               return;
+            } else if (args.Length >= 2) {
+               mcfPath = args[0];
+               pdfPath = args[1];
+            } else {
+               Log.Error("\tinvalid arguments.");
+               return;
+            }
 
             // at least some error checking...
             if (!mcfPath.EndsWith(".mcf")) { Log.Error("\ninvalid argument (" + mcfPath + "); file is not a .mcf file."); return; }
