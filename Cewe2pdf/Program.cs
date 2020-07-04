@@ -40,11 +40,11 @@ namespace Cewe2pdf {
             int count = 0;
 
             //  iterate through all pages
-            while (count < parser.totalPages) {
+            while (count < parser.pageCount()) {
                 Page next = parser.nextPage();
                 writer.writePage(next);
                 count++;
-                Console.WriteLine("\t...processing Page " + count + "/" + parser.totalPages + "; " + (timer.ElapsedMilliseconds/1000.0f/count) * (parser.totalPages - count) + " seconds remaining.");
+                Console.WriteLine("\t...processing Page " + count + "/" + parser.pageCount() + "; " + (timer.ElapsedMilliseconds/1000.0f/count) * (parser.totalPages - count) + " seconds remaining.");
             }
 
             // close files
