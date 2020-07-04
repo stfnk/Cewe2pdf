@@ -9,7 +9,7 @@ namespace Cewe2pdf {
             string mcfPath = "Test.mcf";
             string pdfPath = "Converted.pdf";
 
-            basic commandline interface
+            // simple commandline interface
             if (args.Length <= 1) {
                 Log.Info("\n\tUsage: cewe2pdf <source.mcf> <destination.pdf>\n");
                return;
