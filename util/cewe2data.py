@@ -31,7 +31,9 @@ for file in os.listdir(directory):
         # handle some special numbers that may be leftovers from earlier cewe versions or whatever
         if (filename[:-5] == "6015"):
             out += "\t\t\t{\"" + "211" + "\", new BaseColor(" + str(r) + ", " + str(g) + ", " + str(b) + ")},\n"
-            
+        if (filename[:-5] == "227"):
+            out += "\t\t\t{\"" + "236" + "\", new BaseColor(" + str(r) + ", " + str(g) + ", " + str(b) + ")},\n"
+        
 out += "\t\t};\n"
 out += "\t}\n}\n"
 
