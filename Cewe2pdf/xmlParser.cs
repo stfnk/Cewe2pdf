@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -62,11 +62,21 @@ namespace Cewe2pdf {
         public Vector2 bundleSize = Vector2.Zero;
         public string backgroundLeft;
         public string backgroundRight;
+
+        
+        public string pageNoLeft;
+        public string pageNoRight;
+        static public string pageNoFont;
+        static public float pageNoFontSize;
+        static public Vector2 pageNoMargin;
+        static public string pageNoColor;
     };
 
     class mcfParser {
         
         const float SCALE = 0.4f;       // overall scale applied to pdf... does not affect resolution of images!
+
+        const float FONT = 3.26f;       // match to photobook font size
 
         private string _filePath;       // .mcf file path, used to construct images file path
         private XmlDocument _xmlDoc = new XmlDocument();
@@ -108,6 +118,15 @@ namespace Cewe2pdf {
                         //Console.WriteLine("\nStatistics:\n\telapsed Time: " + node.Attributes.GetNamedItem("elapsedTimeNet").Value);
                         break;
 
+                    case "pagenumbering":
+                        float margin = getAttributeF(node, "margin");
+                        float verticalMargin = getAttributeF(node, "verticalMargin");
+                        Page.pageNoMargin = new Vector2(margin, verticalMargin);
+                        Page.pageNoColor = getAttributeStr(node, "textcolor");
+                        Page.pageNoFontSize = getAttributeF(node, "fontsize") * FONT;
+                        Page.pageNoFont = getAttributeStr(node, "fontfamily");
+                        break;
+
                     default:
                         // these are not needed
                         Log.Warning("Unhandled Node in <fotobook> '" + node.Name + "'.");
@@ -135,6 +154,13 @@ namespace Cewe2pdf {
 
                 // the current page type, later used to handle left/right and special page cases
                 page.type = Page.convert(xmlPage.Attributes.GetNamedItem("type").Value);
+
+                // store page number
+                if (page.type == Page.Type.Normalpage) {
+                    if (isDouble) page.pageNoRight = getAttributeStr(xmlPage, "pagenr");
+                    else page.pageNoLeft = getAttributeStr(xmlPage, "pagenr");
+                    
+                }
 
                 // iterate all sub nodes this page contains
                 foreach (XmlNode node in xmlPage.ChildNodes) {
@@ -207,7 +233,7 @@ namespace Cewe2pdf {
                                         string[] fontInfo = getAttributeStr(textFormat, "font").Split(",");
 
                                         // get the fontsize, take pdf scale into account and adjust to photobook settings
-                                        int fontSize = (int)(Convert.ToInt32(fontInfo[1]) * SCALE * 3.26f); // somewhat matches the result in photobook
+                                        int fontSize = (int)(Convert.ToInt32(fontInfo[1]) * SCALE * FONT); // somewhat matches the result in photobook
 
                                         // text color
                                         string color = getAttributeStr(textFormat, "foregroundColor");
