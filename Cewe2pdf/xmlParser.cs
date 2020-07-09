@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
@@ -246,9 +246,11 @@ namespace Cewe2pdf {
                                         string[] align = getAttributeStr(textFormat, "Alignment").Split(",");
                                         alignLabel = align.Last();
 
+                                        string str = extractTextFromHTML(text.InnerText, ref color);
+
                                         // construct new area
                                         newArea = new TextArea() {
-                                            text = extractTextFromHTML(text.InnerText),
+                                            text = str,
                                             fontsize = fontSize,
                                             color = color,
                                             font = fontInfo[0],
@@ -334,7 +336,7 @@ namespace Cewe2pdf {
             return page;
         }
 
-        string extractTextFromHTML(string html) {
+        string extractTextFromHTML(string html, ref string? color) {
 
             // the text to return
             string res = "";
@@ -348,9 +350,17 @@ namespace Cewe2pdf {
             XmlNode node = doc.SelectSingleNode("html/body/table/tr/td");
 
             // extract text from each <span> and store in single string with newline character
+            string styleInfo = "";
             foreach (XmlNode p in node.ChildNodes) {
                 XmlNode span = p.SelectSingleNode("span");
                 res += span?.InnerText + "\n"; // if span exists... add text + newline
+                styleInfo = getAttributeStr(span, "style"); // TODO add proper text support including underlines & color...
+            }
+
+            if (color != null && styleInfo.Contains("color:")) {
+                string[] t = styleInfo.Split("color:");
+                string colorhex = t.Last().Split(";").First();
+                color = colorhex.Insert(1,"ff");
             }
 
             // return all lines
