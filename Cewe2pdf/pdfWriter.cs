@@ -1,4 +1,4 @@
-﻿using iTextSharp.text;
+using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Linq;
@@ -107,9 +107,9 @@ namespace Cewe2pdf {
                     // fix exif orientation
                     ExifRotate(sysImg);
 
-                    // calculate somewhat good resizing TODO this should be improved to ensure consistent dpi for all images.
-                    float scale = sysImg.Width / (float)imgArea.rect.Width * 0.5f; // magic number literally defines resolution, the smaller, the higher pixel resolution in final pdf.
-                    scale = scale < 1.0 ? 1.0f : scale; // never scale image up
+                    // calculate resizing factor, results in equal pixel density for all images.
+                    float scale = 1f / imgArea.scale * 1.0f; // the higher this value, the lower pixel density is. 0.0f = original resolution
+                    scale = scale < 1.0f ? 1.0f : scale; // never scale image up
 
                     // resize image
                     sysImg = (System.Drawing.Image)(new System.Drawing.Bitmap(sysImg, new System.Drawing.Size((int)(sysImg.Width / scale), (int)(sysImg.Height / scale))));
