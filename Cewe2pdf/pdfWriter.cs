@@ -1,4 +1,4 @@
-using iTextSharp.text;
+﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Linq;
@@ -116,6 +116,7 @@ namespace Cewe2pdf {
 
                     // this is really silly and slooooow but works for now.
                     // write System.Drawing.Image to disk and re-read as iTextSharp.Image...
+                    // TODO at least only write to memory... didnt get that to work yet.
                     sysImg.Save("temp.jpg");
                     Image img = Image.GetInstance("temp.jpg");
 
@@ -222,6 +223,54 @@ namespace Cewe2pdf {
                     colText.Go();
                 }
             }
+
+            // draw pagenumbers
+            // TODO remove magic numbers, at least comment
+            const float PAGE_NR_Y_OFFSET = -4.0f;
+            const float PAGE_NR_X_OFFSET = 0.0f;
+            float PAGE_NR_FONT_SIZE = Page.pageNoFontSize * 1.1f;
+            float PAGE_NR_HEIGHT = PAGE_NR_FONT_SIZE + 12.0f; // add some extra space... this is needed.
+            float PAGE_Y_POS = Page.pageNoMargin.Y + PAGE_NR_Y_OFFSET;
+
+            // TODO de-duplicate all these conversions and move to helper method
+            // convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
+            int argb_ = Int32.Parse(Page.pageNoColor.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
+            System.Drawing.Color clr_ = System.Drawing.Color.FromArgb(argb_);
+
+            // left
+            Paragraph pageNoLeft = new Paragraph(pPage.pageNoLeft, FontFactory.GetFont(Page.pageNoFont, PAGE_NR_FONT_SIZE, new BaseColor(clr_)));
+            pageNoLeft.Alignment = Element.ALIGN_LEFT + Element.ALIGN_BOTTOM;
+
+            ColumnText leftNo = new ColumnText(_writer.DirectContent);
+            Rectangle leftNoRect = new Rectangle(Page.pageNoMargin.X + PAGE_NR_X_OFFSET, PAGE_Y_POS, 500, PAGE_Y_POS+PAGE_NR_HEIGHT);
+            leftNo.SetSimpleColumn(leftNoRect);
+            
+            leftNo.AddElement(pageNoLeft);
+            leftNo.Go();
+
+            //leftNoRect.Border = 1 | 2 | 4 | 8;
+            //leftNoRect.BorderColor = BaseColor.GREEN;
+            //leftNoRect.BorderWidth = 1.0f;
+            //_writer.DirectContent.Rectangle(leftNoRect);
+
+            // right
+            Paragraph pageNoRight = new Paragraph(pPage.pageNoRight, FontFactory.GetFont(Page.pageNoFont, PAGE_NR_FONT_SIZE, new BaseColor(clr_)));
+            pageNoRight.Alignment = Element.ALIGN_RIGHT;
+
+            ColumnText rightNo = new ColumnText(_writer.DirectContent);
+            Rectangle rightNoRect = new Rectangle(pPage.bundleSize.X-Page.pageNoMargin.X - PAGE_NR_X_OFFSET - 500, PAGE_Y_POS, pPage.bundleSize.X-Page.pageNoMargin.X - PAGE_NR_X_OFFSET, PAGE_Y_POS + PAGE_NR_HEIGHT);
+            rightNo.SetSimpleColumn(rightNoRect);
+            
+            rightNo.AddElement(pageNoRight);
+            rightNo.Go();
+
+            //rightNoRect.Border = 1 | 2 | 4 | 8;
+            //rightNoRect.BorderColor = BaseColor.YELLOW;
+            //rightNoRect.BorderWidth = 1.0f;
+            //_writer.DirectContent.Rectangle(rightNoRect);
+
+            //Console.WriteLine("Page drawn: " + pPage.type.ToString() + " left: " + pPage.pageNoLeft + "; right: " + pPage.pageNoRight + "!");
+
         }
 
         public Image cropImage(Image image, PdfWriter writer, float fromLeft, float fromBottom, float width, float height) {
