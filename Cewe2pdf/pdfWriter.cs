@@ -27,9 +27,13 @@ namespace Cewe2pdf {
 
             // necessary for loading .ttf it seams
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
+
             // TODO probably should add Cewe/Resources/fonts folder here as well, 
             // but currently doesn't require Cewe installation location for anything else
-            FontFactory.RegisterDirectory("C:\\Windows\\Fonts"); 
+            const string fontPath = "C:\\Windows\\Fonts"; // TODO also, windows only obviously
+            Log.Info("Loading fonts from " + fontPath);
+            FontFactory.RegisterDirectory(fontPath); 
+            Log.Info("Found " + FontFactory.RegisteredFonts.Count + " fonts.");
 
             // start writing
             _doc.Open();
