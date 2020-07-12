@@ -73,6 +73,32 @@ Photobook backgrounds are stored as `.webp` images in the CEWE installation dire
     python -m pip install Pillow
 
 
+## Releases
+
+**Roadmap**
+* consistent pixel resolution of images
+* better text support
+    * multiple colors
+    * bold / italic
+    * underlined
+* spine text
+* improve performance
+    * avoid writing images
+    * multithreaded image resizing (needs research)
+* more configuration options _actually some already exist, just not exposed to commandline_
+
+**Changelog**
+
+    v0.2.0
+    [added] support for page numbers, inlcuding font, color & size
+    [fixed] keep images resolution consistent
+
+    v0.1.0 Initial Release.
+    * images
+    * image borders
+    * background colors
+    * basic text boxes
+
 ## License
 The Code in this repository is licensed under the MIT License, but note that `iTextSharp` uses the AGPL License.
 
