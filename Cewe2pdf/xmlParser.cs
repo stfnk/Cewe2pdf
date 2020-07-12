@@ -28,7 +28,20 @@ namespace Cewe2pdf {
         }
     };
 
+    public class TextElement {
+            public string text = "";
+            public bool bold = false;
+            public bool italic = false;
+            public bool underlined = false;
+            public bool newline = false;
+            public string color = "#ffffffff";
+            public string family = "Calibri";
+            public int size = 48;
+            public string align = "Center";
+        }
+
     class TextArea : Area {
+        public List<TextElement> textElements;
         public string text;
         public int fontsize;
         public string color;
@@ -250,6 +263,7 @@ namespace Cewe2pdf {
 
                                         // construct new area
                                         newArea = new TextArea() {
+                                            textElements = extractTextFromHTMLv2(text.InnerText),
                                             text = str,
                                             fontsize = fontSize,
                                             color = color,
@@ -365,6 +379,108 @@ namespace Cewe2pdf {
 
             // return all lines
             return res;
+        }
+
+        private List<TextElement> extractTextFromHTMLv2(string html) {
+            
+            List<TextElement> ret = new List<TextElement>();
+
+            // text is stored in html inside the .mcf
+            // html basically is xml so... parse it as xml
+            XmlDocument doc = new XmlDocument();
+            doc.LoadXml(html);
+
+            // the body object contains everything we need
+            XmlNode body = doc.SelectSingleNode("html/body");
+            
+            // unless specified different these are the main font settings
+            string fontFamily = "Calibri";
+            int fontSize = 48;
+            int fontWeight = 400;
+            string fontStyle = "normal";
+            string color = "#ffffffff";
+            string textDecoration = "";
+
+            string bodyStyle = getAttributeStr(body, "style");
+            if (bodyStyle == null || bodyStyle == "") Log.Error("Body style for given html text was null.");
+            else parseBodyStyle(bodyStyle, ref fontFamily, ref fontSize, ref fontWeight, ref fontStyle, ref color, ref textDecoration);
+
+            // now loop through all <p> elements in <td> (new lines)
+            XmlNode td = body.SelectSingleNode("table/tr/td");
+            foreach (XmlNode p in td.ChildNodes) {
+                if (p.Name != "p") continue;
+
+                string align = getAttributeStr(p, "align", "Center");
+                
+                int i = 0;
+                
+                foreach (XmlNode span in p.ChildNodes) {
+                    string style = getAttributeStr(span, "style"); // get the span specific style
+
+                    // these might change per span
+                    string fontFamilySpan = fontFamily;
+                    int fontSizeSpan = fontSize;
+                    int fontWeightSpan = fontWeight;
+                    string fontStyleSpan = fontStyle;
+                    string colorSpan = color;
+                    string textDecorationSpan = textDecoration;
+                    
+                    if (style == null || style == "") Log.Warning("No style for span: '" + span.InnerText + "'.");
+                    else parseBodyStyle(style, ref fontFamilySpan, ref fontSizeSpan, ref fontWeightSpan, ref fontStyleSpan, ref colorSpan, ref textDecorationSpan);
+                    
+                    i++; // increment to check for last span element
+
+                    // construct a new TextElement
+                    TextElement text = new TextElement() {
+                        text = span.InnerText,
+                        bold = fontWeightSpan > 400,
+                        italic = fontStyleSpan == "italic",
+                        underlined = textDecorationSpan == "underline",
+                        newline = i == p.ChildNodes.Count,
+                        color = colorSpan,
+                        family = fontFamilySpan,
+                        size = fontSizeSpan,
+                        align = align,
+                    };
+
+                    // add to return list
+                    ret.Add(text);
+                } 
+            }
+
+            return ret;
+        }
+
+        void parseBodyStyle(string bodyStyle, ref string fontFamily, ref int fontSize, ref int fontWeight, ref string fontStyle, ref string color, ref string textDecoration) {
+            string[] styles = bodyStyle.Split(";");
+            foreach (string style in styles) {
+                string curr = style;
+                if (style.StartsWith(" "))
+                    curr = style.TrimStart();
+
+                if (curr.StartsWith("font-family:")) {
+                    fontFamily = curr.Replace("font-family:", "").Replace("'","");
+                } else
+                if (curr.StartsWith("font-size:")) {
+                    fontSize = (int)(Convert.ToDouble(curr.Replace("font-size:", "").Replace("pt", "")) * SCALE * FONT);
+                } else 
+                if (curr.StartsWith("font-weight:")) {
+                    fontWeight = Convert.ToInt32(curr.Replace("font-weight:", ""));
+                } else 
+                if (curr.StartsWith("font-style:")) {
+                    fontStyle = curr.Replace("font-style:", "");
+                } else
+                if (curr.StartsWith("color:")) {
+                    color = curr.Replace("color:", "").Insert(1, "ff");
+                } else
+                if (curr.StartsWith("text-decoration:")) {
+                    textDecoration = curr.Replace("text-decoration:", "").TrimStart();
+                    Console.WriteLine("stored:  \t'" + textDecoration + "'");
+                }
+                else {
+                    Log.Warning("Unhandled html/body/style property: '" + curr + "'.");
+                }
+            }
         }
 
         float getAttributeF(XmlNode node, string name, float or = 0.0f) {

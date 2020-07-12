@@ -1,4 +1,4 @@
-using iTextSharp.text;
+﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Linq;
@@ -187,26 +187,28 @@ namespace Cewe2pdf {
                     float urx = llx + textArea.rect.Width;
                     float ury = lly + textArea.rect.Height;
                     Rectangle textRect = new Rectangle(llx, lly, urx, ury);
-                    
-                    // convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
-                    int argb = Int32.Parse(textArea.color.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
-                    System.Drawing.Color clr = System.Drawing.Color.FromArgb(argb);
 
-                    // load the correct font
-                    // NOTE: this only works if font is registered from Fonts directory. See constructor.
-                    Font font = FontFactory.GetFont(textArea.font, textArea.fontsize, new BaseColor(clr));
+                    //// convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
+                    //int argb = Int32.Parse(textArea.color.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
+                    //System.Drawing.Color clr = System.Drawing.Color.FromArgb(argb);
 
-                    // For testing draw text box outline
-                    // textRect.Border = 1|2|4|8;
-                    // textRect.BorderColor = BaseColor.RED;
-                    // textRect.BorderWidth = 1.0f;
-                    // _writer.DirectContent.Rectangle(textRect);
+                    //// load the correct font
+                    //// NOTE: this only works if font is registered from Fonts directory. See constructor.
+                    //Font font = FontFactory.GetFont(textArea.font, textArea.fontsize, new BaseColor(clr));
+
+                    //// For testing draw text box outline
+                    //// textRect.Border = 1|2|4|8;
+                    //// textRect.BorderColor = BaseColor.RED;
+                    //// textRect.BorderWidth = 1.0f;
+                    //// _writer.DirectContent.Rectangle(textRect);
+                    ///
+                    //// the actual text object
+                    //Paragraph par = new Paragraph(textArea.text, font);
 
                     // apply rect to textbox
                     colText.SetSimpleColumn(textRect);
 
-                    // the actual text object
-                    Paragraph par = new Paragraph(textArea.text, font);
+                    Paragraph par = new Paragraph();
 
                     // magic number that closely matches photobook
                     // TODO there is probably more information in the .mcf's css part
@@ -220,11 +222,24 @@ namespace Cewe2pdf {
                     else if (textArea.align == "ALIGNRIGHT")
                         par.Alignment = Element.ALIGN_RIGHT;
 
+                    // add text chunks
+                    foreach (TextElement elem in textArea.textElements) {
+                        int style = 0;
+                        style += elem.bold ? Font.BOLD : 0;
+                        style += elem.italic ? Font.ITALIC : 0;
+                        style += elem.underlined ? Font.UNDERLINE : 0;
+                        Font fnt = FontFactory.GetFont(elem.family, elem.size, style, argb2BaseColor(elem.color));
+
+                        //Chunk chunk = 
+                        par.Add(new Chunk(elem.text + (elem.newline ? "\n" : " "), fnt));
+                    }
+
                     // add paragraph to textbox
                     colText.AddElement(par);
 
                     // draw textbox
                     colText.Go();
+
                 }
             }
 
