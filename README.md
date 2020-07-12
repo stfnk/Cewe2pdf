@@ -54,7 +54,7 @@ Once finished, the `.pdf` is located right next to the `Cewe2pdf.exe`, in this c
 
 
 ### Known Issues
-_Currently only the following features are supported!_
+_Currently only the following features are mostly supported!_
 * Images
 * Text Boxes
 * Image Borders
@@ -67,7 +67,7 @@ Please also attach the `cewe2pdf.log` file, which is located next to the `Cewe2p
 ## Development
 
 This program is written in C# for the .NET Core 3.1 runtime and should build on any platform. It uses [iTextSharp 5](https://github.com/itext/itextsharp/) for pdf rendering, and `System.Drawing.Commons` for image loading.</br>
-`.mcf` files are just plain XML files, that are parsed using the C# native `System.XML` API.</br>
+`.mcf` files are just plain XML files, parsed using the C# native `System.Xml` API.</br>
 Photobook backgrounds are stored as `.webp` images in the CEWE installation directory. For now i use [this](https://github.com/stfnk/Cewe2pdf/blob/master/util/cewe2data.py) python script to autogenerate a C# Dictionary with background colors, which requires the `Pillow (5.2.0)` Library:
 
     python -m pip install Pillow
@@ -76,21 +76,17 @@ Photobook backgrounds are stored as `.webp` images in the CEWE installation dire
 ## Releases
 
 **Roadmap**
-* consistent pixel resolution of images
-* better text support
-    * multiple colors
-    * bold / italic
-    * underlined
 * spine text
 * improve performance
     * avoid writing images
     * multithreaded image resizing (needs research)
-* more configuration options _actually some already exist, just not exposed to commandline_
+* more configuration options _some actually already exist, just not exposed to commandline_
 
 **Changelog**
 
     v0.2.0
     [added] support for page numbers, inlcuding font, color & size
+    [added] support for colored, bold, italic, underlined text
     [fixed] keep images resolution consistent
 
     v0.1.0 Initial Release.
