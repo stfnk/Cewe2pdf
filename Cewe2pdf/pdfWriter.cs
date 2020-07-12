@@ -1,4 +1,4 @@
-﻿using iTextSharp.text;
+using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Linq;
@@ -323,6 +323,13 @@ namespace Cewe2pdf {
                 img.RotateFlip(rot);
 
             return rot;
+        }
+
+        BaseColor argb2BaseColor(string color) {
+            //// convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
+            int argb = Int32.Parse(color.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
+            System.Drawing.Color clr = System.Drawing.Color.FromArgb(argb);
+            return new BaseColor(clr);
         }
     }
 }
