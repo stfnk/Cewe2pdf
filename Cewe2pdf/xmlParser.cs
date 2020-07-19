@@ -106,6 +106,7 @@ namespace Cewe2pdf {
                 _xmlDoc.Load(pFilePath);
             } catch (Exception e) {
                 Log.Error("Loading .mcf File: '" + pFilePath + "' failed with message: " + e.Message);
+                return;
             }
 
             // store filepath
@@ -358,10 +359,15 @@ namespace Cewe2pdf {
             // text is stored in html inside the .mcf
             // html basically is xml so... parse it as xml
             XmlDocument doc = new XmlDocument();
-            doc.LoadXml(html);
+            doc?.LoadXml(html);
 
             // get the node that contains span objects for each line of text
-            XmlNode node = doc.SelectSingleNode("html/body/table/tr/td");
+            XmlNode node = doc?.SelectSingleNode("html/body/table/tr/td");
+
+            if (node == null) {
+                Log.Error("Text node not found. Stopping text parsing.");
+                return "";
+            }
 
             // extract text from each <span> and store in single string with newline character
             string styleInfo = "";
@@ -392,6 +398,11 @@ namespace Cewe2pdf {
 
             // the body object contains everything we need
             XmlNode body = doc.SelectSingleNode("html/body");
+
+            if (body == null) {
+                Log.Error("Extracting text from html failed. HTML string:\n\n" + html + "\n\n");
+                return ret;
+            }
             
             // unless specified different these are the main font settings
             string fontFamily = "Calibri";
@@ -407,6 +418,12 @@ namespace Cewe2pdf {
 
             // now loop through all <p> elements in <td> (new lines)
             XmlNode td = body.SelectSingleNode("table/tr/td");
+
+            if (td == null) {
+                Log.Error("table/tr/td was null. HTML string:\n\n" + html + "\n\n");
+                return ret;
+            }
+
             foreach (XmlNode p in td.ChildNodes) {
                 if (p.Name != "p") continue;
 
@@ -475,7 +492,6 @@ namespace Cewe2pdf {
                 } else
                 if (curr.StartsWith("text-decoration:")) {
                     textDecoration = curr.Replace("text-decoration:", "").TrimStart();
-                    Console.WriteLine("stored:  \t'" + textDecoration + "'");
                 }
                 else {
                     Log.Warning("Unhandled html/body/style property: '" + curr + "'.");
@@ -485,7 +501,7 @@ namespace Cewe2pdf {
 
         float getAttributeF(XmlNode node, string name, float or = 0.0f) {
             if (node == null) return or; // return default if node is null
-            XmlNode attr = node.Attributes.GetNamedItem(name);
+            XmlNode attr = node.Attributes?.GetNamedItem(name);
             if (attr == null) return or; // return default if attribute does not exist
             string value = attr.Value;
             if (value == "") return or; // return default if attribute was empty
@@ -495,7 +511,7 @@ namespace Cewe2pdf {
 
         string getAttributeStr(XmlNode node, string name, string or = "") {
             if (node == null) return or; // return default if node is null
-            XmlNode attr = node.Attributes.GetNamedItem(name);
+            XmlNode attr = node.Attributes?.GetNamedItem(name);
             if (attr == null) return or; // return default if attribute does not exist
             return attr.Value; // return string directly
         }
