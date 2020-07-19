@@ -7,24 +7,26 @@ namespace Cewe2pdf {
         static void Main(string[] args) {
 
             // settings that should get a commandline interface at some point
-            string mcfPath = "Test.mcf";
-            string pdfPath = "Converted.pdf";
-            int toPage = 4; // process to page (useful for testing) 0 to process all.
-
+            string mcfPath = "../2018 06 Diverses.mcf";
+            string pdfPath = "ConvertedTest18.pdf";
+            int toPage = 0; // process to page (useful for testing) 0 to process all.
+         
             // make sure to print commandline input errors
             Log.level = Log.Level.Error;
 
-            // simple commandline interface
-            if (args.Length <= 1) {
-                Log.Message("\n\tUsage: cewe2pdf <source.mcf> <destination.pdf>\n");
-                return;
-            } else if (args.Length >= 2) {
-                mcfPath = args[0];
-                pdfPath = args[1];
-            } else {
-                Log.Error("\tinvalid arguments.");
-                return;
-            }
+            //// simple commandline interface
+            //if (args.Length <= 1) {
+            //    Log.Message("\n\tUsage:\tcewe2pdf <source.mcf> <destination.pdf> <options>\n");
+            //    Log.Message("\tOptions:\n\t\t[-p x]\tonly convert up to x pages: '-p 4' converts 4 double pages.");
+            //    return;
+            //} else if (args.Length >= 2) {
+            //    mcfPath = args[0];
+            //    pdfPath = args[1];
+            //}
+            //if (args.Length == 4) {
+            //    if (args[2] == "-p")
+            //        toPage = Convert.ToInt32(args[3]);
+            //}
 
             // at least some error checking...
             if (!mcfPath.EndsWith(".mcf")) { Log.Error("\ninvalid argument (" + mcfPath + "); file is not a .mcf file."); return; }
@@ -42,6 +44,9 @@ namespace Cewe2pdf {
             mcfParser parser = new mcfParser(mcfPath);
             pdfWriter writer = new pdfWriter(pdfPath);
 
+            if (toPage > 0)
+                Log.Message("Converting " + toPage.ToString() + " pages.");
+
             Log.Message("Starting conversion. This may take several minutes.");
 
             // for user information
@@ -50,15 +55,15 @@ namespace Cewe2pdf {
 
             //  iterate through all pages
             while (true) {
-                Log.Message("[" + (count / (float)pageCount * 100).ToString("F1") + "%]\tprocessing Page " + (count+1) + "/" + pageCount, false);
+                Log.Message("[" + (count / (float)pageCount * 100).ToString("F1") + "%]\tprocessing Page " + (count+1) + "/" + pageCount + "...", false);
                 long lastTime = timer.ElapsedMilliseconds;
                 Page next = parser.nextPage();
                 if (next == null) break; // reached end of book
                 writer.writePage(next);
                 float pageTime = (timer.ElapsedMilliseconds - lastTime) / 1000.0f;
                 count++;
-                Log.Message(" ...done, " + pageTime.ToString("F3") + " seconds.");
                 if (count == toPage) break;
+                Log.Message("\tremaining: ~" + MathF.Ceiling(timer.ElapsedMilliseconds / count * (pageCount - count) / 1000.0f / 60.0f).ToString() + " minutes.");
             }
 
             // close files
