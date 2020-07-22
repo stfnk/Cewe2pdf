@@ -439,11 +439,11 @@ namespace Cewe2pdf {
                     int fontSizeSpan = fontSize;
                     int fontWeightSpan = fontWeight;
                     string fontStyleSpan = fontStyle;
-                    string colorSpan = color;
+                    //string colorSpan = color; // color is not specified per item, but repeats last settings.
                     string textDecorationSpan = textDecoration;
-                    
+
                     if (style == null || style == "") Log.Warning("No style for span: '" + span.InnerText + "'.");
-                    else parseBodyStyle(style, ref fontFamilySpan, ref fontSizeSpan, ref fontWeightSpan, ref fontStyleSpan, ref colorSpan, ref textDecorationSpan);
+                    else parseBodyStyle(style, ref fontFamilySpan, ref fontSizeSpan, ref fontWeightSpan, ref fontStyleSpan, ref color, ref textDecorationSpan);
                     
                     i++; // increment to check for last span element
 
@@ -454,7 +454,7 @@ namespace Cewe2pdf {
                         italic = fontStyleSpan == "italic",
                         underlined = textDecorationSpan == "underline",
                         newline = i == p.ChildNodes.Count,
-                        color = colorSpan,
+                        color = color,
                         family = fontFamilySpan,
                         size = fontSizeSpan,
                         align = align,
