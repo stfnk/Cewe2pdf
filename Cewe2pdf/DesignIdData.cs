@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using iTextSharp.text;
 
 namespace Cewe2pdf {
-	public class DesignIdDatabase {
+	public class DesignIdDatabaseDEPRECATED {
 		public static Dictionary<string, BaseColor> backgroundColors = new Dictionary<string, BaseColor>() {
 			{"201", new BaseColor(255, 255, 255)},
 			{"203", new BaseColor(221, 221, 221)},
@@ -15,6 +15,7 @@ namespace Cewe2pdf {
 			{"22", new BaseColor(42, 22, 20)},
 			{"222", new BaseColor(82, 3, 23)},
 			{"227", new BaseColor(2, 63, 111)},
+			{"236", new BaseColor(2, 63, 111)},
 			{"229", new BaseColor(4, 147, 194)},
 			{"23", new BaseColor(185, 36, 56)},
 			{"24", new BaseColor(222, 162, 164)},

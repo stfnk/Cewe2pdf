@@ -58,7 +58,9 @@ namespace Cewe2pdf {
             // draw left backrgound
             canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
             try {
-                canvas.SetColorFill(DesignIdDatabase.backgroundColors[pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight]);
+                string id = pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight;
+                canvas.SetColorFill(DesignIdConverter.getBaseColorFromID(id));
+                //canvas.SetColorFill(DesignIdDatabase.backgroundColors[pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight]);
             } catch (Exception e) {
                 // in case a background designID is not found in DesignIdData.cs, print information to console
                 canvas.SetColorFill(BaseColor.MAGENTA);
@@ -70,7 +72,9 @@ namespace Cewe2pdf {
             // draw right background
             canvas.Rectangle(0 + pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
             try {
-                canvas.SetColorFill(DesignIdDatabase.backgroundColors[(pPage.backgroundRight != null ? pPage.backgroundRight : pPage.backgroundLeft)]);
+                string id = pPage.backgroundRight != null ? pPage.backgroundRight : pPage.backgroundLeft;
+                canvas.SetColorFill(DesignIdConverter.getBaseColorFromID(id));
+                //canvas.SetColorFill(DesignIdDatabase.backgroundColors[(pPage.backgroundRight != null ? pPage.backgroundRight : pPage.backgroundLeft)]);
             } catch (Exception e) {
                 // in case a background designID is not found in DesignIdData.cs, print information to console
                 canvas.SetColorFill(BaseColor.MAGENTA);
@@ -101,18 +105,26 @@ namespace Cewe2pdf {
                         // draw to document
                         _writer.DirectContent.Rectangle(nullRect);
 
-                        Log.Error("Image path was NULL.");
+                        Log.Error("Image path was null. Probably caused by an empty image area.");
                         continue;
                     }
 
-                    // load image file
-                    System.Drawing.Image sysImg = System.Drawing.Image.FromFile(imgArea.path);
+                    Log.Info("Rendering Image: '" + imgArea.path + "'.");
+
+                    // load image file.
+                    System.Drawing.Image sysImg;
+                    try {
+                        sysImg = System.Drawing.Image.FromFile(imgArea.path);
+                    } catch (System.IO.FileNotFoundException e) {
+                        Log.Error("Loading image failed with message: " + e.Message);
+                        continue;
+                    }
 
                     // fix exif orientation
                     ExifRotate(sysImg);
 
                     // calculate resizing factor, results in equal pixel density for all images.
-                    float scale = 1f / imgArea.scale * 1.0f; // the higher this value, the lower pixel density is. 0.0f = original resolution
+                    float scale = 1f / imgArea.scale * Config.imgScale; // the higher this value, the lower pixel density is. 0.0f = original resolution
                     scale = scale < 1.0f ? 1.0f : scale; // never scale image up
 
                     // resize image
@@ -188,26 +200,10 @@ namespace Cewe2pdf {
                     float ury = lly + textArea.rect.Height;
                     Rectangle textRect = new Rectangle(llx, lly, urx, ury);
 
-                    //// convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
-                    //int argb = Int32.Parse(textArea.color.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
-                    //System.Drawing.Color clr = System.Drawing.Color.FromArgb(argb);
-
-                    //// load the correct font
-                    //// NOTE: this only works if font is registered from Fonts directory. See constructor.
-                    //Font font = FontFactory.GetFont(textArea.font, textArea.fontsize, new BaseColor(clr));
-
-                    //// For testing draw text box outline
-                    //// textRect.Border = 1|2|4|8;
-                    //// textRect.BorderColor = BaseColor.RED;
-                    //// textRect.BorderWidth = 1.0f;
-                    //// _writer.DirectContent.Rectangle(textRect);
-                    ///
-                    //// the actual text object
-                    //Paragraph par = new Paragraph(textArea.text, font);
-
                     // apply rect to textbox
                     colText.SetSimpleColumn(textRect);
 
+                    // The actual text object
                     Paragraph par = new Paragraph();
 
                     // magic number that closely matches photobook
@@ -230,7 +226,6 @@ namespace Cewe2pdf {
                         style += elem.underlined ? Font.UNDERLINE : 0;
                         Font fnt = FontFactory.GetFont(elem.family, elem.size, style, argb2BaseColor(elem.color));
 
-                        //Chunk chunk = 
                         par.Add(new Chunk(elem.text + (elem.newline ? "\n" : " "), fnt));
                     }
 
@@ -340,7 +335,7 @@ namespace Cewe2pdf {
             return rot;
         }
 
-        BaseColor argb2BaseColor(string color) {
+        public static BaseColor argb2BaseColor(string color) {
             //// convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
             int argb = Int32.Parse(color.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
             System.Drawing.Color clr = System.Drawing.Color.FromArgb(argb);
