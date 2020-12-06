@@ -9,7 +9,7 @@ namespace Cewe2pdf {
             // settings that should get a commandline interface at some point
             string mcfPath = "Test.mcf";
             string pdfPath = "Converted.pdf";
-            int toPage = 4; // process to page (useful for testing) 0 to process all.
+            int toPage = 0; // process to page (useful for testing) 0 to process all.
 
             // make sure to print commandline input errors
             Log.level = Log.Level.Error;
@@ -34,7 +34,7 @@ namespace Cewe2pdf {
             System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
 
             // only show user messages
-            Log.level = Log.Level.Info;
+            Log.level = Log.Level.Error;
 
             Log.Message("Loading '" + mcfPath + "'...");
 
