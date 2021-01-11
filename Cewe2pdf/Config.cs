@@ -8,27 +8,26 @@ namespace Cewe2pdf {
     class Config {
 
         // defaults
-        private static const string DEFAULT_PROGRAM_PATH = "C://Program Files//CEWE//"; // TODO: make this compatible with other OS
-        private static const int DEFAULT_TO_PAGE = 0;
-        private static const float DEFAULT_IMG_SCALE = 1.0f;
+        private const string DEFAULT_PROGRAM_PATH = "C://Program Files//CEWE//"; // TODO: make this compatible with other OS
+        private const int DEFAULT_TO_PAGE = 0;
+        private const float DEFAULT_IMG_SCALE = 1.0f;
 
         // simple custom file format syntax:
         //    identifier=value;
         //    # indicates comment lines
-        private static const string CONFIG_PATH = "config.txt";
+        private const string CONFIG_PATH = "config.txt";
 
         // actual values used by program,
         // either loaded from cmd args, config file or default constants
-        public static string programPath;  // (required) path to installation folder
-        public static int toPage;           // (optional) number of pages to parse
+        public static string programPath; // (required) path to installation folder
+        public static int toPage;
         public static float imgScale;
 
-        // store user-defined (via config.txt) background id colors
+        // store user-defined (via config file) background id colors
         public static Dictionary<string, BaseColor> bgColors = new Dictionary<string, BaseColor>();
 
         // sets config to default constants
         private static void setToDefaults() {
-            Log.Message("loading default config");
             programPath = DEFAULT_PROGRAM_PATH;
             toPage = DEFAULT_TO_PAGE;
             imgScale = DEFAULT_IMG_SCALE;
@@ -41,7 +40,7 @@ namespace Cewe2pdf {
             setToDefaults();
 
             // check if file exists, otherwise abort reading & keep defaults
-            if (!File.Exists(CONFIG_PATH)) {
+            if (!System.IO.File.Exists(CONFIG_PATH)) {
                 Log.Warning("'" + CONFIG_PATH + "' file not found, using defaults.");
                 // TODO: write default file for convinience?
                 return;

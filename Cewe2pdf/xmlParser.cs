@@ -128,7 +128,7 @@ namespace Cewe2pdf {
                         break;
 
                     case "statistics":
-                        // TODO properly report to user
+                        // TODO: properly report to user
                         //Console.WriteLine("\nStatistics:\n\telapsed Time: " + node.Attributes.GetNamedItem("elapsedTimeNet").Value);
                         break;
 

@@ -31,6 +31,7 @@ namespace Cewe2pdf {
             Console.ForegroundColor = ConsoleColor.Red;
             if ((int)level >= (int)Level.Error) Console.WriteLine("[Error]   " + message);
             Console.ForegroundColor = ConsoleColor.White;
+            writeLogFile();
         }
 
         public static void Warning(string message) {
@@ -38,6 +39,7 @@ namespace Cewe2pdf {
             Console.ForegroundColor = ConsoleColor.Yellow;
             if ((int)level >= (int)Level.Warning) Console.WriteLine("[Warning] " + message);
             Console.ForegroundColor = ConsoleColor.White;
+            writeLogFile();
         }
 
         public static void Info(string message) {
@@ -45,10 +47,10 @@ namespace Cewe2pdf {
             Console.ForegroundColor = ConsoleColor.Gray;
             if ((int)level >= (int)Level.Info) Console.WriteLine("[Info]    " + message);
             Console.ForegroundColor = ConsoleColor.White;
+            writeLogFile();
         }
 
         public static void writeLogFile() {
-            Info("Writing log file.");
             System.IO.File.WriteAllText(@"cewe2pdf.log", log);
         }
     }

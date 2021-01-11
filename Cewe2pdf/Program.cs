@@ -9,6 +9,13 @@ namespace Cewe2pdf {
 
         static void Main(string[] args) {
 
+#if DEBUG || _DEBUG
+            Log.level = Log.Level.Info;
+            Log.Info("Running Debug configuration");
+#else
+            Log.level = Log.Level.Message;
+#endif
+
             // initializes config with either defaults or from config file
             Config.initialize();
 
@@ -16,7 +23,7 @@ namespace Cewe2pdf {
             CmdArgParser.parse(args);
 
             // check for valid input file
-            if (mcfPath == "") { Log.Error("no input.mcf file specified."); return; }
+            if (mcfPath == "") { Log.Error("No input.mcf file specified."); return; }
             if (!System.IO.File.Exists(mcfPath)) { Log.Error("'" + mcfPath + "' does not exist.'"); return; }
 
             // allow only input file as argument
