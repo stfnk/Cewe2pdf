@@ -8,7 +8,7 @@ namespace Cewe2pdf {
     class Config {
 
         // defaults
-        private const string[] DEFAULT_PROGRAM_PATHS = new string[] {
+        private static readonly string[] DEFAULT_PROGRAM_PATHS = new string[] {
             // TODO: make this compatible with other OS
             "C://Program Files//CEWE//",
             "C://Program Files (x86)//CEWE//"
@@ -55,7 +55,7 @@ namespace Cewe2pdf {
                 // TODO: write default file for convinience?
                 return;
             } else {
-                Log.Message("Reading config from '" + CONFIG_PATH + "'...");
+                Log.Info("Reading config from '" + CONFIG_PATH + "'...");
             }
 
             string line;

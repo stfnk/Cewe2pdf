@@ -19,8 +19,9 @@ namespace Cewe2pdf {
             // initializes config with either defaults or from config file
             Config.initialize();
 
-            if (Config.programPath.IsNullOrWhitespace()) {
+            if (String.IsNullOrWhiteSpace(Config.programPath)) {
                 Log.Error("Cewe Installation directory not found. Please specify installation folder in config.txt next to Cewe2pdf.exe."); // TODO: add manual link explaining config file.
+                return;
             }
 
             // overwrites config with arguments if given
