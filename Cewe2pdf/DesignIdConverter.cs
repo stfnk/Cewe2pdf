@@ -39,8 +39,10 @@ namespace Cewe2pdf {
                 return;
             }
 
+            string line;
+
             // this file contains all design id paths, store relevant ones for easy use in mcfParser
-            while ((string line = file.ReadLine()) != null) {
+            while ((line = file.ReadLine()) != null) {
                 // TODO: for now only looks for backgrounds.
                 if (line.StartsWith("photofun/backgrounds")) {
                     string id = line.Split("/").Last();
@@ -64,7 +66,7 @@ namespace Cewe2pdf {
             }
 
             // load color from .webp file
-            Bitmap bmp = getFromID(pId);
+            Bitmap bmp = getBitmapFromID(pId);
             ret = new BaseColor(bmp.GetPixel(0, 0)); // assume every pixel holds the color...
 
             // cache for fast reuse
@@ -76,7 +78,7 @@ namespace Cewe2pdf {
         }
 
         // TODO: support other formats except .webp? -> also needs to be loaded ofc
-        private static Bitmap getFromID(string pId) {
+        public static Bitmap getBitmapFromID(string pId) {
             if (_idPaths == null) {
                 Log.Error("DesignIdConverter not initialized.");
                 return null;

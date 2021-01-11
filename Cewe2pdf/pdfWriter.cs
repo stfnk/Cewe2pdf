@@ -8,7 +8,7 @@ namespace Cewe2pdf {
     class pdfWriter {
 
         private System.IO.FileStream _fileStream;
-        private Document _doc = new Document(); 
+        private Document _doc = new Document();
         private PdfWriter _writer;
 
         public pdfWriter(string pOutPath) {
@@ -17,7 +17,7 @@ namespace Cewe2pdf {
             // Open file stream for exported pdf
             _fileStream = new System.IO.FileStream(pOutPath, System.IO.FileMode.Create);
 
-            // initialize iTextSharp pdf writer 
+            // initialize iTextSharp pdf writer
             _writer = PdfWriter.GetInstance(_doc, _fileStream);
 
             // just put something in there, doesn't really matter...
@@ -28,11 +28,11 @@ namespace Cewe2pdf {
             // necessary for loading .ttf it seams
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            // TODO probably should add Cewe/Resources/fonts folder here as well, 
+            // TODO probably should add Cewe/Resources/fonts folder here as well,
             // but currently doesn't require Cewe installation location for anything else
             const string fontPath = "C:\\Windows\\Fonts"; // TODO also, windows only obviously
             Log.Info("Loading fonts from " + fontPath);
-            FontFactory.RegisterDirectory(fontPath); 
+            FontFactory.RegisterDirectory(fontPath);
             Log.Info("Found " + FontFactory.RegisteredFonts.Count + " fonts.");
 
             // start writing
@@ -40,7 +40,7 @@ namespace Cewe2pdf {
         }
 
         public void writePage(Page pPage) {
-            
+
             // page size is given per <fotobook/page>. iTextSharp needs it set before adding page or opening document.
             _doc.SetPageSize(new Rectangle(0f, 0f, pPage.bundleSize.X, pPage.bundleSize.Y));
 
@@ -51,9 +51,10 @@ namespace Cewe2pdf {
             // fill background
             // this currently only supports single color backgrounds, see utils/cewe2data.py & DesignIdData.cs for current implementation
             // this should be updated to use background images from cewe installation folder directly, but
-            // Cewe backgrounds are .webp files which iTextSharp does not support... silly (and faster) workaround for now. 
+            // Cewe backgrounds are .webp files which iTextSharp does not support... silly (and faster) workaround for now.
             PdfContentByte canvas = _writer.DirectContent;
 
+#if USE_LEGACY_BG_COLOR
             // background color can differ between left and right page, so handle them accordingly.
             // draw left backrgound
             canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
@@ -68,6 +69,8 @@ namespace Cewe2pdf {
             }
             canvas.Fill();
 
+            string id = pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight;
+
             // TODO de-duplicate this code...
             // draw right background
             canvas.Rectangle(0 + pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
@@ -81,7 +84,56 @@ namespace Cewe2pdf {
                 Log.Error("Missing background DesignID: <" + pPage.backgroundLeft + "> Please report this as an issue.");
             }
             canvas.Fill();
+#else
+            // TOOD: de-duplicate
+            // draw left part of background
+            if (pPage.backgroundLeft != null) {
 
+                canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
+                canvas.SetColorFill(BaseColor.CYAN);
+                canvas.Fill();
+
+                string id = pPage.backgroundLeft;
+                System.Drawing.Bitmap bmp = DesignIdConverter.getBitmapFromID(id);
+                if (bmp == null)
+                {
+                    Log.Error("Background image for id '" + id + "' failed to load.");
+                    canvas.SetColorFill(BaseColor.MAGENTA);
+                    canvas.Fill();
+                }
+                else
+                {
+                    // convert bitmap to Image to iText image...
+                    System.Drawing.Image sysimg = (System.Drawing.Image)bmp;
+                    Image img = Image.GetInstance(sysimg, sysimg.RawFormat);
+                    _writer.DirectContent.AddImage(img);
+                }
+            }
+
+            // draw right part of background
+            if (pPage.backgroundRight != null) {
+
+                canvas.Rectangle(0 + pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
+                canvas.SetColorFill(BaseColor.CYAN);
+                canvas.Fill();
+
+                string idr = pPage.backgroundRight;
+                System.Drawing.Bitmap bmpr = DesignIdConverter.getBitmapFromID(idr);
+                if (bmpr == null)
+                {
+                    Log.Error("Background image for id '" + idr + "' failed to load.");
+                    canvas.SetColorFill(BaseColor.MAGENTA);
+                    canvas.Fill();
+                }
+                else
+                {
+                    // convert bitmap to Image to iText image...
+                    System.Drawing.Image sysimg = (System.Drawing.Image)bmpr;
+                    Image img = Image.GetInstance(sysimg, sysimg.RawFormat);
+                    _writer.DirectContent.AddImage(img);
+                }
+            }
+#endif
             // draw all content areas stored in this page
             // currently only supports <imagearea> and <textarea> from .mcf
             foreach (Area area in pPage.areas) {
@@ -116,7 +168,7 @@ namespace Cewe2pdf {
                     try {
                         sysImg = System.Drawing.Image.FromFile(imgArea.path);
                     } catch (System.IO.FileNotFoundException e) {
-                        Log.Error("Loading image failed with message: " + e.Message);
+                        Log.Error("Loading image failed. Image at '" + imgArea.path + "' not found.");
                         continue;
                     }
 
@@ -141,7 +193,7 @@ namespace Cewe2pdf {
 
                     // calculate image position in pdf page
                     float posX = imgArea.rect.X + imgArea.cutout.X;
-                    float posY = pPage.bundleSize.Y - imgArea.rect.Y - imgArea.rect.Height; // pdf origin is in lower left, mcf origin is in upper left 
+                    float posY = pPage.bundleSize.Y - imgArea.rect.Y - imgArea.rect.Height; // pdf origin is in lower left, mcf origin is in upper left
 
                     // yaaaaa... whatever. This way everything fits
                     float cropBottom = img.ScaledHeight - imgArea.rect.Height + imgArea.cutout.Y;
@@ -180,7 +232,7 @@ namespace Cewe2pdf {
                         _writer.DirectContent.Rectangle(rect);
                     }
 
-                } 
+                }
                 else if (area is TextArea) {
                     TextArea textArea = (TextArea)area;
 
@@ -192,7 +244,7 @@ namespace Cewe2pdf {
 
                     // iTextSharp textbox
                     ColumnText colText = new ColumnText(_writer.DirectContent);
-                    
+
                     // calculate rect
                     float llx = textArea.rect.X;
                     float lly = pPage.bundleSize.Y - textArea.rect.Y - textArea.rect.Height;
@@ -258,7 +310,7 @@ namespace Cewe2pdf {
             ColumnText leftNo = new ColumnText(_writer.DirectContent);
             Rectangle leftNoRect = new Rectangle(Page.pageNoMargin.X + PAGE_NR_X_OFFSET, PAGE_Y_POS, 500, PAGE_Y_POS+PAGE_NR_HEIGHT);
             leftNo.SetSimpleColumn(leftNoRect);
-            
+
             leftNo.AddElement(pageNoLeft);
             leftNo.Go();
 
@@ -274,7 +326,7 @@ namespace Cewe2pdf {
             ColumnText rightNo = new ColumnText(_writer.DirectContent);
             Rectangle rightNoRect = new Rectangle(pPage.bundleSize.X-Page.pageNoMargin.X - PAGE_NR_X_OFFSET - 500, PAGE_Y_POS, pPage.bundleSize.X-Page.pageNoMargin.X - PAGE_NR_X_OFFSET, PAGE_Y_POS + PAGE_NR_HEIGHT);
             rightNo.SetSimpleColumn(rightNoRect);
-            
+
             rightNo.AddElement(pageNoRight);
             rightNo.Go();
 
@@ -305,7 +357,7 @@ namespace Cewe2pdf {
         }
 
         public System.Drawing.RotateFlipType ExifRotate(System.Drawing.Image img) {
-            // for some reason iText does not respect orientation stored in metadata as it seams... 
+            // for some reason iText does not respect orientation stored in metadata as it seams...
             // try to fix it with this weird stuff...
             // based on https://www.cyotek.com/blog/handling-the-orientation-exif-tag-in-images-using-csharp
 
