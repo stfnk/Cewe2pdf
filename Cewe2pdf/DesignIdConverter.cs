@@ -33,6 +33,7 @@ namespace Cewe2pdf {
             Log.Info("Loading Design IDs from '" + path + "'.");
 
             while ((line = file.ReadLine()) != null) {
+                // TODO for now only looks for backgrounds.
                 if (line.StartsWith("photofun/backgrounds") && line.EndsWith(".webp")) {
                     string id = line.Split("/").Last().Replace(".webp", "");
                     _idPaths.TryAdd(id, line);

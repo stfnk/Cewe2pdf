@@ -16,7 +16,7 @@ namespace Cewe2pdf {
         private static string log = "\nPlease attach this file to bug reports.\n\n";
 
         public static void Message(string message, bool keepLine = false) {
-            log += "[Message]\t" + message + (keepLine ? "" : "\n");
+            log += "[Message] " + message + (keepLine ? "" : "\n");
             if ((int)level >= (int)Level.Message) {
                 Console.ForegroundColor = ConsoleColor.White;
                 if (keepLine)
@@ -27,21 +27,21 @@ namespace Cewe2pdf {
         }
 
         public static void Error(string message) {
-            log += "[Error]\t" + message + "\n";
+            log += "[Error] " + message + "\n";
             Console.ForegroundColor = ConsoleColor.Red;
             if ((int)level >= (int)Level.Error) Console.WriteLine("[Error]   " + message);
             Console.ForegroundColor = ConsoleColor.White;
         }
 
         public static void Warning(string message) {
-            log += "[Warning]\t" + message + "\n";
+            log += "[Warning] " + message + "\n";
             Console.ForegroundColor = ConsoleColor.Yellow;
             if ((int)level >= (int)Level.Warning) Console.WriteLine("[Warning] " + message);
             Console.ForegroundColor = ConsoleColor.White;
         }
 
         public static void Info(string message) {
-            log += "[Info]\t" + message + "\n";
+            log += "[Info] " + message + "\n";
             Console.ForegroundColor = ConsoleColor.Gray;
             if ((int)level >= (int)Level.Info) Console.WriteLine("[Info]    " + message);
             Console.ForegroundColor = ConsoleColor.White;

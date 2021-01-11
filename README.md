@@ -76,14 +76,20 @@ Photobook backgrounds are stored as `.webp` images in the CEWE installation dire
 ## Releases
 
 **Roadmap**
+* Text margin left
+* support border position outside
 * spine text
+* vertical text alignment
 * improve performance
     * avoid writing images
     * multithreaded image resizing (needs research)
 * more configuration options _some actually already exist, just not exposed to commandline_
 
 **Changelog**
-
+    v0.3.0
+    [added] new background system, loading color directly from .webp files
+    [fixed] multiline text with same color, did not inherit color from previous lines
+    
     v0.2.0
     [added] support for page numbers, inlcuding font, color & size
     [added] support for colored, bold, italic, underlined text

@@ -10,17 +10,26 @@ namespace Cewe2pdf {
             Config.readConfig("config.txt");
 
             // simple commandline interface
-            if (args.Length == 1 && args[0] == "--help") {
-                Log.Message("\n\tUsage:\tcewe2pdf <source.mcf> <destination.pdf> <options>\n");
-                Log.Message("\tOptions:\n\t\t[-p x]\tonly convert up to x pages: '-p 4' converts 4 double pages.");
-                return;
-            } else if (args.Length >= 2) {
-                Config.mcfPath = args[0];
-                Config.pdfPath = args[1];
-            }
-            if (args.Length == 4) {
-                if (args[2] == "-p")
-                    Config.toPage = Convert.ToInt32(args[3]);
+            //if (args.Length == 1 && args[0] == "--help") {
+            //    Log.Message("\n\tUsage:\tcewe2pdf <source.mcf> <destination.pdf> <options>\n");
+            //    Log.Message("\tOptions:\n\t\t[-p x]\tonly convert up to x pages: '-p 4' converts 4 double pages.");
+            //    return;
+            //} else if (args.Length >= 2) {
+            //    Config.mcfPath = args[0];
+            //    Config.pdfPath = args[1];
+            //}
+            //if (args.Length == 4) {
+            //    if (args[2] == "-p")
+            //        Config.toPage = Convert.ToInt32(args[3]);
+            //}
+            if (args.Length == 1) {
+                if (args[0].EndsWith(".mcf"))
+                    Config.mcfPath = args[0];
+            } else if (args.Length == 2) {
+                if (args[0].EndsWith(".mcf"))
+                    Config.mcfPath = args[0];
+                if (args[1].EndsWith(".pdf"))
+                    Config.pdfPath = args[1];
             }
 
             // at least some error checking...
