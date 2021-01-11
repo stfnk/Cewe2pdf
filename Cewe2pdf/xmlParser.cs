@@ -76,7 +76,7 @@ namespace Cewe2pdf {
         public string backgroundLeft;
         public string backgroundRight;
 
-        
+
         public string pageNoLeft;
         public string pageNoRight;
         static public string pageNoFont;
@@ -86,7 +86,7 @@ namespace Cewe2pdf {
     };
 
     class mcfParser {
-        
+
         const float SCALE = 0.4f;       // overall scale applied to pdf... does not affect resolution of images!
 
         const float FONT = 3.26f;       // match to photobook font size
@@ -100,10 +100,10 @@ namespace Cewe2pdf {
         private int _pageIterator = 0;  // keep track of current page
 
         public mcfParser(string pFilePath) {
-
             // load xml into memory
             try {
                 _xmlDoc.Load(pFilePath);
+                Log.Message("Loaded '" + pFilePath + "'.");
             } catch (Exception e) {
                 Log.Error("Loading .mcf File: '" + pFilePath + "' failed with message: " + e.Message);
                 return;
@@ -159,7 +159,7 @@ namespace Cewe2pdf {
             // the reconstructed page (still empty)
             Page page = new Page();
 
-            // keep track which page we are currently processing, every Page object actually consists of 
+            // keep track which page we are currently processing, every Page object actually consists of
             // two <fotobook/page> nodes, the left and right side in photobook
             bool isDouble = false;
 
@@ -173,7 +173,7 @@ namespace Cewe2pdf {
                 if (page.type == Page.Type.Normalpage) {
                     if (isDouble) page.pageNoRight = getAttributeStr(xmlPage, "pagenr");
                     else page.pageNoLeft = getAttributeStr(xmlPage, "pagenr");
-                    
+
                 }
 
                 // iterate all sub nodes this page contains
@@ -212,7 +212,7 @@ namespace Cewe2pdf {
                                     // construct path to the Images folder next to .mcf file
                                     string path = _filePath.Substring(0, _filePath.Length - 4) + "_mcf-Dateien\\";
 
-                                    // replace 'safecontainer:/' with actual path, in case filename does not exist, 
+                                    // replace 'safecontainer:/' with actual path, in case filename does not exist,
                                     // store "NULL", will render as magenta outline and print error.
                                     string filePath = filename != "" ? filename.Replace("safecontainer:/", path) : "NULL";
 
@@ -281,7 +281,7 @@ namespace Cewe2pdf {
                                     Log.Warning("Unhandled area type in <page/area> '" + type + "'.");
                                     break;
                             }
-                            
+
                             // sanity check, cant be null really :P
                             if (newArea == null) break;
 
@@ -315,14 +315,14 @@ namespace Cewe2pdf {
                     Page.Type nextType = Page.convert(nextPage.Attributes.GetNamedItem("type").Value);
                     if (nextType == Page.Type.Spine) xmlPage = nextPage;
                     else xmlPage = null; // cover page is done, proceed
-                } 
+                }
                 else if (page.type == Page.Type.Spine) {
                     // check if next page is Fullcover (should be anyway)
                     XmlNode nextPage = _pages[_pageIterator + 1];
                     Page.Type nextType = Page.convert(nextPage.Attributes.GetNamedItem("type").Value);
                     if (nextType == Page.Type.Fullcover) xmlPage = nextPage;
                     else xmlPage = null;
-                } 
+                }
                 else if (page.type == Page.Type.Emptypage) {
                     // check if next page exists... otherwise end of book.
                     if (_pageIterator + 1 < _pages.Count) {
@@ -332,10 +332,10 @@ namespace Cewe2pdf {
                     } else {
                         xmlPage = null;
                     }
-                } 
+                }
                 else if (page.type == Page.Type.Normalpage && !isDouble) {
                     XmlNode nextPage = _pages[_pageIterator + 1];
-                    // next is second half of a double page... 
+                    // next is second half of a double page...
                     xmlPage = nextPage;
                     isDouble = true;
                 } else {
@@ -346,7 +346,7 @@ namespace Cewe2pdf {
                 // increment to handle next <page> object in list
                 _pageIterator++;
             }
-            
+
             // return the newly constructed page
             return page;
         }
@@ -388,7 +388,7 @@ namespace Cewe2pdf {
         }
 
         private List<TextElement> extractTextFromHTMLv2(string html) {
-            
+
             List<TextElement> ret = new List<TextElement>();
 
             // text is stored in html inside the .mcf
@@ -403,7 +403,7 @@ namespace Cewe2pdf {
                 Log.Error("Extracting text from html failed. HTML string:\n\n" + html + "\n\n");
                 return ret;
             }
-            
+
             // unless specified different these are the main font settings
             string fontFamily = "Calibri";
             int fontSize = 48;
@@ -428,9 +428,9 @@ namespace Cewe2pdf {
                 if (p.Name != "p") continue;
 
                 string align = getAttributeStr(p, "align", "Center");
-                
+
                 int i = 0;
-                
+
                 foreach (XmlNode span in p.ChildNodes) {
                     string style = getAttributeStr(span, "style"); // get the span specific style
 
@@ -444,7 +444,7 @@ namespace Cewe2pdf {
 
                     if (style == null || style == "") Log.Warning("No style for span: '" + span.InnerText + "'.");
                     else parseBodyStyle(style, ref fontFamilySpan, ref fontSizeSpan, ref fontWeightSpan, ref fontStyleSpan, ref color, ref textDecorationSpan);
-                    
+
                     i++; // increment to check for last span element
 
                     // construct a new TextElement
@@ -462,7 +462,7 @@ namespace Cewe2pdf {
 
                     // add to return list
                     ret.Add(text);
-                } 
+                }
             }
 
             return ret;
@@ -480,10 +480,10 @@ namespace Cewe2pdf {
                 } else
                 if (curr.StartsWith("font-size:")) {
                     fontSize = (int)(Convert.ToDouble(curr.Replace("font-size:", "").Replace("pt", "")) * SCALE * FONT);
-                } else 
+                } else
                 if (curr.StartsWith("font-weight:")) {
                     fontWeight = Convert.ToInt32(curr.Replace("font-weight:", ""));
-                } else 
+                } else
                 if (curr.StartsWith("font-style:")) {
                     fontStyle = curr.Replace("font-style:", "");
                 } else

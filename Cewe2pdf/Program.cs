@@ -4,46 +4,52 @@ namespace Cewe2pdf {
 
     class Program {
 
+        static string mcfPath = "";
+        static string pdfPath = "";
+
         static void Main(string[] args) {
 
-            Log.Message("Reading 'config.txt'...");
-            Config.readConfig("config.txt");
+            // initializes config with either defaults or from config file
+            Config.initialize();
 
-            // simple commandline interface
-            //if (args.Length == 1 && args[0] == "--help") {
-            //    Log.Message("\n\tUsage:\tcewe2pdf <source.mcf> <destination.pdf> <options>\n");
-            //    Log.Message("\tOptions:\n\t\t[-p x]\tonly convert up to x pages: '-p 4' converts 4 double pages.");
-            //    return;
-            //} else if (args.Length >= 2) {
-            //    Config.mcfPath = args[0];
-            //    Config.pdfPath = args[1];
-            //}
-            //if (args.Length == 4) {
-            //    if (args[2] == "-p")
-            //        Config.toPage = Convert.ToInt32(args[3]);
-            //}
-            if (args.Length == 1) {
-                if (args[0].EndsWith(".mcf"))
-                    Config.mcfPath = args[0];
-            } else if (args.Length == 2) {
-                if (args[0].EndsWith(".mcf"))
-                    Config.mcfPath = args[0];
-                if (args[1].EndsWith(".pdf"))
-                    Config.pdfPath = args[1];
+            // handle arguments, overwriting config
+            for (int i = 0; i < args.Length; i++) {
+                if (args[i] == "-h" || args[i] == "--help") {
+                  Console.WriteLine(
+                    "Cewe2pdf usage:"
+                    "\n\t    argument | description\n"
+                    "\n\t      --help | lists all arguments."
+                    "\n\t          -h | same as --help."
+                    "\n\t    'in.mcf' | input file to convert (required)"
+                    "\n\t   'out.pdf' | output file to generate (optional)"
+                    "\n\t  -to-page 0 | convert only up to this page nr, 0 converts all."
+                    "\n\t-quality 1.0 | pixel size of images. Use lower value for higher resolution images in .pdf." // TODO: true?
+                  );
+                }
+                else if (args[i].EndsWith(".mcf")) mcfPath = args[i];
+                else if (args[i].EndsWith(".pdf")) pdfPath = args[i];
+                else if (args[i] == "-to-page") {
+                  i++;
+                  if (i < args.Length) config.toPage = MathF.Max(0, ToInt32(args[i]));
+                }
+                else if (args[i] == "-quality") {
+                  i++;
+                  if (i < args.Length) config.toPage = MathF.Clamp(ToFloat(args[i]), 0.0f, 1.0f); // TODO: true?
+                }
+                else {
+                  Log.Warning("invalid argument: '" + args[i] + "'.");
+                }
             }
 
-            // at least some error checking...
-            if (!Config.mcfPath.EndsWith(".mcf")) { Log.Error("invalid argument (" + Config.mcfPath + "); file is not a .mcf file."); return; }
-            if (Config.pdfPath == "") Config.pdfPath = Config.mcfPath.Replace(".mcf", ".pdf");
-            if (!Config.pdfPath.EndsWith(".pdf")) { Log.Error("invalid argument (" + Config.pdfPath + "); file is not a .pdf file."); return; }
+            // check for valid input file
+            if (mcfPath == "") { Log.Error("no input.mcf file specified."); return; }
+            if (!File.Exists(mcfPath)) { Log.Error("'" + mcfPath + "' does not exist.'"); return; }
+
+            // allow only input file as argument
+            if (pdfPath == "") pdfPath = mcfPath.Replace(".mcf", ".pdf");
 
             // for user information only
             System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
-
-            // only show user messages
-            //Log.level = Log.Level.Message;
-
-            Log.Message("Loading '" + Config.mcfPath + "'...");
 
             // init design id converter
             DesignIdConverter.initDesignIdDatabase();

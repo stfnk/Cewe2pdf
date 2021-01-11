@@ -4,48 +4,83 @@ using System.Linq;
 using System;
 
 namespace Cewe2pdf {
+
     class Config {
 
-        public static string programPath = "";  // (required) path to installation folder
-        public static string mcfPath = "";      // (optional) path to mcf 
-        public static string pdfPath = "";      // (optional) path to pdf
-        public static int toPage = 0;           // (optional) number of pages to parse
-        public static float imgScale = 1.0f;
+        // defaults
+        private static const string DEFAULT_PROGRAM_PATH = "C://Program Files//CEWE//"; // TODO: make this compatible with other OS
+        private static const int DEFAULT_TO_PAGE = 0;
+        private static const float DEFAULT_IMG_SCALE = 1.0f;
 
+        // simple custom file format syntax:
+        //    identifier=value;
+        //    # indicates comment lines
+        private static const string CONFIG_PATH = "config.txt";
+
+        // actual values used by program,
+        // either loaded from cmd args, config file or default constants
+        public static string programPath;  // (required) path to installation folder
+        public static int toPage;           // (optional) number of pages to parse
+        public static float imgScale;
+
+        // store user-defined (via config.txt) background id colors
         public static Dictionary<string, BaseColor> bgColors = new Dictionary<string, BaseColor>();
 
-        public static void readConfig(string pPath) {
+        // sets config to default constants
+        private static void setToDefaults() {
+            Log.Message("loading default config");
+            programPath = DEFAULT_PROGRAM_PATH;
+            toPage = DEFAULT_TO_PAGE;
+            imgScale = DEFAULT_IMG_SCALE;
+        }
+
+        // read the config file if existant
+        public static void initialize() {
+
+            // assure valid values in all fields
+            setToDefaults();
+
+            // check if file exists, otherwise abort reading & keep defaults
+            if (!File.Exists(CONFIG_PATH)) {
+                Log.Warning("'" + CONFIG_PATH + "' file not found, using defaults.");
+                // TODO: write default file for convinience?
+                return;
+            } else {
+                Log.Message("Reading config from '" + CONFIG_PATH + "'...");
+            }
 
             string line;
             System.IO.StreamReader file;
 
             // read config file
             try {
-                file = new System.IO.StreamReader(pPath);
+                file = new System.IO.StreamReader(CONFIG_PATH);
             } catch (System.Exception e) {
-                Log.Error("Opening config file failed with error: '" + e.Message + "'");
-                // TODO write default file for convinience?
+                Log.Error("Reading config file failed with error: '" + e.Message + "'");
                 return;
             }
 
             while ((line = file.ReadLine()) != null) {
+                // ignore comment & blank lines
+                if (line.StartsWith("#") || line == "") continue;
 
-                if (line.StartsWith("#") || line == "") continue; // ignore comment & blank lines
-
+                // split identifier and value
                 string[] tokens = line.Split("=");
+
+                // each non-comment line *must* contain 2 tokens, identifier and value
+                if (tokens.Length != 2) {
+                    Log.Error("Parsing '" + line + "' failed. '" +
+                      (tokens.Length < 2 ?
+                      "Too few tokens in line." :
+                      "Too many tokens in line.") +
+                      " Skipping this line.");
+                    continue;
+                }
 
                 switch (tokens.First()) {
                     case "program_path":
                         programPath = tokens.Last().Replace(";", "");
                         Log.Info("   program_path: '" + programPath + "'.");
-                        break;
-                    case "mcf_path":
-                        mcfPath = tokens.Last().Replace(";", "");
-                        Log.Info("   mcf_path: '" + mcfPath + "'.");
-                        break;
-                    case "pdf_path":
-                        pdfPath = tokens.Last().Replace(";", "");
-                        Log.Info("   pdf_path: '" + pdfPath + "'.");
                         break;
                     case "to_page":
                         toPage = Convert.ToInt32(tokens.Last().Replace(";", ""));
@@ -68,14 +103,15 @@ namespace Cewe2pdf {
 
                     default:
                         if (tokens.First() == "") continue;
-                        Log.Warning("Unexpected token '" + tokens.First() + "' in config file.");
+                        Log.Warning("Unexpected token '" + tokens.First() + "' skipping...");
                         break;
                 }
             }
 
             file.Close();
 
-            Log.Info("Registered " + bgColors.Count + " additional background colors.");
+            if (bgColors.Count > 0)
+                Log.Info("Registered " + bgColors.Count + " additional background colors.");
         }
     }
 }
