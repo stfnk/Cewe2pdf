@@ -109,6 +109,9 @@ namespace Cewe2pdf {
 
             file.Close();
 
+            // check if program path is valid
+            if (!System.IO.Directory.Exists(programPath)) Log.Error("Directory at '" + programPath + "' does not exist."); // TODO: stop program? What is actually expected to happen?
+
             if (bgColors.Count > 0)
                 Log.Info("Registered " + bgColors.Count + " additional background colors.");
         }
