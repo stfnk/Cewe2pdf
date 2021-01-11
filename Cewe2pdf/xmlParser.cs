@@ -23,7 +23,7 @@ namespace Cewe2pdf {
         public string path;
         public Vector2 cutout;
         public float scale;
-        public virtual string toString() {
+        public override string toString() {
             return "[ImageArea] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2") + "; path: " + path;
         }
     };
@@ -47,7 +47,7 @@ namespace Cewe2pdf {
         public string color;
         public string font;
         public string align;
-        public virtual string toString() {
+        public override string toString() {
             return "[TextArea] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2") + "; font size: " + fontsize + "; text:\n\n" + text + "\n\n";
         }
     };
