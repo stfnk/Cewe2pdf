@@ -1,6 +1,4 @@
-﻿#define USE_LEGACY_BG_COLOR
-
-using iTextSharp.text;
+﻿using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Linq;
@@ -27,14 +25,18 @@ namespace Cewe2pdf {
             _doc.AddCreator("Cewe2Pdf");
             _doc.AddTitle("ConvertedCewePhotobook");
 
+            // TODO: move font loading to Config class?
             // necessary for loading .ttf it seams
             System.Text.Encoding.RegisterProvider(System.Text.CodePagesEncodingProvider.Instance);
 
-            // TODO probably should add Cewe/Resources/fonts folder here as well,
-            // but currently doesn't require Cewe installation location for anything else
-            const string fontPath = "C:\\Windows\\Fonts"; // TODO also, windows only obviously
+            const string fontPath = "C:\\Windows\\Fonts"; // FIXME: windows only obviously
             Log.Info("Loading fonts from " + fontPath);
             FontFactory.RegisterDirectory(fontPath);
+
+            string cwfontPath = Config.programPath + "\\Resources\\photofun\\fonts";
+            Log.Info("Loading fonts from " + cwfontPath);
+            FontFactory.RegisterDirectory(cwfontPath);
+
             Log.Info("Found " + FontFactory.RegisteredFonts.Count + " fonts.");
 
             // start writing
@@ -54,7 +56,7 @@ namespace Cewe2pdf {
             // this currently only supports single color backgrounds, see utils/cewe2data.py & DesignIdData.cs for current implementation
             // this should be updated to use background images from cewe installation folder directly, but
             // Cewe backgrounds are .webp files which iTextSharp does not support... silly (and faster) workaround for now.
-            PdfContentByte canvas = _writer.DirectContent;
+            
 
 #if USE_LEGACY_BG_COLOR
             // background color can differ between left and right page, so handle them accordingly.
@@ -91,6 +93,8 @@ namespace Cewe2pdf {
             // draw left part of background
             if (pPage.backgroundLeft != null) {
 
+                PdfContentByte canvas = _writer.DirectContent;
+
                 canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
                 canvas.SetColorFill(BaseColor.CYAN);
                 canvas.Fill();
@@ -99,42 +103,101 @@ namespace Cewe2pdf {
                 System.Drawing.Bitmap bmp = DesignIdConverter.getBitmapFromID(id);
                 if (bmp == null)
                 {
-                    Log.Error("Background image for id '" + id + "' failed to load.");
+                    Log.Error("Background image for id '" + id + "' was null.");
                     canvas.SetColorFill(BaseColor.MAGENTA);
                     canvas.Fill();
                 }
                 else
                 {
-                    // convert bitmap to Image to iText image...
-                    System.Drawing.Image sysimg = (System.Drawing.Image)bmp;
-                    Image img = Image.GetInstance(sysimg, sysimg.RawFormat);
-                    _writer.DirectContent.AddImage(img);
+                    Image img = sysImageToITextImage(bmp);
+
+                    float facY = pPage.bundleSize.Y / img.PlainHeight;
+                    float facX = pPage.bundleSize.X / img.PlainWidth;
+                    float fac = Math.Max(facX, facY);
+
+                    img.ScalePercent(fac * 100f);
+
+                    float yoffset = (img.ScaledHeight - pPage.bundleSize.Y) * -0.5f;
+                    float xoffset = (img.ScaledWidth - pPage.bundleSize.X) * -0.5f;
+
+                    img.SetAbsolutePosition(xoffset, yoffset);
+
+                    Image imgCropped = cropImage(img, _writer, 0, 0, -xoffset + pPage.bundleSize.X / 2, img.ScaledHeight);
+
+                    imgCropped.SetAbsolutePosition(xoffset, yoffset);
+                    _writer.DirectContent.AddImage(imgCropped);
+                }
+            }
+
+            // draw right background
+            if (pPage.backgroundRight != null) {
+
+                PdfContentByte canvas = _writer.DirectContent;
+
+                canvas.Rectangle(pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
+                canvas.SetColorFill(BaseColor.CYAN);
+                canvas.Fill();
+
+                string id = pPage.backgroundRight;
+                System.Drawing.Bitmap bmp = DesignIdConverter.getBitmapFromID(id);
+                if (bmp == null) {
+                    Log.Error("Background image for id '" + id + "' was null.");
+                    canvas.SetColorFill(BaseColor.MAGENTA);
+                    canvas.Fill();
+                } else {
+                    Image img = sysImageToITextImage(bmp);
+
+                    float facY = pPage.bundleSize.Y / img.PlainHeight;
+                    float facX = pPage.bundleSize.X / img.PlainWidth;
+                    float fac = Math.Max(facX, facY);
+
+                    img.ScalePercent(fac * 100f);
+
+                    float yoffset = (img.ScaledHeight - pPage.bundleSize.Y) * -0.5f;
+                    float xoffset = (img.ScaledWidth - pPage.bundleSize.X) * -0.5f;
+
+                    img.SetAbsolutePosition(xoffset, yoffset);
+
+                    Image imgCropped = cropImage(img, _writer, pPage.bundleSize.X / 2f, 0, img.ScaledWidth, img.ScaledHeight);
+
+                    imgCropped.SetAbsolutePosition(xoffset + pPage.bundleSize.X / 2, yoffset);
+                    _writer.DirectContent.AddImage(imgCropped);
                 }
             }
 
             // draw right part of background
-            if (pPage.backgroundRight != null) {
+            //if (pPage.backgroundRight != null) {
 
-                canvas.Rectangle(0 + pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
-                canvas.SetColorFill(BaseColor.CYAN);
-                canvas.Fill();
+            //    canvas.Rectangle(0 + pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
+            //    canvas.SetColorFill(BaseColor.CYAN);
+            //    canvas.Fill();
 
-                string idr = pPage.backgroundRight;
-                System.Drawing.Bitmap bmpr = DesignIdConverter.getBitmapFromID(idr);
-                if (bmpr == null)
-                {
-                    Log.Error("Background image for id '" + idr + "' failed to load.");
-                    canvas.SetColorFill(BaseColor.MAGENTA);
-                    canvas.Fill();
-                }
-                else
-                {
-                    // convert bitmap to Image to iText image...
-                    System.Drawing.Image sysimg = (System.Drawing.Image)bmpr;
-                    Image img = Image.GetInstance(sysimg, sysimg.RawFormat);
-                    _writer.DirectContent.AddImage(img);
-                }
-            }
+            //    string idr = pPage.backgroundRight;
+            //    System.Drawing.Bitmap bmpr = DesignIdConverter.getBitmapFromID(idr);
+            //    if (bmpr == null) {
+            //        Log.Error("Background image for id '" + idr + "' failed to load.");
+            //        canvas.SetColorFill(BaseColor.MAGENTA);
+            //        canvas.Fill();
+            //    } else {
+            //        // convert bitmap to Image to iText image...
+            //        System.Drawing.Image sysimg = (System.Drawing.Image)bmpr;
+            //        sysimg.Save("temp.jpg");
+            //        Image img = Image.GetInstance("temp.jpg");
+
+            //        float facY = pPage.bundleSize.Y / img.PlainHeight;
+            //        float facX = pPage.bundleSize.X / img.PlainWidth;
+            //        float fac = Math.Max(facX, facY);
+
+            //        img.ScalePercent(fac * 100f);
+
+            //        float yoffset = (img.ScaledHeight - pPage.bundleSize.Y) * -0.5f;
+            //        float xoffset = (img.ScaledWidth - pPage.bundleSize.X) * -0.5f;
+
+            //        img.SetAbsolutePosition(xoffset, yoffset);
+
+            //        _writer.DirectContent.AddImage(img);
+            //    }
+            //}
 #endif
             // draw all content areas stored in this page
             // currently only supports <imagearea> and <textarea> from .mcf
@@ -394,6 +457,12 @@ namespace Cewe2pdf {
             int argb = Int32.Parse(color.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
             System.Drawing.Color clr = System.Drawing.Color.FromArgb(argb);
             return new BaseColor(clr);
+        }
+
+        private static iTextSharp.text.Image sysImageToITextImage(System.Drawing.Image pImg) {
+            // TODO: FIXME: avoid writing jpg to disk. Silly workaround for now.
+            pImg.Save("temp.jpg");
+            return Image.GetInstance("temp.jpg");
         }
     }
 }

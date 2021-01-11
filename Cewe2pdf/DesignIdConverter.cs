@@ -24,7 +24,7 @@ namespace Cewe2pdf {
             string path = Config.programPath + "\\Resources\\ls-R";
 
             // check if path is valid
-            if (!System.IO.Directory.Exists(path)) {
+            if (!System.IO.File.Exists(path)) {
               Log.Error("Directory at '" + path + "' does not exist. No DesignIDs loaded.");
               return;
             }
@@ -45,7 +45,8 @@ namespace Cewe2pdf {
             while ((line = file.ReadLine()) != null) {
                 // TODO: for now only looks for backgrounds.
                 if (line.StartsWith("photofun/backgrounds")) {
-                    string id = line.Split("/").Last();
+                    string id = line.Split("/").Last().Split(".").First();
+                    //Log.Info("Register ID: " + id + " at: " + line);
                     _idPaths.TryAdd(id, line);
                 }
             }
@@ -98,13 +99,30 @@ namespace Cewe2pdf {
 
             path = Config.programPath + "//Resources//" + path;
 
-            Log.Info("Loading DesignID from path: " + path);
+            if (!System.IO.File.Exists(path)) {
+                Log.Error("DesignID file at: '" + path + "' does not exist.");
+                return null;
+            } else {
+                Log.Info("Loading DesignID from path: " + path);
+            }
 
             if (path.EndsWith(".webp")) {
                 // load webp
-                path = path.Replace(".webp", "");
-                WebPWrapper.WebP webP = new WebPWrapper.WebP();
-                return webP.Load(path);
+                try {
+                    WebPWrapper.WebP webP = new WebPWrapper.WebP();
+                    return webP.Load(path);
+                } catch (Exception e) {
+                    Log.Error("Loading '" + path + "' failed with error: '" + e.Message + "'.");
+                    return null;
+                }
+            } else if (path.EndsWith(".bmp")) {
+                // load bmp
+                try {
+                    return (Bitmap)System.Drawing.Image.FromFile(path);
+                } catch (Exception e) {
+                    Log.Error("Loading '" + path + "' failed with error: '" + e.Message + "'.");
+                    return null;
+                }
             } else {
                 // TODO: load other formats
                 Log.Error("Unsupported DesignID format: " + path);
