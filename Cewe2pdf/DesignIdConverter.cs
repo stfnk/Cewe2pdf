@@ -67,6 +67,10 @@ namespace Cewe2pdf {
 
             // load color from .webp file
             Bitmap bmp = getBitmapFromID(pId);
+            if (bmp == null) {
+                Log.Error("Loaded Image for id: '" + pId + "' is null.");
+                return BaseColor.MAGENTA;
+            }
             ret = new BaseColor(bmp.GetPixel(0, 0)); // assume every pixel holds the color...
 
             // cache for fast reuse

@@ -8,7 +8,11 @@ namespace Cewe2pdf {
     class Config {
 
         // defaults
-        private const string DEFAULT_PROGRAM_PATH = "C://Program Files//CEWE//"; // TODO: make this compatible with other OS
+        private const string[] DEFAULT_PROGRAM_PATHS = new string[] {
+            // TODO: make this compatible with other OS
+            "C://Program Files//CEWE//",
+            "C://Program Files (x86)//CEWE//"
+        };
         private const int DEFAULT_TO_PAGE = 0;
         private const float DEFAULT_IMG_SCALE = 1.0f;
 
@@ -28,7 +32,13 @@ namespace Cewe2pdf {
 
         // sets config to default constants
         private static void setToDefaults() {
-            programPath = DEFAULT_PROGRAM_PATH;
+            // check all default locations
+            foreach(string path in DEFAULT_PROGRAM_PATHS) {
+                if (System.IO.Directory.Exists(path)) {
+                    programPath = path;
+                    break;
+                }
+            }
             toPage = DEFAULT_TO_PAGE;
             imgScale = DEFAULT_IMG_SCALE;
         }
@@ -108,9 +118,6 @@ namespace Cewe2pdf {
             }
 
             file.Close();
-
-            // check if program path is valid
-            if (!System.IO.Directory.Exists(programPath)) Log.Error("Directory at '" + programPath + "' does not exist."); // TODO: stop program? What is actually expected to happen?
 
             if (bgColors.Count > 0)
                 Log.Info("Registered " + bgColors.Count + " additional background colors.");

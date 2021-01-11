@@ -1,4 +1,6 @@
-﻿using iTextSharp.text;
+﻿#define USE_LEGACY_BG_COLOR
+
+using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Linq;
@@ -59,8 +61,8 @@ namespace Cewe2pdf {
             // draw left backrgound
             canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
             try {
-                string id = pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight;
-                canvas.SetColorFill(DesignIdConverter.getBaseColorFromID(id));
+                string idl = pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight;
+                canvas.SetColorFill(DesignIdConverter.getBaseColorFromID(idl));
                 //canvas.SetColorFill(DesignIdDatabase.backgroundColors[pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight]);
             } catch (Exception e) {
                 // in case a background designID is not found in DesignIdData.cs, print information to console
@@ -75,8 +77,8 @@ namespace Cewe2pdf {
             // draw right background
             canvas.Rectangle(0 + pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
             try {
-                string id = pPage.backgroundRight != null ? pPage.backgroundRight : pPage.backgroundLeft;
-                canvas.SetColorFill(DesignIdConverter.getBaseColorFromID(id));
+                string idr = pPage.backgroundRight != null ? pPage.backgroundRight : pPage.backgroundLeft;
+                canvas.SetColorFill(DesignIdConverter.getBaseColorFromID(idr));
                 //canvas.SetColorFill(DesignIdDatabase.backgroundColors[(pPage.backgroundRight != null ? pPage.backgroundRight : pPage.backgroundLeft)]);
             } catch (Exception e) {
                 // in case a background designID is not found in DesignIdData.cs, print information to console
