@@ -132,7 +132,15 @@ namespace Cewe2pdf {
             // currently only supports <imagearea> and <textarea> from .mcf
             foreach (Area area in pPage.areas) {
 
-                if (area is ImageArea) {
+                if (area is ImageArea || area is ImageBackgroundArea) {
+                    // TODO: This is somewhat hacky - there is probably a better way to do this.
+                    if (area is ImageBackgroundArea) {
+                        ImageBackgroundArea bgArea = (ImageBackgroundArea)area;
+
+                        if (bgArea.type == ImageBackgroundArea.ImageBackgroundType.Right)
+                            bgArea.rect.X += pPage.bundleSize.X / 2;
+                    }
+
                     ImageArea imgArea = (ImageArea)area;
 
                     // if image path was not valid draw magenta outline and print error

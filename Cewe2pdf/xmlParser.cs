@@ -28,6 +28,14 @@ namespace Cewe2pdf {
         }
     };
 
+    class ImageBackgroundArea : ImageArea {
+        public enum ImageBackgroundType { Undefined, Left, Right }
+        public ImageBackgroundType type;
+        public override string toString() {
+            return "[ImageBackgroundArea] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2") + "; path: " + path;
+        }
+    };
+
     public class TextElement {
             public string text = "";
             public bool bold = false;
@@ -202,7 +210,8 @@ namespace Cewe2pdf {
 
                             switch (type) {
 
-                                case "imagearea":
+                                case "imagearea": 
+                                {
                                     // imagearea? image subnode exists!
                                     XmlNode image = node.SelectSingleNode("image");
 
@@ -237,6 +246,48 @@ namespace Cewe2pdf {
                                     }
 
                                     break;
+                                }
+
+                                case "imagebackgroundarea": {
+                                        // handle backgroundimages literally just like normal images.
+                                        
+                                        XmlNode imgbg = node.SelectSingleNode("imagebackground");
+
+                                        // the image file
+                                        string filename = getAttributeStr(imgbg, "filename");
+
+                                        // construct path to the Images folder next to .mcf file
+                                        string path = _filePath.Substring(0, _filePath.Length - 4) + "_mcf-Dateien\\";
+                                        
+                                        // replace 'safecontainer:/' with actual path, in case filename does not exist,
+                                        // store "NULL", will render as magenta outline and print error.
+                                        string filePath = filename != "" ? filename.Replace("safecontainer:/", path) : "NULL";
+
+                                        // get & store cutout information
+                                        XmlNode cutout = imgbg.SelectSingleNode("cutout");
+                                        Vector2 cutoutLeftTop = new Vector2(getAttributeF(cutout, "left"), getAttributeF(cutout, "top"));
+                                        float scale = getAttributeF(cutout, "scale", 1.0f);
+
+                                        string bgPosition = getAttributeStr(imgbg, "backgroundPosition");
+                                        ImageBackgroundArea.ImageBackgroundType bgtype = ImageBackgroundArea.ImageBackgroundType.Undefined;
+
+                                        if (bgPosition == "LEFT_OR_TOP")
+                                            bgtype = ImageBackgroundArea.ImageBackgroundType.Left;
+                                        else if (bgPosition == "RIGHT_OR_BOTTOM")
+                                            bgtype = ImageBackgroundArea.ImageBackgroundType.Right;
+                                        else
+                                            Log.Warning("Unhandled background image position: " + bgPosition);
+
+                                        // construct new area
+                                        newArea = new ImageBackgroundArea() {
+                                            path = filePath,
+                                            cutout = cutoutLeftTop,
+                                            scale = scale,
+                                            type = bgtype
+                                        }; 
+                                        
+                                        break;
+                                    }
 
                                 case "textarea": {
                                         // in <textarea> these exist:
