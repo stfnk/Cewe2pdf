@@ -10,8 +10,10 @@ namespace Cewe2pdf {
         // defaults
         private static readonly string[] DEFAULT_PROGRAM_PATHS = new string[] {
             // TODO: make this compatible with other OS
+            "C://Program Files//CEWE//CEWE Fotowelt//",
+            "C://Program Files (x86)//CEWE//CEWE Fotowelt//",
             "C://Program Files//CEWE//",
-            "C://Program Files (x86)//CEWE//"
+            "C://Program Files (x86)//CEWE//",
         };
         private const int DEFAULT_TO_PAGE = 0;
         private const float DEFAULT_IMG_SCALE = 1.0f;
@@ -88,8 +90,11 @@ namespace Cewe2pdf {
 
                 switch (tokens.First()) {
                     case "program_path":
-                        programPath = tokens.Last().Replace(";", "");
-                        Log.Info("   program_path: '" + programPath + "'.");
+                        string wantedProgramPath = tokens.Last().Replace(";", "");
+                        // is this a valid path?
+                        if (!System.IO.Directory.Exists(wantedProgramPath)) Log.Error("program_path (" + wantedProgramPath + ") loaded from file is invalid.");
+                        else programPath = wantedProgramPath;
+                        Log.Info("   program_path: '" + programPath + "'");
                         break;
                     case "to_page":
                         toPage = Convert.ToInt32(tokens.Last().Replace(";", ""));

@@ -13,15 +13,15 @@ namespace Cewe2pdf
                 if (args[i] == "-h" || args[i] == "--help")
                 {
                     Console.WriteLine(
-                      "Cewe2pdf usage:"
+                      "\n  Cewe2pdf usage:\n"
                       + "\n\t    argument | description\n"
-                      + "\n\t      --help | lists all arguments."
-                      + "\n\t          -h | same as --help."
                       + "\n\t    'in.mcf' | input file to convert (required)"
                       + "\n\t   'out.pdf' | output file to generate (optional)"
                       + "\n\t  -to-page 0 | convert only up to this page nr, 0 converts all."
                       + "\n\t-quality 1.0 | pixel size of images. Use lower value for higher resolution images in .pdf." // TODO: true?
+                      + "\n\t-h || --help | lists all arguments."
                     );
+                    break;
                 }
                 else if (args[i].EndsWith(".mcf")) Program.mcfPath = args[i];
                 else if (args[i].EndsWith(".pdf")) Program.pdfPath = args[i];

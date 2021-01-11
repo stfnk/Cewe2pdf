@@ -52,43 +52,6 @@ namespace Cewe2pdf {
             if (!_doc.IsOpen()) _doc.Open();
             else _doc.NewPage();
 
-            // fill background
-            // this currently only supports single color backgrounds, see utils/cewe2data.py & DesignIdData.cs for current implementation
-            // this should be updated to use background images from cewe installation folder directly, but
-            // Cewe backgrounds are .webp files which iTextSharp does not support... silly (and faster) workaround for now.
-            
-
-#if USE_LEGACY_BG_COLOR
-            // background color can differ between left and right page, so handle them accordingly.
-            // draw left backrgound
-            canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
-            try {
-                string idl = pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight;
-                canvas.SetColorFill(DesignIdConverter.getBaseColorFromID(idl));
-                //canvas.SetColorFill(DesignIdDatabase.backgroundColors[pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight]);
-            } catch (Exception e) {
-                // in case a background designID is not found in DesignIdData.cs, print information to console
-                canvas.SetColorFill(BaseColor.MAGENTA);
-                Log.Error("Missing background DesignID: <" + pPage.backgroundLeft + "> Please report this as an issue.");
-            }
-            canvas.Fill();
-
-            string id = pPage.backgroundLeft != null ? pPage.backgroundLeft : pPage.backgroundRight;
-
-            // TODO de-duplicate this code...
-            // draw right background
-            canvas.Rectangle(0 + pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
-            try {
-                string idr = pPage.backgroundRight != null ? pPage.backgroundRight : pPage.backgroundLeft;
-                canvas.SetColorFill(DesignIdConverter.getBaseColorFromID(idr));
-                //canvas.SetColorFill(DesignIdDatabase.backgroundColors[(pPage.backgroundRight != null ? pPage.backgroundRight : pPage.backgroundLeft)]);
-            } catch (Exception e) {
-                // in case a background designID is not found in DesignIdData.cs, print information to console
-                canvas.SetColorFill(BaseColor.MAGENTA);
-                Log.Error("Missing background DesignID: <" + pPage.backgroundLeft + "> Please report this as an issue.");
-            }
-            canvas.Fill();
-#else
             // TOOD: de-duplicate
             // draw left part of background
             if (pPage.backgroundLeft != null) {
@@ -165,40 +128,6 @@ namespace Cewe2pdf {
                 }
             }
 
-            // draw right part of background
-            //if (pPage.backgroundRight != null) {
-
-            //    canvas.Rectangle(0 + pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
-            //    canvas.SetColorFill(BaseColor.CYAN);
-            //    canvas.Fill();
-
-            //    string idr = pPage.backgroundRight;
-            //    System.Drawing.Bitmap bmpr = DesignIdConverter.getBitmapFromID(idr);
-            //    if (bmpr == null) {
-            //        Log.Error("Background image for id '" + idr + "' failed to load.");
-            //        canvas.SetColorFill(BaseColor.MAGENTA);
-            //        canvas.Fill();
-            //    } else {
-            //        // convert bitmap to Image to iText image...
-            //        System.Drawing.Image sysimg = (System.Drawing.Image)bmpr;
-            //        sysimg.Save("temp.jpg");
-            //        Image img = Image.GetInstance("temp.jpg");
-
-            //        float facY = pPage.bundleSize.Y / img.PlainHeight;
-            //        float facX = pPage.bundleSize.X / img.PlainWidth;
-            //        float fac = Math.Max(facX, facY);
-
-            //        img.ScalePercent(fac * 100f);
-
-            //        float yoffset = (img.ScaledHeight - pPage.bundleSize.Y) * -0.5f;
-            //        float xoffset = (img.ScaledWidth - pPage.bundleSize.X) * -0.5f;
-
-            //        img.SetAbsolutePosition(xoffset, yoffset);
-
-            //        _writer.DirectContent.AddImage(img);
-            //    }
-            //}
-#endif
             // draw all content areas stored in this page
             // currently only supports <imagearea> and <textarea> from .mcf
             foreach (Area area in pPage.areas) {

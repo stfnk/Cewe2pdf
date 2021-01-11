@@ -13,7 +13,8 @@ namespace Cewe2pdf {
             Log.level = Log.Level.Info;
             Log.Info("Running Debug configuration");
 #else
-            Log.level = Log.Level.Message;
+            Log.level = Log.Level.Info;
+            Log.Info("Running Release configuration");
 #endif
 
             // initializes config with either defaults or from config file
@@ -33,6 +34,12 @@ namespace Cewe2pdf {
 
             // allow only input file as argument
             if (pdfPath == "") pdfPath = mcfPath.Replace(".mcf", ".pdf");
+
+            Log.Info("Config used:"
+                + "\n\t\t installation dir: " + Config.programPath
+                + "\n\t\t to page: " + Config.toPage
+                + "\n\t\t quality: " + Config.imgScale
+                );
 
             // for user information only
             System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();

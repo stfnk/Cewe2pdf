@@ -92,7 +92,7 @@ namespace Cewe2pdf {
             string path = "";
             _idPaths.TryGetValue(pId, out path);
 
-            if (path == "") {
+            if (String.IsNullOrWhiteSpace(path)) {
                 Log.Error("Design ID '" + pId + "' not found.");
                 return null;
             }
