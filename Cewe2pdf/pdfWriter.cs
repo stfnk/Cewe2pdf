@@ -169,8 +169,12 @@ namespace Cewe2pdf {
                     System.Drawing.Image sysImg;
                     try {
                         sysImg = System.Drawing.Image.FromFile(imgArea.path);
-                    } catch (System.IO.FileNotFoundException e) {
-                        Log.Error("Loading image failed. Image at '" + imgArea.path + "' not found.");
+                    } catch (System.Exception e) {
+                        if (e is System.IO.FileNotFoundException)
+                            Log.Error("Loading image failed. Image at '" + imgArea.path + "' not found.");
+                        else {
+                            Log.Error("Loading image failed wit error: '" + e.Message + "'");
+                        }
                         continue;
                     }
 
