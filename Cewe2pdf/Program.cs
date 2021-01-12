@@ -3,7 +3,7 @@
 namespace Cewe2pdf {
 
     class Program {
-
+        public static readonly string version = "v0.3.0-alpha";
         public static string mcfPath = "";
         public static string pdfPath = "";
 
@@ -11,10 +11,10 @@ namespace Cewe2pdf {
 
 #if DEBUG || _DEBUG
             Log.level = Log.Level.Info;
-            Log.Info("Running Debug configuration");
+            Log.Message("Cewe2pdf " + version + " [Debug]");
 #else
             Log.level = Log.Level.Info;
-            Log.Info("Running Release configuration");
+            Log.Message("Cewe2pdf " + version + " [Release]");
 #endif
 
             // initializes config with either defaults or from config file
