@@ -115,8 +115,8 @@ namespace Cewe2pdf {
                     Log.Error("Loading '" + path + "' failed with error: '" + e.Message + "'.");
                     return null;
                 }
-            } else if (path.EndsWith(".bmp")) {
-                // load bmp
+            } else if (path.EndsWith(".bmp") || path.EndsWith(".jpg") || path.EndsWith(".png") || path.EndsWith(".JPG")) {
+                // load image
                 try {
                     return (Bitmap)System.Drawing.Image.FromFile(path);
                 } catch (Exception e) {
