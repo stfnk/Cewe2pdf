@@ -276,7 +276,7 @@ namespace Cewe2pdf {
                                         else if (bgPosition == "RIGHT_OR_BOTTOM")
                                             bgtype = ImageBackgroundArea.ImageBackgroundType.Right;
                                         else
-                                            Log.Warning("Unhandled background image position: " + bgPosition);
+                                            Log.Error("Unhandled background image position: " + bgPosition);
 
                                         // construct new area
                                         newArea = new ImageBackgroundArea() {

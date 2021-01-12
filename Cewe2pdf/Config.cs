@@ -13,7 +13,7 @@ namespace Cewe2pdf {
             "C://Program Files//CEWE//CEWE Fotowelt//",
             "C://Program Files (x86)//CEWE//CEWE Fotowelt//",
             "C://Program Files//CEWE//",
-            "C://Program Files (x86)//CEWE//",
+            "C://Program Files (x86)//CEWE//"
         };
         private const int DEFAULT_TO_PAGE = 0;
         private const float DEFAULT_IMG_SCALE = 1.0f;
@@ -92,7 +92,7 @@ namespace Cewe2pdf {
                     case "program_path":
                         string wantedProgramPath = tokens.Last().Replace(";", "");
                         // is this a valid path?
-                        if (!System.IO.Directory.Exists(wantedProgramPath)) Log.Error("program_path (" + wantedProgramPath + ") loaded from file is invalid.");
+                        if (!System.IO.Directory.Exists(wantedProgramPath)) Log.Warning("program_path (" + wantedProgramPath + ") loaded from file is invalid.");
                         else programPath = wantedProgramPath;
                         Log.Info("   program_path: '" + programPath + "'");
                         break;
