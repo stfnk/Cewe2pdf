@@ -73,7 +73,7 @@ namespace Cewe2pdf {
 
             while ((line = file.ReadLine()) != null) {
                 // ignore comment & blank lines
-                if (line.StartsWith("#") || line == "") continue;
+                if (line.StartsWith("#") || String.IsNullOrWhiteSpace(line)) continue;
 
                 // split identifier and value
                 string[] tokens = line.Split("=");
@@ -116,7 +116,7 @@ namespace Cewe2pdf {
                         break;
 
                     default:
-                        if (tokens.First() == "") continue;
+                        if (String.IsNullOrWhiteSpace(tokens.First())) continue;
                         Log.Warning("Unexpected token '" + tokens.First() + "' skipping...");
                         break;
                 }

@@ -239,7 +239,7 @@ namespace Cewe2pdf {
                     TextArea textArea = (TextArea)area;
 
                     // just in case something went wrong
-                    if (textArea.text == "") {
+                    if (String.IsNullOrWhiteSpace(textArea.text)) {
                         Log.Error("Text was empty.");
                         continue;
                     }
