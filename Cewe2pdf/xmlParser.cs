@@ -29,7 +29,7 @@ namespace Cewe2pdf {
     };
 
     class ImageBackgroundArea : ImageArea {
-        public enum ImageBackgroundType { Undefined, Left, Right }
+        public enum ImageBackgroundType { Undefined, Left, Right, Bundle }
         public ImageBackgroundType type;
         public override string toString() {
             return "[ImageBackgroundArea] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2") + "; path: " + path;
@@ -275,6 +275,8 @@ namespace Cewe2pdf {
                                             bgtype = ImageBackgroundArea.ImageBackgroundType.Left;
                                         else if (bgPosition == "RIGHT_OR_BOTTOM")
                                             bgtype = ImageBackgroundArea.ImageBackgroundType.Right;
+                                        else if (bgPosition == "BUNDLE")
+                                            bgtype = ImageBackgroundArea.ImageBackgroundType.Bundle;
                                         else
                                             Log.Error("Unhandled background image position: " + bgPosition);
 
