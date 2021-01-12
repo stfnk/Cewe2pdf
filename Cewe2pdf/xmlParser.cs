@@ -98,8 +98,7 @@ namespace Cewe2pdf {
         const float SCALE = 0.4f;       // overall scale applied to pdf... does not affect resolution of images!
 
         const float FONT = 3.26f;       // match to photobook font size
-
-        private string _filePath;       // .mcf file path, used to construct images file path
+        private string _safeContainerPath; // path to the image folder
         private XmlDocument _xmlDoc = new XmlDocument();
         private XmlNode _fotobook;      // the <fotobook> tag from .mcf file
         private XmlNode _stats;         // the <statistics> tag rfom .mcf file
@@ -117,8 +116,14 @@ namespace Cewe2pdf {
                 return;
             }
 
-            // store filepath
-            _filePath = pFilePath;
+            // remove .mcf from path, add folder suffix
+            _safeContainerPath = pFilePath.Substring(0, pFilePath.Length - 4) + "_mcf-Dateien\\";
+
+            // check if this path actually exists
+            if (!System.IO.Directory.Exists(_safeContainerPath)) {
+                Log.Error("Image folder not found. Expected at: '" + _safeContainerPath + "'"); // TODO: Log.Message some hints what to do?
+                return;
+            }
 
             // get the root xml node 'fotobook'
             _fotobook = _xmlDoc.SelectSingleNode("fotobook");
@@ -218,12 +223,9 @@ namespace Cewe2pdf {
                                     // the image file name stored in .mcf file (in format: "safecontainer:/imageName.jpg)
                                     string filename = getAttributeStr(image, "filename");
 
-                                    // construct path to the Images folder next to .mcf file
-                                    string path = _filePath.Substring(0, _filePath.Length - 4) + "_mcf-Dateien\\";
-
                                     // replace 'safecontainer:/' with actual path, in case filename does not exist,
                                     // store "NULL", will render as magenta outline and print error.
-                                    string filePath = filename != "" ? filename.Replace("safecontainer:/", path) : "NULL";
+                                    string filePath = filename != "" ? filename.Replace("safecontainer:/", _safeContainerPath) : "NULL";
 
                                     // get & store cutout information
                                     XmlNode cutout = image.SelectSingleNode("cutout");
@@ -250,18 +252,16 @@ namespace Cewe2pdf {
 
                                 case "imagebackgroundarea": {
                                         // handle backgroundimages literally just like normal images.
+                                        // TODO: de-duplicate this code as much as possible
                                         
                                         XmlNode imgbg = node.SelectSingleNode("imagebackground");
 
                                         // the image file
                                         string filename = getAttributeStr(imgbg, "filename");
-
-                                        // construct path to the Images folder next to .mcf file
-                                        string path = _filePath.Substring(0, _filePath.Length - 4) + "_mcf-Dateien\\";
                                         
                                         // replace 'safecontainer:/' with actual path, in case filename does not exist,
                                         // store "NULL", will render as magenta outline and print error.
-                                        string filePath = filename != "" ? filename.Replace("safecontainer:/", path) : "NULL";
+                                        string filePath = filename != "" ? filename.Replace("safecontainer:/", _safeContainerPath) : "NULL";
 
                                         // get & store cutout information
                                         XmlNode cutout = imgbg.SelectSingleNode("cutout");
