@@ -215,7 +215,7 @@ namespace Cewe2pdf {
 
                             switch (type) {
 
-                                case "imagearea": 
+                                case "imagearea":
                                 {
                                     // imagearea? image subnode exists!
                                     XmlNode image = node.SelectSingleNode("image");
@@ -253,12 +253,12 @@ namespace Cewe2pdf {
                                 case "imagebackgroundarea": {
                                         // handle backgroundimages literally just like normal images.
                                         // TODO: de-duplicate this code as much as possible
-                                        
+
                                         XmlNode imgbg = node.SelectSingleNode("imagebackground");
 
                                         // the image file
                                         string filename = getAttributeStr(imgbg, "filename");
-                                        
+
                                         // replace 'safecontainer:/' with actual path, in case filename does not exist,
                                         // store "NULL", will render as magenta outline and print error.
                                         string filePath = filename != "" ? filename.Replace("safecontainer:/", _safeContainerPath) : "NULL";
@@ -284,8 +284,8 @@ namespace Cewe2pdf {
                                             cutout = cutoutLeftTop,
                                             scale = scale,
                                             type = bgtype
-                                        }; 
-                                        
+                                        };
+
                                         break;
                                     }
 
@@ -464,7 +464,7 @@ namespace Cewe2pdf {
             string textDecoration = "";
 
             string bodyStyle = getAttributeStr(body, "style");
-            if (bodyStyle == null || bodyStyle == "") Log.Error("Body style for given html text was null.");
+            if (String.IsNullOrWhiteSpace(bodyStyle)) Log.Error("Body style for given html text was null.");
             else parseBodyStyle(bodyStyle, ref fontFamily, ref fontSize, ref fontWeight, ref fontStyle, ref color, ref textDecoration);
 
             // now loop through all <p> elements in <td> (new lines)
@@ -493,7 +493,7 @@ namespace Cewe2pdf {
                     //string colorSpan = color; // color is not specified per item, but repeats last settings.
                     string textDecorationSpan = textDecoration;
 
-                    if (style == null || style == "") Log.Warning("No style for span: '" + span.InnerText + "'.");
+                    if (String.IsNullOrWhiteSpace(style)) Log.Warning("No style for span: '" + span.InnerText + "'.");
                     else parseBodyStyle(style, ref fontFamilySpan, ref fontSizeSpan, ref fontWeightSpan, ref fontStyleSpan, ref color, ref textDecorationSpan);
 
                     i++; // increment to check for last span element
@@ -555,7 +555,7 @@ namespace Cewe2pdf {
             XmlNode attr = node.Attributes?.GetNamedItem(name);
             if (attr == null) return or; // return default if attribute does not exist
             string value = attr.Value;
-            if (value == "") return or; // return default if attribute was empty
+            if (String.IsNullOrWhiteSpace(value)) return or; // return default if attribute was empty
             // convert attribute string to float, including pdf scale
             return (float)Convert.ToDouble(value.Replace(".", ",")) * SCALE;
         }
