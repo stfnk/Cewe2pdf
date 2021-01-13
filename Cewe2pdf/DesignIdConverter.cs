@@ -47,6 +47,7 @@ namespace Cewe2pdf {
                 if (line.StartsWith("photofun/backgrounds")) {
                     string id = line.Split("/").Last().Split(".").First();
                     //Log.Info("Register ID: " + id + " at: " + line);
+                    id = id.Split("-").Last(); // some ids have names... keep only the id number...
                     _idPaths.TryAdd(id, line);
                 }
             }
