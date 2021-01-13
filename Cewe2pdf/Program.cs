@@ -13,7 +13,7 @@ namespace Cewe2pdf {
             Log.level = Log.Level.Info;
             Log.Message("Cewe2pdf " + version + " [Debug]");
 #else
-            Log.level = Log.Level.Info;
+            Log.level = Log.Level.Error;
             Log.Message("Cewe2pdf " + version + " [Release]");
 #endif
 

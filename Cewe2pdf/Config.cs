@@ -9,11 +9,13 @@ namespace Cewe2pdf {
 
         // defaults
         private static readonly string[] DEFAULT_PROGRAM_PATHS = new string[] {
-            // TODO: make this compatible with other OS
+            // TODO: make this compatible with other OSs
             "C://Program Files//CEWE//CEWE Fotowelt//",
             "C://Program Files (x86)//CEWE//CEWE Fotowelt//",
+            "C://Program Files//CEWE Fotowelt//",
+            "C://Program Files (x86)//CEWE Fotowelt//",
             "C://Program Files//CEWE//",
-            "C://Program Files (x86)//CEWE//"
+            "C://Program Files (x86)//CEWE//",
         };
         private const int DEFAULT_TO_PAGE = 0;
         private const float DEFAULT_IMG_SCALE = 1.0f;
