@@ -56,6 +56,8 @@ namespace Cewe2pdf {
             // draw left part of background
             if (pPage.backgroundLeft != null) {
 
+                //Log.Message("Writing left bg: " + pPage.backgroundLeft + " on pagetype: " + pPage.type.ToString());
+
                 PdfContentByte canvas = _writer.DirectContent;
 
                 canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
@@ -85,7 +87,9 @@ namespace Cewe2pdf {
 
                     img.SetAbsolutePosition(xoffset, yoffset);
 
-                    Image imgCropped = cropImage(img, _writer, 0, 0, -xoffset + pPage.bundleSize.X / 2, img.ScaledHeight);
+                    float width = -xoffset + ((pPage.type == Page.Type.Fullcover) ? pPage.bundleSize.X : pPage.bundleSize.X / 2f);
+
+                    Image imgCropped = cropImage(img, _writer, 0, 0, width, img.ScaledHeight);
 
                     imgCropped.SetAbsolutePosition(xoffset, yoffset);
                     _writer.DirectContent.AddImage(imgCropped);
@@ -94,6 +98,8 @@ namespace Cewe2pdf {
 
             // draw right background
             if (pPage.backgroundRight != null) {
+
+                //Log.Message("Writing right bg: " + pPage.backgroundRight + " on pagetype: " + pPage.type.ToString());
 
                 PdfContentByte canvas = _writer.DirectContent;
 
