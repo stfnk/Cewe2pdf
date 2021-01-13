@@ -547,7 +547,8 @@ namespace Cewe2pdf {
                     textDecoration = curr.Replace("text-decoration:", "").TrimStart();
                 }
                 else {
-                    Log.Warning("Unhandled html/body/style property: '" + curr + "'.");
+                    if (!String.IsNullOrWhiteSpace(curr))
+                        Log.Warning("Unhandled html/body/style property: '" + curr + "'.");
                 }
             }
         }
