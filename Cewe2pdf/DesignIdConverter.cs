@@ -52,6 +52,24 @@ namespace Cewe2pdf {
                 }
             }
 
+            // also search this folder for background images...
+            const string dlpath = "C:\\ProgramData\\hps\\6822\\addons";
+            if (System.IO.Directory.Exists(dlpath)) {
+                string[] filenames = System.IO.Directory.GetFiles(dlpath, "*", System.IO.SearchOption.AllDirectories);
+                Log.Info("Loading DesignIDs from '" + dlpath + "'.");
+                foreach (string addfile in filenames) {
+                    if (addfile.EndsWith(".jpg") || addfile.EndsWith(".bmp") || addfile.EndsWith(".webp")) {
+                        Log.Info("\t found '" + addfile + "'");
+                        string id = addfile.Split("/").Last().Split(".").First();
+                        //Log.Info("Register ID: " + id + " at: " + line);
+                        id = id.Split("-").Last(); // some ids have names... keep only the id number...
+                        _idPaths.TryAdd(id, addfile);
+                    }
+                }
+            } else {
+                Log.Warning("Directory at: '" + dlpath + "' does not exist. No additional backgrounds loaded.");
+            }
+
             file.Close();
             Log.Info("Loaded " + _idPaths.Count + " backgrounds.");
         }

@@ -3,7 +3,7 @@
 namespace Cewe2pdf {
 
     class Program {
-        public static readonly string version = "v0.3.0-alpha2";
+        public static readonly string version = "v0.3.0-alpha4";
         public static string mcfPath = "";
         public static string pdfPath = "";
 
