@@ -135,8 +135,7 @@ namespace Cewe2pdf {
                 }
             }
 
-            // draw all content areas stored in this page
-            // currently only supports <imagearea> and <textarea> from .mcf
+            // draw all supported content areas stored in this page
             foreach (Area area in pPage.areas) {
 
                 // calculate rect dimensions // TODO: de-duplicate?
@@ -269,7 +268,7 @@ namespace Cewe2pdf {
                         Log.Error("Text was empty.");
                         continue;
                     } else {
-                        Log.Info("Rendering Text."); // TODO: add debug info
+                        Log.Info("Rendering Text: font=" + textArea.font + "; size=" + textArea.fontsize);
                     }
 
                     // iTextSharp textbox

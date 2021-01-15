@@ -429,7 +429,7 @@ namespace Cewe2pdf {
             foreach (XmlNode p in node.ChildNodes) {
                 XmlNode span = p.SelectSingleNode("span");
                 res += span?.InnerText + "\n"; // if span exists... add text + newline
-                styleInfo = getAttributeStr(span, "style"); // TODO add proper text support including underlines & color...
+                styleInfo = getAttributeStr(span, "style");
             }
 
             if (color != null && styleInfo.Contains("color:")) {

@@ -18,7 +18,7 @@ namespace Cewe2pdf
                       + "\n\t    'in.mcf' | input file to convert (required)"
                       + "\n\t   'out.pdf' | output file to generate (optional)"
                       + "\n\t  -to-page 0 | convert only up to this page nr, 0 converts all."
-                      + "\n\t-quality 1.0 | pixel size of images. Use lower value for higher resolution images in .pdf." // TODO: true?
+                      + "\n\t-quality 1.0 | pixel size of images. Use lower value for higher resolution images in .pdf."
                       + "\n\t-h || --help | lists all arguments."
                     );
                     break;
@@ -33,7 +33,7 @@ namespace Cewe2pdf
                 else if (args[i] == "-quality")
                 {
                     i++;
-                    if (i < args.Length) Config.imgScale = Math.Clamp(float.Parse(args[i], System.Globalization.CultureInfo.InvariantCulture), 0.0f, 1.0f); // TODO: true?
+                    if (i < args.Length) Config.imgScale = Math.Clamp(float.Parse(args[i], System.Globalization.CultureInfo.InvariantCulture), 0.0f, 100.0f);
                 }
                 else
                 {

@@ -10,13 +10,11 @@ namespace Cewe2pdf {
         private static Dictionary<string, string> _idPaths;
 
         public static void initDesignIdDatabase() {
-            if (_idPaths == null) {
-                _idPaths = new Dictionary<string, string>();
-                Log.Info("Initializing DesignIdConverter");
-            } else {
-                Log.Warning("DesignIdConverter already initialized.");
-                return;
-            }
+
+            System.Diagnostics.Debug.Assert(_idPaths == null);
+
+            Log.Info("Initializing DesignIdConverter");
+            _idPaths = new Dictionary<string, string>();
 
             string path = Config.programPath + "\\Resources\\ls-R";
 
@@ -112,7 +110,6 @@ namespace Cewe2pdf {
                     return null;
                 }
             } else {
-                // TODO: load other formats
                 Log.Error("Unsupported DesignID format: " + path);
                 return null;
             }

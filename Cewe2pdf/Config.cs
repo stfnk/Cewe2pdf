@@ -63,8 +63,7 @@ namespace Cewe2pdf {
 
             // check if file exists, otherwise abort reading & keep defaults
             if (!System.IO.File.Exists(CONFIG_PATH)) {
-                Log.Warning("'" + CONFIG_PATH + "' file not found, using defaults.");
-                // TODO: write default file for convinience?
+                Log.Warning("No '" + CONFIG_PATH + "' file found, using defaults.");
                 return;
             } else {
                 Log.Info("Reading config from '" + CONFIG_PATH + "'...");
