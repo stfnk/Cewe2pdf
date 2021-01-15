@@ -352,7 +352,7 @@ namespace Cewe2pdf {
                                 Y = getAttributeF(position, "top"),
                                 Width = getAttributeF(position, "width"),
                                 Height = getAttributeF(position, "height") };
-                            newArea.rotation = getAttributeF(position, "rotation");
+                            newArea.rotation = getAttributeF(position, "rotation") / SCALE; // undo scale for rotation
 
                             // store new page in list
                             page.areas.Add(newArea);
