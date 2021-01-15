@@ -85,6 +85,7 @@ namespace Cewe2pdf {
         public Vector2 bundleSize = Vector2.Zero;
         public string backgroundLeft;
         public string backgroundRight;
+        public float spineSize; // only relevant for cover. 
 
 
         public string pageNoLeft;
@@ -216,6 +217,7 @@ namespace Cewe2pdf {
                             // trick area system...
                             if (type == "spinetextarea") {
                                 type = "textarea";
+                                page.spineSize = getAttributeF(node.SelectSingleNode("position"), "height");
                             }
 
                             Area newArea;

@@ -155,7 +155,7 @@ namespace Cewe2pdf {
                         ImageBackgroundArea bgArea = (ImageBackgroundArea)area;
 
                         if (bgArea.type == ImageBackgroundArea.ImageBackgroundType.Right)
-                            bgArea.rect.X += pPage.bundleSize.X / 2; // TODO: in case of cover additional spine width needs to be added here.
+                            bgArea.rect.X += pPage.bundleSize.X / 2f + pPage.spineSize / 2f;
                     }
 
                     ImageArea imgArea = (ImageArea)area;
