@@ -1,4 +1,5 @@
-﻿using iTextSharp.text;
+﻿using iTextSharp.awt.geom;
+using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
 using System.Linq;
@@ -248,13 +249,23 @@ namespace Cewe2pdf {
                 else if (area is TextArea) {
                     TextArea textArea = (TextArea)area;
 
+                    // calculate rect dimensions // TODO: de-duplicate?
+                    float pX = textArea.rect.X;
+                    float pY = pPage.bundleSize.Y - textArea.rect.Y - textArea.rect.Height;
+
+                    PdfContentByte canvas = _writer.DirectContent;
+
+                    // handle rotation
+                    canvas.SaveState();
+                    AffineTransform tf = new AffineTransform();
+                    double angle = textArea.rotation * Math.PI / 180.0;
+                    tf.Rotate(-angle, pX + textArea.rect.X, pY + textArea.rect.Y); // rotate around center ccw                                                                      
+                    canvas.Transform(tf);
+
                     // Render text background if not transparent
                     if (!textArea.backgroundcolor.EndsWith("00")) {
                         Log.Info("Rendering Text background: '" + textArea.backgroundcolor + "'.");
-                        PdfContentByte canvas = _writer.DirectContent;
-                        // calculate rect dimensions // TODO: de-duplicate?
-                        float pX = textArea.rect.X;
-                        float pY = pPage.bundleSize.Y - textArea.rect.Y - textArea.rect.Height;
+
                         canvas.Rectangle(pX, pY, textArea.rect.Width, textArea.rect.Height);
                         canvas.SetColorFill(argb2BaseColor(textArea.backgroundcolor));
                         canvas.Fill();
@@ -269,7 +280,7 @@ namespace Cewe2pdf {
                     }
 
                     // iTextSharp textbox
-                    ColumnText colText = new ColumnText(_writer.DirectContent);
+                    ColumnText colText = new ColumnText(canvas);
 
                     // calculate rect
                     float llx = textArea.rect.X;
@@ -316,6 +327,8 @@ namespace Cewe2pdf {
 
                     // draw textbox
                     colText.Go();
+
+                    canvas.RestoreState();
 
                 }
             }
