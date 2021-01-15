@@ -259,7 +259,7 @@ namespace Cewe2pdf {
                     canvas.SaveState();
                     AffineTransform tf = new AffineTransform();
                     double angle = textArea.rotation * Math.PI / 180.0;
-                    tf.Rotate(-angle, pX + textArea.rect.X, pY + textArea.rect.Y); // rotate around center ccw                                                                      
+                    tf.Rotate(-angle, pX + textArea.rect.Width/2f, pY + textArea.rect.Height/2f); // rotate around center ccw                                                                      
                     canvas.Transform(tf);
 
                     // Render text background if not transparent
