@@ -74,14 +74,11 @@ namespace Cewe2pdf {
 
                 string id = pPage.backgroundLeft;
                 System.Drawing.Bitmap bmp = DesignIdConverter.getBitmapFromID(id);
-                if (bmp == null)
-                {
+                if (bmp == null) {
                     Log.Error("Background image for id '" + id + "' was null.");
                     canvas.SetColorFill(BaseColor.MAGENTA);
                     canvas.Fill();
-                }
-                else
-                {
+                } else {
                     Image img = sysImageToITextImage(bmp);
 
                     float facY = pPage.bundleSize.Y / img.PlainHeight;
@@ -255,8 +252,7 @@ namespace Cewe2pdf {
                         canvas.Rectangle(rect);
                     }
 
-                }
-                else if (area is TextArea) {
+                } else if (area is TextArea) {
                     TextArea textArea = (TextArea)area;
 
                     // Render text background if not transparent
@@ -348,7 +344,7 @@ namespace Cewe2pdf {
             pageNoLeft.Alignment = Element.ALIGN_LEFT + Element.ALIGN_BOTTOM;
 
             ColumnText leftNo = new ColumnText(_writer.DirectContent);
-            Rectangle leftNoRect = new Rectangle(Page.pageNoMargin.X + PAGE_NR_X_OFFSET, PAGE_Y_POS, 500, PAGE_Y_POS+PAGE_NR_HEIGHT);
+            Rectangle leftNoRect = new Rectangle(Page.pageNoMargin.X + PAGE_NR_X_OFFSET, PAGE_Y_POS, 500, PAGE_Y_POS + PAGE_NR_HEIGHT);
             leftNo.SetSimpleColumn(leftNoRect);
 
             leftNo.AddElement(pageNoLeft);
@@ -364,7 +360,7 @@ namespace Cewe2pdf {
             pageNoRight.Alignment = Element.ALIGN_RIGHT;
 
             ColumnText rightNo = new ColumnText(_writer.DirectContent);
-            Rectangle rightNoRect = new Rectangle(pPage.bundleSize.X-Page.pageNoMargin.X - PAGE_NR_X_OFFSET - 500, PAGE_Y_POS, pPage.bundleSize.X-Page.pageNoMargin.X - PAGE_NR_X_OFFSET, PAGE_Y_POS + PAGE_NR_HEIGHT);
+            Rectangle rightNoRect = new Rectangle(pPage.bundleSize.X - Page.pageNoMargin.X - PAGE_NR_X_OFFSET - 500, PAGE_Y_POS, pPage.bundleSize.X - Page.pageNoMargin.X - PAGE_NR_X_OFFSET, PAGE_Y_POS + PAGE_NR_HEIGHT);
             rightNo.SetSimpleColumn(rightNoRect);
 
             rightNo.AddElement(pageNoRight);

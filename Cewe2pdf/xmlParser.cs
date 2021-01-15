@@ -37,16 +37,16 @@ namespace Cewe2pdf {
     };
 
     public class TextElement {
-            public string text = "";
-            public bool bold = false;
-            public bool italic = false;
-            public bool underlined = false;
-            public bool newline = false;
-            public string color = "#ffffffff";
-            public string family = "Calibri";
-            public int size = 48;
-            public string align = "Center";
-        }
+        public string text = "";
+        public bool bold = false;
+        public bool italic = false;
+        public bool underlined = false;
+        public bool newline = false;
+        public string color = "#ffffffff";
+        public string family = "Calibri";
+        public int size = 48;
+        public string align = "Center";
+    }
 
     class TextArea : Area {
         public List<TextElement> textElements;
@@ -216,40 +216,39 @@ namespace Cewe2pdf {
 
                             switch (type) {
 
-                                case "imagearea":
-                                {
-                                    // imagearea? image subnode exists!
-                                    XmlNode image = node.SelectSingleNode("image");
+                                case "imagearea": {
+                                        // imagearea? image subnode exists!
+                                        XmlNode image = node.SelectSingleNode("image");
 
-                                    // the image file name stored in .mcf file (in format: "safecontainer:/imageName.jpg)
-                                    string filename = getAttributeStr(image, "filename");
+                                        // the image file name stored in .mcf file (in format: "safecontainer:/imageName.jpg)
+                                        string filename = getAttributeStr(image, "filename");
 
-                                    // replace 'safecontainer:/' with actual path, in case filename does not exist,
-                                    // store "NULL", will render as magenta outline and print error.
-                                    string filePath = filename != "" ? filename.Replace("safecontainer:/", _safeContainerPath) : "NULL";
+                                        // replace 'safecontainer:/' with actual path, in case filename does not exist,
+                                        // store "NULL", will render as magenta outline and print error.
+                                        string filePath = filename != "" ? filename.Replace("safecontainer:/", _safeContainerPath) : "NULL";
 
-                                    // get & store cutout information
-                                    XmlNode cutout = image.SelectSingleNode("cutout");
-                                    Vector2 cutoutLeftTop = new Vector2(getAttributeF(cutout, "left"), getAttributeF(cutout, "top"));
-                                    float scale = getAttributeF(cutout, "scale", 1.0f);
+                                        // get & store cutout information
+                                        XmlNode cutout = image.SelectSingleNode("cutout");
+                                        Vector2 cutoutLeftTop = new Vector2(getAttributeF(cutout, "left"), getAttributeF(cutout, "top"));
+                                        float scale = getAttributeF(cutout, "scale", 1.0f);
 
-                                    // construct new area
-                                    newArea = new ImageArea() {
-                                        path = filePath,
-                                        cutout = cutoutLeftTop,
-                                        scale = scale,
-                                    };
+                                        // construct new area
+                                        newArea = new ImageArea() {
+                                            path = filePath,
+                                            cutout = cutoutLeftTop,
+                                            scale = scale,
+                                        };
 
-                                    // get & store border settings
-                                    XmlNode border = node.SelectSingleNode("decoration/border");
-                                    if (border != null) {
-                                        newArea.border = true;
-                                        newArea.borderWidth = getAttributeF(border, "width");
-                                        newArea.borderColor = getAttributeStr(border, "color");
+                                        // get & store border settings
+                                        XmlNode border = node.SelectSingleNode("decoration/border");
+                                        if (border != null) {
+                                            newArea.border = true;
+                                            newArea.borderWidth = getAttributeF(border, "width");
+                                            newArea.borderColor = getAttributeStr(border, "color");
+                                        }
+
+                                        break;
                                     }
-
-                                    break;
-                                }
 
                                 case "imagebackgroundarea": {
                                         // handle backgroundimages literally just like normal images.
@@ -351,7 +350,8 @@ namespace Cewe2pdf {
                                 X = getAttributeF(position, "left"),
                                 Y = getAttributeF(position, "top"),
                                 Width = getAttributeF(position, "width"),
-                                Height = getAttributeF(position, "height") };
+                                Height = getAttributeF(position, "height")
+                            };
                             newArea.rotation = getAttributeF(position, "rotation") / SCALE; // undo scale for rotation
 
                             // store new page in list
@@ -373,15 +373,13 @@ namespace Cewe2pdf {
                     Page.Type nextType = Page.convert(nextPage.Attributes.GetNamedItem("type").Value);
                     if (nextType == Page.Type.Spine) xmlPage = nextPage;
                     else xmlPage = null; // cover page is done, proceed
-                }
-                else if (page.type == Page.Type.Spine) {
+                } else if (page.type == Page.Type.Spine) {
                     // check if next page is Fullcover (should be anyway)
                     XmlNode nextPage = _pages[_pageIterator + 1];
                     Page.Type nextType = Page.convert(nextPage.Attributes.GetNamedItem("type").Value);
                     if (nextType == Page.Type.Fullcover) xmlPage = nextPage;
                     else xmlPage = null;
-                }
-                else if (page.type == Page.Type.Emptypage) {
+                } else if (page.type == Page.Type.Emptypage) {
                     // check if next page exists... otherwise end of book.
                     if (_pageIterator + 1 < _pages.Count) {
                         XmlNode nextPage = _pages[_pageIterator + 1];
@@ -390,8 +388,7 @@ namespace Cewe2pdf {
                     } else {
                         xmlPage = null;
                     }
-                }
-                else if (page.type == Page.Type.Normalpage && !isDouble) {
+                } else if (page.type == Page.Type.Normalpage && !isDouble) {
                     XmlNode nextPage = _pages[_pageIterator + 1];
                     // next is second half of a double page...
                     xmlPage = nextPage;
@@ -438,7 +435,7 @@ namespace Cewe2pdf {
             if (color != null && styleInfo.Contains("color:")) {
                 string[] t = styleInfo.Split("color:");
                 string colorhex = t.Last().Split(";").First();
-                color = colorhex.Insert(1,"ff");
+                color = colorhex.Insert(1, "ff");
             }
 
             // return all lines
@@ -534,7 +531,7 @@ namespace Cewe2pdf {
                     curr = style.TrimStart();
 
                 if (curr.StartsWith("font-family:")) {
-                    fontFamily = curr.Replace("font-family:", "").Replace("'","");
+                    fontFamily = curr.Replace("font-family:", "").Replace("'", "");
                 } else
                 if (curr.StartsWith("font-size:")) {
                     fontSize = (int)(Convert.ToDouble(curr.Replace("font-size:", "").Replace("pt", "")) * SCALE * FONT);
@@ -550,8 +547,7 @@ namespace Cewe2pdf {
                 } else
                 if (curr.StartsWith("text-decoration:")) {
                     textDecoration = curr.Replace("text-decoration:", "").TrimStart();
-                }
-                else {
+                } else {
                     if (!String.IsNullOrWhiteSpace(curr))
                         Log.Warning("Unhandled html/body/style property: '" + curr + "'.");
                 }
@@ -575,6 +571,6 @@ namespace Cewe2pdf {
             return attr.Value; // return string directly
         }
 
-        public int pageCount() => _pages.Count/2; // return page count, account for double pages
+        public int pageCount() => _pages.Count / 2; // return page count, account for double pages
     }
 }

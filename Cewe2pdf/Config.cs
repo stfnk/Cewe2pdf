@@ -1,7 +1,7 @@
 ﻿using iTextSharp.text;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using System;
 
 namespace Cewe2pdf {
 
@@ -45,8 +45,8 @@ namespace Cewe2pdf {
         // sets config to default constants
         private static void setToDefaults() {
             // check all default locations
-            foreach(string path in DEFAULT_PROGRAM_PATHS) {
-                if (System.IO.Directory.Exists(path+"//Resources//")) {
+            foreach (string path in DEFAULT_PROGRAM_PATHS) {
+                if (System.IO.Directory.Exists(path + "//Resources//")) {
                     programPath = path;
                     break;
                 }
@@ -117,7 +117,7 @@ namespace Cewe2pdf {
 
                     case "bg_color_id":
                         string[] col = tokens.Last().Split(":");
-                        string argb = col.Last().Replace(";","");
+                        string argb = col.Last().Replace(";", "");
                         if (argb.Length != 9) {
                             Log.Error("bg_color_id format wrong. Expected html style argb (#aarrggbb), got '" + argb + "'.");
                             continue;

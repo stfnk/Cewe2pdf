@@ -1,11 +1,8 @@
 ﻿using iTextSharp.text;
-using Org.BouncyCastle.Asn1;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Net;
-using System.Text;
 
 namespace Cewe2pdf {
     class DesignIdConverter {
@@ -25,8 +22,8 @@ namespace Cewe2pdf {
 
             // check if path is valid
             if (!System.IO.File.Exists(path)) {
-              Log.Error("Directory at '" + path + "' does not exist. No DesignIDs loaded.");
-              return;
+                Log.Error("Directory at '" + path + "' does not exist. No DesignIDs loaded.");
+                return;
             }
 
             // Read the file and display it line by line.
