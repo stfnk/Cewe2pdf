@@ -249,11 +249,16 @@ namespace Cewe2pdf {
                     TextArea textArea = (TextArea)area;
 
                     // Render text background if not transparent
-                    Log.Info("Rendering Text background: '" + textArea.backgroundcolor + "'.");
-                    PdfContentByte canvas = _writer.DirectContent;
-                    canvas.Rectangle(textArea.rect.X, textArea.rect.Y, textArea.rect.Width, textArea.rect.Height);
-                    canvas.SetColorFill(argb2BaseColor(textArea.backgroundcolor));
-                    canvas.Fill();
+                    if (!textArea.backgroundcolor.EndsWith("00")) {
+                        Log.Info("Rendering Text background: '" + textArea.backgroundcolor + "'.");
+                        PdfContentByte canvas = _writer.DirectContent;
+                        // calculate rect dimensions // TODO: de-duplicate?
+                        float pX = textArea.rect.X;
+                        float pY = pPage.bundleSize.Y - textArea.rect.Y - textArea.rect.Height;
+                        canvas.Rectangle(pX, pY, textArea.rect.Width, textArea.rect.Height);
+                        canvas.SetColorFill(argb2BaseColor(textArea.backgroundcolor));
+                        canvas.Fill();
+                    }
 
                     // just in case something went wrong
                     if (String.IsNullOrWhiteSpace(textArea.text)) {
