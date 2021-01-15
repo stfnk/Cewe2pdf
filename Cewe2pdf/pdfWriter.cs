@@ -248,10 +248,19 @@ namespace Cewe2pdf {
                 else if (area is TextArea) {
                     TextArea textArea = (TextArea)area;
 
+                    // Render text background if not transparent
+                    Log.Info("Rendering Text background: '" + textArea.backgroundcolor + "'.");
+                    PdfContentByte canvas = _writer.DirectContent;
+                    canvas.Rectangle(textArea.rect.X, textArea.rect.Y, textArea.rect.Width, textArea.rect.Height);
+                    canvas.SetColorFill(argb2BaseColor(textArea.backgroundcolor));
+                    canvas.Fill();
+
                     // just in case something went wrong
                     if (String.IsNullOrWhiteSpace(textArea.text)) {
                         Log.Error("Text was empty.");
                         continue;
+                    } else {
+                        Log.Info("Rendering Text."); // TODO: add debug info
                     }
 
                     // iTextSharp textbox

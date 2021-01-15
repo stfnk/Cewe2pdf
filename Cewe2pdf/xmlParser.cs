@@ -55,6 +55,7 @@ namespace Cewe2pdf {
         public string color;
         public string font;
         public string align;
+        public string backgroundcolor;
         public override string toString() {
             return "[TextArea] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2") + "; font size: " + fontsize + "; text:\n\n" + text + "\n\n";
         }
@@ -305,6 +306,9 @@ namespace Cewe2pdf {
                                         // text color
                                         string color = getAttributeStr(textFormat, "foregroundColor");
 
+                                        // text box background color
+                                        string bgColor = getAttributeStr(textFormat, "backgroundColor");
+
                                         // by default align left
                                         string alignLabel = "ALIGNLEFT";
 
@@ -323,6 +327,7 @@ namespace Cewe2pdf {
                                             color = color,
                                             font = fontInfo[0],
                                             align = alignLabel,
+                                            backgroundcolor = bgColor,
                                         };
 
                                         break;
