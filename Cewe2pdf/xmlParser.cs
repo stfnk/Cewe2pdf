@@ -212,6 +212,11 @@ namespace Cewe2pdf {
                             // get the type of current area
                             string type = node.Attributes.GetNamedItem("areatype").Value;
 
+                            // trick area system...
+                            if (type == "spinetextarea") {
+                                type = "textarea";
+                            }
+
                             Area newArea;
 
                             switch (type) {
