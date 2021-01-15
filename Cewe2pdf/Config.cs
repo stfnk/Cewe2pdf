@@ -12,8 +12,16 @@ namespace Cewe2pdf {
             // TODO: make this compatible with other OSs
             "C://Program Files//CEWE//CEWE Fotowelt//",
             "C://Program Files (x86)//CEWE//CEWE Fotowelt//",
+
+            "C://Program Files//CEWE//Mein CEWE FOTOBUCH",
+            "C://Program Files (x86)//CEWE//Mein CEWE FOTOBUCH",
+
             "C://Program Files//CEWE Fotowelt//",
             "C://Program Files (x86)//CEWE Fotowelt//",
+
+            "C://Program Files//CEWE Photoworld//",
+            "C://Program Files (x86)//CEWE Photoworld//",
+
             "C://Program Files//CEWE//",
             "C://Program Files (x86)//CEWE//",
         };
@@ -38,7 +46,7 @@ namespace Cewe2pdf {
         private static void setToDefaults() {
             // check all default locations
             foreach(string path in DEFAULT_PROGRAM_PATHS) {
-                if (System.IO.Directory.Exists(path)) {
+                if (System.IO.Directory.Exists(path+"//Resources//")) {
                     programPath = path;
                     break;
                 }
