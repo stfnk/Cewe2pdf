@@ -268,7 +268,7 @@ namespace Cewe2pdf {
                         Log.Error("Text was empty.");
                         continue;
                     } else {
-                        Log.Info("Rendering Text: font=" + textArea.font + "; size=" + textArea.fontsize);
+                        Log.Info("Rendering Text: font=" + textArea.font + "; size=" + textArea.fontsize + "; align=" + textArea.align + "; valign=" + textArea.valign);
                     }
 
                     // iTextSharp textbox
@@ -301,7 +301,16 @@ namespace Cewe2pdf {
                     else if (textArea.align == "ALIGNJUSTIFY")
                         par.Alignment = Element.ALIGN_JUSTIFIED;
                     else
-                        Log.Warning("Unhandled text align: '" + textArea.align + "'");
+                        Log.Warning("Unhandled text align: '" + textArea.align + "'.");
+
+                    if (textArea.valign == "ALIGNVCENTER")
+                        par.Alignment = Element.ALIGN_MIDDLE;
+                    else if (textArea.valign == "ALIGNVTOP")
+                        par.Alignment = Element.ALIGN_TOP;
+                    else if (textArea.valign == "ALIGNVBOTTOM")
+                        par.Alignment = Element.ALIGN_BOTTOM;
+                    else
+                        Log.Warning("Unhandled text vertical align: '" + textArea.valign + "'.");
 
                     // add text chunks
                     foreach (TextElement elem in textArea.textElements) {

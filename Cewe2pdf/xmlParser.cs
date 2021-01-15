@@ -55,6 +55,7 @@ namespace Cewe2pdf {
         public string color;
         public string font;
         public string align;
+        public string valign;
         public string backgroundcolor;
         public override string toString() {
             return "[TextArea] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2") + "; font size: " + fontsize + "; text:\n\n" + text + "\n\n";
@@ -313,13 +314,16 @@ namespace Cewe2pdf {
                                         // text box background color
                                         string bgColor = getAttributeStr(textFormat, "backgroundColor");
 
-                                        // by default align left
+                                        // by default align left top
                                         string alignLabel = "ALIGNLEFT";
+                                        string valignLabel = "ALIGNVTOP";
 
                                         // NOTE: <align> sometimes holds two comma-separated values (Horizontal and Vertical alignment)
                                         // for now only handles second (horizontal).
                                         string[] align = getAttributeStr(textFormat, "Alignment").Split(",");
                                         alignLabel = align.Last();
+                                        if (align.Length > 1)
+                                            valignLabel = align.First();
 
                                         string str = extractTextFromHTML(text.InnerText, ref color);
 
@@ -331,6 +335,7 @@ namespace Cewe2pdf {
                                             color = color,
                                             font = fontInfo[0],
                                             align = alignLabel,
+                                            valign = valignLabel,
                                             backgroundcolor = bgColor,
                                         };
 
