@@ -71,34 +71,6 @@ namespace Cewe2pdf {
             Log.Info("Loaded " + _idPaths.Count + " backgrounds.");
         }
 
-        // TODO: this method will be removed once background actually uses image directly
-        public static BaseColor getBaseColorFromID(string pId) {
-            BaseColor ret;
-
-            // check if color is already cached
-            Config.bgColors.TryGetValue(pId, out ret);
-            if (ret != null) {
-                Log.Info("Using cached color '" + pId + "'.");
-                return ret;
-            }
-
-            // load color from .webp file
-            Bitmap bmp = getBitmapFromID(pId);
-            if (bmp == null) {
-                Log.Error("Loaded Image for id: '" + pId + "' is null.");
-                return BaseColor.MAGENTA;
-            }
-            ret = new BaseColor(bmp.GetPixel(0, 0)); // assume every pixel holds the color...
-
-            // cache for fast reuse
-            Config.bgColors.Add(pId, ret);
-
-            Log.Warning("deprecated method DesignIDConverter.getBaseColorFromID() called.");
-
-            return ret;
-        }
-
-        // TODO: support other formats except .webp? -> also needs to be loaded ofc
         public static Bitmap getBitmapFromID(string pId) {
             if (_idPaths == null) {
                 Log.Error("DesignIdConverter not initialized.");
