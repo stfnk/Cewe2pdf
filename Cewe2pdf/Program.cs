@@ -33,7 +33,7 @@ namespace Cewe2pdf {
             if (!System.IO.File.Exists(mcfPath)) { Log.Error("'" + mcfPath + "' does not exist.'"); return; }
 
             // allow only input file as argument
-            if (String.IsNullOrWhiteSpace(pdfPath)) pdfPath = mcfPath.Replace(".mcf", ".pdf");
+            if (String.IsNullOrWhiteSpace(pdfPath)) pdfPath = mcfPath.Replace(".mcf", "-converted.pdf");
 
             Log.Info("Config used:"
                 + "\n\t\t installation dir: " + Config.programPath
