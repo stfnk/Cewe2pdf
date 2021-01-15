@@ -53,13 +53,12 @@ namespace Cewe2pdf {
             if (!_doc.IsOpen()) _doc.Open();
             else _doc.NewPage();
 
+
+            PdfContentByte canvas = _writer.DirectContent;
+
             // TOOD: de-duplicate
             // draw left part of background
             if (pPage.backgroundLeft != null) {
-
-                //Log.Message("Writing left bg: " + pPage.backgroundLeft + " on pagetype: " + pPage.type.ToString());
-
-                PdfContentByte canvas = _writer.DirectContent;
 
                 canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
                 canvas.SetColorFill(BaseColor.CYAN);
@@ -93,16 +92,12 @@ namespace Cewe2pdf {
                     Image imgCropped = cropImage(img, _writer, 0, 0, width, img.ScaledHeight);
 
                     imgCropped.SetAbsolutePosition(xoffset, yoffset);
-                    _writer.DirectContent.AddImage(imgCropped);
+                    canvas.AddImage(imgCropped);
                 }
             }
 
             // draw right background
             if (pPage.backgroundRight != null) {
-
-                //Log.Message("Writing right bg: " + pPage.backgroundRight + " on pagetype: " + pPage.type.ToString());
-
-                PdfContentByte canvas = _writer.DirectContent;
 
                 canvas.Rectangle(pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
                 canvas.SetColorFill(BaseColor.CYAN);
@@ -131,13 +126,24 @@ namespace Cewe2pdf {
                     Image imgCropped = cropImage(img, _writer, pPage.bundleSize.X / 2f, 0, img.ScaledWidth, img.ScaledHeight);
 
                     imgCropped.SetAbsolutePosition(xoffset + pPage.bundleSize.X / 2, yoffset);
-                    _writer.DirectContent.AddImage(imgCropped);
+                    canvas.AddImage(imgCropped);
                 }
             }
 
             // draw all content areas stored in this page
             // currently only supports <imagearea> and <textarea> from .mcf
             foreach (Area area in pPage.areas) {
+
+                // calculate rect dimensions // TODO: de-duplicate?
+                float pX = area.rect.X;
+                float pY = pPage.bundleSize.Y - area.rect.Y - area.rect.Height;
+
+                // handle rotation
+                canvas.SaveState();
+                AffineTransform tf = new AffineTransform();
+                double angle = area.rotation * Math.PI / 180.0;
+                tf.Rotate(-angle, pX + area.rect.Width / 2f, pY + area.rect.Height / 2f); // rotate around center ccw                                                                      
+                canvas.Transform(tf);
 
                 if (area is ImageArea || area is ImageBackgroundArea) {
                     // TODO: This is somewhat hacky - there is probably a better way to do this.
@@ -154,8 +160,6 @@ namespace Cewe2pdf {
                     if (imgArea.path == "NULL") {
 
                         // calculate rect dimensions
-                        float pX = imgArea.rect.X;
-                        float pY = pPage.bundleSize.Y - imgArea.rect.Y - imgArea.rect.Height;
                         Rectangle nullRect = new Rectangle(pX, pY, pX + imgArea.rect.Width, pY + imgArea.rect.Height);
 
                         // configure border
@@ -164,7 +168,7 @@ namespace Cewe2pdf {
                         nullRect.BorderWidth = 4.0f;
 
                         // draw to document
-                        _writer.DirectContent.Rectangle(nullRect);
+                        canvas.Rectangle(nullRect);
 
                         Log.Error("Image path was null. Probably caused by an empty image area.");
                         continue;
@@ -218,7 +222,7 @@ namespace Cewe2pdf {
                     cropped.SetAbsolutePosition(imgArea.rect.X, posY);
 
                     // draw the image
-                    _writer.DirectContent.AddImage(cropped);
+                    canvas.AddImage(cropped);
 
                     // draw image border if specified in .mcf
                     if (imgArea.border) {
@@ -228,8 +232,6 @@ namespace Cewe2pdf {
                         // this should be corrected.
 
                         // calc border rect
-                        float pX = imgArea.rect.X;
-                        float pY = pPage.bundleSize.Y - imgArea.rect.Y - imgArea.rect.Height;
                         Rectangle rect = new Rectangle(pX, pY, pX + imgArea.rect.Width, pY + imgArea.rect.Height);
 
                         // convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
@@ -242,25 +244,12 @@ namespace Cewe2pdf {
                         rect.BorderWidth = imgArea.borderWidth;
 
                         // draw border
-                        _writer.DirectContent.Rectangle(rect);
+                        canvas.Rectangle(rect);
                     }
 
                 }
                 else if (area is TextArea) {
                     TextArea textArea = (TextArea)area;
-
-                    // calculate rect dimensions // TODO: de-duplicate?
-                    float pX = textArea.rect.X;
-                    float pY = pPage.bundleSize.Y - textArea.rect.Y - textArea.rect.Height;
-
-                    PdfContentByte canvas = _writer.DirectContent;
-
-                    // handle rotation
-                    canvas.SaveState();
-                    AffineTransform tf = new AffineTransform();
-                    double angle = textArea.rotation * Math.PI / 180.0;
-                    tf.Rotate(-angle, pX + textArea.rect.Width/2f, pY + textArea.rect.Height/2f); // rotate around center ccw                                                                      
-                    canvas.Transform(tf);
 
                     // Render text background if not transparent
                     if (!textArea.backgroundcolor.EndsWith("00")) {
@@ -327,10 +316,10 @@ namespace Cewe2pdf {
 
                     // draw textbox
                     colText.Go();
-
-                    canvas.RestoreState();
-
                 }
+
+                // restore canvas transform before rotation
+                canvas.RestoreState();
             }
 
             // draw pagenumbers
