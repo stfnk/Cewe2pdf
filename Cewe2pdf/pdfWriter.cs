@@ -281,6 +281,10 @@ namespace Cewe2pdf {
                         par.Alignment = Element.ALIGN_LEFT;
                     else if (textArea.align == "ALIGNRIGHT")
                         par.Alignment = Element.ALIGN_RIGHT;
+                    else if (textArea.align == "ALIGNJUSTIFY")
+                        par.Alignment = Element.ALIGN_JUSTIFIED;
+                    else
+                        Log.Warning("Unhandled text align: '" + textArea.align + "'");
 
                     // add text chunks
                     foreach (TextElement elem in textArea.textElements) {
