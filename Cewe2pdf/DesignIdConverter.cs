@@ -6,32 +6,54 @@ using System.Linq;
 namespace Cewe2pdf {
     class DesignIdConverter {
 
-        private static Dictionary<string, string> _idPaths;
+        private static Dictionary<string, string> _idCache =  new Dictionary<string, string>();
 
-        public static void initDesignIdDatabase() {
-            //TODO: design ids should be searched for on demand an then cached. No need to store all paths... 
+        private static string getPath(string pId) {
+            // check if id is already loaded in cache
+            if (_idCache.ContainsKey(pId)) {
+                Log.Info("Loaded DesignID '" + pId + "' from cache.");
+                return _idCache[pId];
+            }
 
-            System.Diagnostics.Debug.Assert(_idPaths == null);
+            // no yet in cache. Search it.
+            string path;
+            
+            // in installation
+            path = getIdPathFromInstallation(pId);
+            if (!String.IsNullOrWhiteSpace(path)) {
+                _idCache.Add(pId, path);
+                Log.Info("Added DesignID '" + pId + "' at '" + path + "' to cache.");
+                return path;
+            }
 
-            Log.Info("Initializing DesignIdConverter");
-            _idPaths = new Dictionary<string, string>();
+            // in downloaded content
+            path = getIdPathFromProgramData(pId);
+            if (!String.IsNullOrWhiteSpace(path)) {
+                _idCache.Add(pId, path);
+                Log.Info("Added DesignID '" + pId + "' at '" + path + "' to cache.");
+                return path;
+            }
 
+            Log.Error("DesignID '" + pId + "' not found.");
+            return "";
+        }
+
+        private static string getIdPathFromInstallation(string pId) {
             string path = Config.ProgramPath + "\\Resources\\ls-R";
 
             // check if path is valid
             if (!System.IO.File.Exists(path)) {
-                Log.Error("Directory at '" + path + "' does not exist. No DesignIDs loaded.");
-                return;
+                Log.Error("File at '" + path + "' does not exist.");
+                return "";
             }
 
             // Read the file and display it line by line.
             System.IO.StreamReader file;
             try {
                 file = new System.IO.StreamReader(path);
-                Log.Info("Loading Design IDs from '" + path + "'.");
             } catch (Exception e) {
                 Log.Error("Loading Design IDs failed with Error: '" + e.Message + "'");
-                return;
+                return "";
             }
 
             string line;
@@ -43,12 +65,17 @@ namespace Cewe2pdf {
                     string id = line.Split("/").Last().Split(".").First();
                     //Log.Info("Register ID: " + id + " at: " + line);
                     id = id.Split("-").Last(); // some ids have names... keep only the id number...
-                    _idPaths.TryAdd(id, Config.ProgramPath + "//Resources//" + line);
+                    if (id == pId)
+                        return Config.ProgramPath + "//Resources//" + line;
                 }
             }
 
-            // also search this folder for background images...
-            const string dlpath = "C:\\ProgramData\\hps\\6822\\addons";
+            return "";
+        }
+
+        private static string getIdPathFromProgramData(string pId) {
+            // scan whole folder for image files
+            const string dlpath = "C:\\ProgramData\\hps";
             if (System.IO.Directory.Exists(dlpath)) {
                 string[] filenames = System.IO.Directory.GetFiles(dlpath, "*", System.IO.SearchOption.AllDirectories);
                 Log.Info("Loading DesignIDs from '" + dlpath + "'.");
@@ -57,33 +84,24 @@ namespace Cewe2pdf {
                         string id = addfile.Split("\\").Last().Split(".").First();
                         //Log.Info("Register ID: " + id + " at: " + line);
                         id = id.Split("-").Last(); // some ids have names... keep only the id number...
-                        Log.Info("\t found id: '" + id + "' at: '" + addfile + "'");
-                        _idPaths.Add(id, addfile);
+                        //Log.Info("\t found id: '" + id + "' at: '" + addfile + "'");
+                        return addfile;
                     }
                 }
             } else {
-                Log.Warning("Directory at: '" + dlpath + "' does not exist. No additional backgrounds loaded.");
+                Log.Warning("Directory at: '" + dlpath + "' does not exist.");
             }
 
-            file.Close();
-            Log.Info("Loaded " + _idPaths.Count + " backgrounds.");
+            return "";
         }
 
         public static Bitmap getBitmapFromID(string pId) {
-            if (_idPaths == null) {
-                Log.Error("DesignIdConverter not initialized.");
-                return null;
-            }
-
-            string path = "";
-            _idPaths.TryGetValue(pId, out path);
+            string path = getPath(pId);
 
             if (String.IsNullOrWhiteSpace(path)) {
                 Log.Error("Design ID '" + pId + "' not found.");
                 return null;
             }
-
-            //path = Config.ProgramPath + "//Resources//" + path;
 
             if (!System.IO.File.Exists(path)) {
                 Log.Error("DesignID file at: '" + path + "' does not exist.");

@@ -47,9 +47,6 @@ namespace Cewe2pdf {
             // for user information only
             System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
 
-            // init design id converter
-            DesignIdConverter.initDesignIdDatabase();
-
             // initialize with given files
             mcfParser parser = new mcfParser(mcfPath);
             pdfWriter writer = new pdfWriter(pdfPath);
