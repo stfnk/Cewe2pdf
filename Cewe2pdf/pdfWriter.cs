@@ -189,8 +189,6 @@ namespace Cewe2pdf {
                         continue;
                     }
 
-                    Log.Info("Rendering Image: '" + imgArea.path + "'.");
-
                     // load image file.
                     System.Drawing.Image sysImg;
                     try {
@@ -205,6 +203,7 @@ namespace Cewe2pdf {
                         continue;
                     }
 
+
                     // fix exif orientation
                     ExifRotate(sysImg);
 
@@ -212,8 +211,12 @@ namespace Cewe2pdf {
                     float scale = 1f / imgArea.scale * Config.ImgScale; // the higher this value, the lower pixel density is. 0.0f = original resolution
                     scale = scale < 1.0f ? 1.0f : scale; // never scale image up
 
+                    System.Drawing.Size newSize = new System.Drawing.Size((int)(sysImg.Width / scale), (int)(sysImg.Height / scale));
+
+                    Log.Info("Rendering Image: original size=" + sysImg.Width + "x" + sysImg.Height + "; scaled size=" + newSize.Width + "x" + newSize.Height + " ");
+
                     // resize image
-                    sysImg = (System.Drawing.Image)(new System.Drawing.Bitmap(sysImg, new System.Drawing.Size((int)(sysImg.Width / scale), (int)(sysImg.Height / scale))));
+                    sysImg = (System.Drawing.Image)(new System.Drawing.Bitmap(sysImg, newSize));
 
                     // this is really silly and slooooow but works for now.
                     // write System.Drawing.Image to disk and re-read as iTextSharp.Image...
@@ -346,6 +349,7 @@ namespace Cewe2pdf {
                         HorizontalAlignment = par.Alignment,
                         VerticalAlignment = valign,
                         FixedHeight = textArea.rect.Height,
+                        Border = 0,
                     });
 
                     // add paragraph to textbox
