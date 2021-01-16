@@ -130,7 +130,28 @@ namespace Cewe2pdf {
 
             // get the root xml node 'fotobook'
             _fotobook = _xmlDoc.SelectSingleNode("fotobook");
-            Debug.Assert(_fotobook != null, "[Error] Parsing '" + pFilePath + "' failed. <fotobook> tag not found.");
+
+            if (_fotobook == null) {
+                Log.Error("Parsing '" + pFilePath + "' failed. No <fotobook> tag found.");
+                return;
+            }
+
+            // log some photobook info from .mcf
+            string loginfo = "";
+            loginfo += "\n<fotobook>";
+            loginfo += "\n\tart_id=" + getAttributeStr(_fotobook, "art_id", "null");
+            loginfo += "\n\tproductname=" + getAttributeStr(_fotobook, "productname", "null");
+
+            XmlNode project = _fotobook.SelectSingleNode("project");
+            loginfo += "\n\t<project>";
+            loginfo += "\n\t\tcreatedWithHPSVersion=" + getAttributeStr(project, "createdWithHPSVersion", "null");
+
+            XmlNode artcfg = _fotobook.SelectSingleNode("articleConfig");
+            loginfo += "\n\t<articleConfig>";
+            loginfo += "\n\t\tnormalpages=" + getAttributeStr(artcfg, "normalpages", "null");
+            loginfo += "\n\t\ttotalpages=" + getAttributeStr(artcfg, "totalpages", "null");
+
+            Log.Info("mcf content:"+loginfo);
 
             // initialize page list
             _pages = new List<XmlNode>();
