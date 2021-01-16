@@ -1,12 +1,49 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Globalization;
 using System.Linq;
 
 namespace Cewe2pdf {
     class DesignIdConverter {
 
         private static Dictionary<string, string> _idCache =  new Dictionary<string, string>();
+        private static Dictionary<string, string> _resourceList;
+
+        public static void initResourceList() {
+            if (_resourceList == null) {
+                _resourceList = new Dictionary<string, string>();
+
+                string path = Config.ProgramPath + "\\Resources\\ls-R";
+
+                // check if path is valid
+                if (!System.IO.File.Exists(path)) {
+                    Log.Error("File at '" + path + "' does not exist.");
+                }
+
+                // Read the file and display it line by line.
+                System.IO.StreamReader file;
+                try {
+                    file = new System.IO.StreamReader(path);
+                    string line;
+
+                    // this file contains all design id paths, store relevant ones for easy use in mcfParser
+                    while ((line = file.ReadLine()) != null) {
+                        // TODO: for now only looks for backgrounds.
+                        if (line.StartsWith("photofun/backgrounds")) {
+                            string id = line.Split("/").Last().Split(".").First();
+                            //Log.Info("Register ID: " + id + " at: " + line);
+                            id = id.Split("-").Last(); // some ids have names... keep only the id number...
+                            _resourceList.TryAdd(id, line);
+                        }
+                    }
+                } catch (Exception e) {
+                    Log.Error("Loading Design IDs failed with Error: '" + e.Message + "'");
+                }
+
+                Log.Info("Added " + _resourceList.Count + " Design IDs to resource cache.");
+            }
+        }
 
         private static string getPath(string pId) {
             // check if id is already loaded in cache
@@ -39,38 +76,16 @@ namespace Cewe2pdf {
         }
 
         private static string getIdPathFromInstallation(string pId) {
-            string path = Config.ProgramPath + "\\Resources\\ls-R";
+            if (_resourceList == null) initResourceList();
 
-            // check if path is valid
-            if (!System.IO.File.Exists(path)) {
-                Log.Error("File at '" + path + "' does not exist.");
+            // look up path
+            string ret = "";
+            _resourceList.TryGetValue(pId, out ret);
+
+            if (String.IsNullOrWhiteSpace(ret))
                 return "";
-            }
-
-            // Read the file and display it line by line.
-            System.IO.StreamReader file;
-            try {
-                file = new System.IO.StreamReader(path);
-            } catch (Exception e) {
-                Log.Error("Loading Design IDs failed with Error: '" + e.Message + "'");
-                return "";
-            }
-
-            string line;
-
-            // this file contains all design id paths, store relevant ones for easy use in mcfParser
-            while ((line = file.ReadLine()) != null) {
-                // TODO: for now only looks for backgrounds.
-                if (line.StartsWith("photofun/backgrounds")) {
-                    string id = line.Split("/").Last().Split(".").First();
-                    //Log.Info("Register ID: " + id + " at: " + line);
-                    id = id.Split("-").Last(); // some ids have names... keep only the id number...
-                    if (id == pId)
-                        return Config.ProgramPath + "//Resources//" + line;
-                }
-            }
-
-            return "";
+            else
+                return Config.ProgramPath + "//Resources//" + ret;
         }
 
         private static string getIdPathFromProgramData(string pId) {
