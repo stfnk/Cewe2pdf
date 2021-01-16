@@ -18,7 +18,7 @@ namespace Cewe2pdf {
             try {
                 // Open file stream for exported pdf
                 _fileStream = new System.IO.FileStream(pOutPath, System.IO.FileMode.Create);
-            } catch(Exception e) {
+            } catch (Exception e) {
                 Log.Error("Creating pdf file at: '" + pOutPath + "' failed with error: '" + e.Message + "'.");
                 return;
             }
@@ -66,7 +66,7 @@ namespace Cewe2pdf {
             try {
                 if (!_doc.IsOpen()) _doc.Open();
                 else _doc.NewPage();
-            } catch(Exception e) {
+            } catch (Exception e) {
                 Log.Error("Creating pdf page failed with error: '" + e.Message + "'.");
                 return;
             }
@@ -328,7 +328,7 @@ namespace Cewe2pdf {
                         par.Add(new Chunk(elem.text + (elem.newline ? "\n" : " "), fnt));
                     }
 
-                    int valign = 0; 
+                    int valign = 0;
                     if (textArea.valign == "ALIGNVCENTER")
                         valign = Element.ALIGN_MIDDLE;
                     else if (textArea.valign == "ALIGNVTOP")

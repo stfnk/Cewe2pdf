@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
-using System.Globalization;
 using System.Linq;
 
 namespace Cewe2pdf {
     class DesignIdConverter {
 
-        private static Dictionary<string, string> _idCache =  new Dictionary<string, string>();
+        private static Dictionary<string, string> _idCache = new Dictionary<string, string>();
         private static Dictionary<string, string> _resourceList;
 
         public static void initResourceList() {
@@ -54,7 +53,7 @@ namespace Cewe2pdf {
 
             // no yet in cache. Search it.
             string path;
-            
+
             // in installation
             path = getIdPathFromInstallation(pId);
             if (!String.IsNullOrWhiteSpace(path)) {

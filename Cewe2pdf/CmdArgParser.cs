@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
 
-namespace Cewe2pdf
-{
+namespace Cewe2pdf {
     class CmdArgParser {
-        public static bool parse(string[] args, out List<string> options)
-        {
+        public static bool parse(string[] args, out List<string> options) {
             options = new List<string>();
 
             // handle arguments
-            for (int i = 0; i < args.Length; i++)
-            {
+            for (int i = 0; i < args.Length; i++) {
 
                 if (args[i] == "-h" || args[i] == "-help") {
                     string optList = "";

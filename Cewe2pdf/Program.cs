@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 
 namespace Cewe2pdf {
 
@@ -22,7 +21,7 @@ namespace Cewe2pdf {
 #endif
 
             List<string> cmdoptions;
-            
+
             if (!CmdArgParser.parse(args, out cmdoptions)) return;
 
             // check for valid input file
@@ -31,7 +30,7 @@ namespace Cewe2pdf {
 
             // allow only input file as argument
             if (String.IsNullOrWhiteSpace(pdfPath)) pdfPath = mcfPath.Replace(".mcf", "-converted.pdf");
-            
+
             // set config settings
             Config.setMissingFromOptions(cmdoptions.ToArray());
             Config.setMissingFromFile(CONFIG_PATH);
@@ -64,7 +63,7 @@ namespace Cewe2pdf {
             while (true) {
                 Page next = parser.nextPage();
                 if (next == null) break; // reached end of book
-                Log.Message("[" + (count / (float)pageCount * 100).ToString("F1") + "%]\tprocessing Page " + (count+1) + "/" + pageCount + "...", false);
+                Log.Message("[" + (count / (float)pageCount * 100).ToString("F1") + "%]\tprocessing Page " + (count + 1) + "/" + pageCount + "...", false);
                 long lastTime = timer.ElapsedMilliseconds;
                 writer.writePage(next);
                 float pageTime = (timer.ElapsedMilliseconds - lastTime) / 1000.0f;
@@ -76,7 +75,7 @@ namespace Cewe2pdf {
             // close files
             Log.Message("Writing '" + pdfPath + "'.");
             writer.close();
-            Log.Message("Conversion finished after " + timer.ElapsedMilliseconds/1000.0f + " seconds.");
+            Log.Message("Conversion finished after " + timer.ElapsedMilliseconds / 1000.0f + " seconds.");
             Log.writeLogFile();
         }
     }

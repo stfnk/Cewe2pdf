@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -151,7 +150,7 @@ namespace Cewe2pdf {
             loginfo += "\n\t\tnormalpages=" + getAttributeStr(artcfg, "normalpages", "null");
             loginfo += "\n\t\ttotalpages=" + getAttributeStr(artcfg, "totalpages", "null");
 
-            Log.Info("mcf content:"+loginfo);
+            Log.Info("mcf content:" + loginfo);
 
             // initialize page list
             _pages = new List<XmlNode>();
