@@ -85,7 +85,8 @@ namespace Cewe2pdf {
                         //Log.Info("Register ID: " + id + " at: " + line);
                         id = id.Split("-").Last(); // some ids have names... keep only the id number...
                         //Log.Info("\t found id: '" + id + "' at: '" + addfile + "'");
-                        return addfile;
+                        if (id == pId)
+                            return addfile;
                     }
                 }
             } else {
