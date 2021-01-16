@@ -1,6 +1,4 @@
-﻿using iTextSharp.text;
-using Org.BouncyCastle.Crypto.Engines;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -35,10 +33,12 @@ namespace Cewe2pdf {
             { "to_page="+DEFAULT_TO_PAGE, "Number of pages to convert. 0 converts all pages."},
             { "img_scale="+DEFAULT_IMG_SCALE, "Pixel size of images in pdf. Use smaller values for higher resolution images." },
         };
+        private static int toPage = -1;
+        private static float imgScale = -1.0f;
 
         public static string ProgramPath { get; private set; } = "";
-        public static int ToPage { get; private set; } = -1;
-        public static float ImgScale { get; private set; } = -1.0f;
+        public static int ToPage { get => toPage; private set => toPage = Math.Max(value, 0); }
+        public static float ImgScale { get => imgScale; private set => imgScale = Math.Clamp(value, 0.0f, 100.0f); }
 
         public static void setMissingFromOptions(string[] pOptions) {
             foreach (string option in pOptions) {
@@ -60,7 +60,7 @@ namespace Cewe2pdf {
                 switch (type) {
                     case "String":
                         if (String.IsNullOrWhiteSpace((string)info.GetValue(null))) {
-                            info.SetValue(null, value.Replace("\"",""));
+                            info.SetValue(null, value.Replace("\"", ""));
                             Log.Info("Set '" + key + "' to '" + value + "'.");
                         }
                         break;
@@ -83,7 +83,7 @@ namespace Cewe2pdf {
                         break;
                 }
             }
-        } 
+        }
 
         public static void setMissingToDefaults() {
             Log.Info("Loading config defaults...");
@@ -140,7 +140,7 @@ namespace Cewe2pdf {
                     continue;
                 }
 
-                options.Add(line);   
+                options.Add(line);
             }
             file.Close();
 
@@ -162,7 +162,7 @@ namespace Cewe2pdf {
             foreach (string word in words) {
                 if (String.IsNullOrWhiteSpace(word)) continue;
                 string upperfirst = word.Substring(0, 1).ToUpper();
-                camelCase += upperfirst + word.Substring(1); 
+                camelCase += upperfirst + word.Substring(1);
             }
             return camelCase;
         }
