@@ -213,16 +213,13 @@ namespace Cewe2pdf {
 
                     System.Drawing.Size newSize = new System.Drawing.Size((int)(sysImg.Width / scale), (int)(sysImg.Height / scale));
 
-                    Log.Info("Rendering Image: original size=" + sysImg.Width + "x" + sysImg.Height + "; scaled size=" + newSize.Width + "x" + newSize.Height + " ");
+                    string imgType = area is ImageBackgroundArea ? "ImageBackground" : "Image";
+                    Log.Info("Rendering " + imgType + ": original size=" + sysImg.Width + "x" + sysImg.Height + "; scaled size=" + newSize.Width + "x" + newSize.Height + " ");
 
                     // resize image
                     sysImg = (System.Drawing.Image)(new System.Drawing.Bitmap(sysImg, newSize));
 
-                    // this is really silly and slooooow but works for now.
-                    // write System.Drawing.Image to disk and re-read as iTextSharp.Image...
-                    // TODO at least only write to memory... didnt get that to work yet.
-                    sysImg.Save("temp.jpg");
-                    Image img = Image.GetInstance("temp.jpg");
+                    Image img = sysImageToITextImage(sysImg);
 
                     // apply scale as defined in .mcf
                     img.ScalePercent(imgArea.scale * 100.0f * scale);
@@ -271,7 +268,7 @@ namespace Cewe2pdf {
 
                     // Render text background if not transparent
                     if (!textArea.backgroundcolor.EndsWith("00")) {
-                        Log.Info("Rendering Text background: '" + textArea.backgroundcolor + "'.");
+                        Log.Info("Rendering Text background: color=" + textArea.backgroundcolor);
 
                         canvas.Rectangle(pX, pY, textArea.rect.Width, textArea.rect.Height);
                         canvas.SetColorFill(argb2BaseColor(textArea.backgroundcolor));
@@ -468,9 +465,7 @@ namespace Cewe2pdf {
         }
 
         private static iTextSharp.text.Image sysImageToITextImage(System.Drawing.Image pImg) {
-            // TODO: FIXME: avoid writing jpg to disk. Silly workaround for now.
-            pImg.Save("temp.jpg");
-            return Image.GetInstance("temp.jpg");
+            return Image.GetInstance(pImg, BaseColor.WHITE);
         }
     }
 }
