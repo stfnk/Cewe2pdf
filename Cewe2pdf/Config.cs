@@ -1,72 +1,113 @@
 ﻿using iTextSharp.text;
+using Org.BouncyCastle.Crypto.Engines;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 
 namespace Cewe2pdf {
 
     class Config {
 
-        // defaults
+        // default config settings
         private static readonly string[] DEFAULT_PROGRAM_PATHS = new string[] {
-            // TODO: make this compatible with other OSs
-            "C://Program Files//CEWE//CEWE Fotowelt//",
-            "C://Program Files (x86)//CEWE//CEWE Fotowelt//",
+            "C://Program Files//CEWE//CEWE Fotowelt",
+            "C://Program Files (x86)//CEWE//CEWE Fotowelt",
 
             "C://Program Files//CEWE//Mein CEWE FOTOBUCH",
             "C://Program Files (x86)//CEWE//Mein CEWE FOTOBUCH",
 
-            "C://Program Files//CEWE Fotowelt//",
-            "C://Program Files (x86)//CEWE Fotowelt//",
+            "C://Program Files//CEWE Fotowelt",
+            "C://Program Files (x86)//CEWE Fotowelt",
 
-            "C://Program Files//CEWE Photoworld//",
-            "C://Program Files (x86)//CEWE Photoworld//",
+            "C://Program Files//CEWE Photoworld",
+            "C://Program Files (x86)//CEWE Photoworld",
 
-            "C://Program Files//CEWE//",
-            "C://Program Files (x86)//CEWE//",
+            "C://Program Files//CEWE",
+            "C://Program Files (x86)//CEWE",
         };
         private const int DEFAULT_TO_PAGE = 0;
         private const float DEFAULT_IMG_SCALE = 1.0f;
 
-        // simple custom file format syntax:
-        //    identifier=value;
-        //    # indicates comment lines
-        private const string CONFIG_PATH = "config.txt";
+        // config options available to config.txt and commmandline parser
+        public static readonly Dictionary<string, string> optionList = new Dictionary<string, string>() {
+            { "program_path="+"\"C:\\Program Files\"", "Path to the cewe software installation." },
+            { "to_page="+DEFAULT_TO_PAGE, "Number of pages to convert. 0 converts all pages."},
+            { "img_scale="+DEFAULT_IMG_SCALE, "Pixel size of images in pdf. Use smaller values for higher resolution images." },
+        };
 
-        // actual values used by program,
-        // either loaded from cmd args, config file or default constants
-        public static string programPath; // (required) path to installation folder
-        public static int toPage;
-        public static float imgScale;
+        public static string ProgramPath { get; private set; } = "";
+        public static int ToPage { get; set; } = -1;
+        public static float ImgScale { get; set; } = -1.0f;
 
-        // store user-defined (via config file) background id colors
-        public static Dictionary<string, BaseColor> bgColors = new Dictionary<string, BaseColor>();
+        public static void setMissingFromOptions(string[] pOptions) {
+            foreach (string option in pOptions) {
+                if (!option.Contains("=")) {
+                    Log.Error("invalid option: '" + option + "'.");
+                    continue;
+                }
+                string[] tokens = option.Split("=");
+                string key = toPascalCase(tokens.First());
+                string value = tokens.Last();
+                PropertyInfo info = typeof(Config).GetProperty(key);
+                if (info == null) {
+                    Log.Warning("property '" + option + "' does not exist. Skipping.");
+                    continue;
+                }
 
-        // sets config to default constants
-        private static void setToDefaults() {
-            // check all default locations
-            foreach (string path in DEFAULT_PROGRAM_PATHS) {
-                if (System.IO.Directory.Exists(path + "//Resources//")) {
-                    programPath = path;
-                    break;
+                // property exists. Let's parse it.
+                string type = info.PropertyType.Name;
+                switch (type) {
+                    case "String":
+                        if (String.IsNullOrWhiteSpace((string)info.GetValue(null))) {
+                            info.SetValue(null, value.Replace("\"",""));
+                            Log.Info("Set '" + key + "' to '" + value + "'.");
+                        }
+                        break;
+                    case "Int32":
+                        if ((int)info.GetValue(null) < 0) {
+                            int i32 = Convert.ToInt32(value);
+                            info.SetValue(null, i32);
+                            Log.Info("Set '" + key + "' to '" + value + "'.");
+                        }
+                        break;
+                    case "Single":
+                        if ((float)info.GetValue(null) < 0.0f) {
+                            float single = float.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                            info.SetValue(null, single);
+                            Log.Info("Set '" + key + "' to '" + value + "'.");
+                        }
+                        break;
+                    default:
+                        Log.Warning("Unhandled type: '" + type + "'.");
+                        break;
                 }
             }
-            toPage = DEFAULT_TO_PAGE;
-            imgScale = DEFAULT_IMG_SCALE;
+        } 
+
+        public static void setMissingToDefaults() {
+            Log.Info("Loading config defaults...");
+
+            // some extra handling for program path in case given is invalid or null try default paths
+            if (!System.IO.Directory.Exists(ProgramPath + "//Resources")) {
+                foreach (string path in DEFAULT_PROGRAM_PATHS) {
+                    if (System.IO.Directory.Exists(path + "//Resources")) {
+                        ProgramPath = path;
+                        break;
+                    }
+                }
+            }
+            setMissingFromOptions(optionList.Keys.ToArray());
         }
 
-        // read the config file if existant
-        public static void initialize() {
+        public static void setMissingFromFile(string pFile) {
 
-            // assure valid values in all fields
-            setToDefaults();
-
-            // check if file exists, otherwise abort reading & keep defaults
-            if (!System.IO.File.Exists(CONFIG_PATH)) {
-                Log.Warning("No '" + CONFIG_PATH + "' file found, using defaults.");
+            // check if file exists, otherwise abort
+            if (!System.IO.File.Exists(pFile)) {
+                Log.Warning("Config file at: '" + pFile + "' not found, falling back to defaults.");
                 return;
             } else {
-                Log.Info("Reading config from '" + CONFIG_PATH + "'...");
+                Log.Info("Loading config from '" + pFile + "'...");
             }
 
             string line;
@@ -74,11 +115,13 @@ namespace Cewe2pdf {
 
             // read config file
             try {
-                file = new System.IO.StreamReader(CONFIG_PATH);
+                file = new System.IO.StreamReader(pFile);
             } catch (System.Exception e) {
                 Log.Error("Reading config file failed with error: '" + e.Message + "'");
                 return;
             }
+
+            List<string> options = new List<string>();
 
             while ((line = file.ReadLine()) != null) {
                 // ignore comment & blank lines
@@ -97,44 +140,31 @@ namespace Cewe2pdf {
                     continue;
                 }
 
-                switch (tokens.First()) {
-                    case "program_path":
-                        string wantedProgramPath = tokens.Last().Replace(";", "");
-                        // is this a valid path?
-                        if (!System.IO.Directory.Exists(wantedProgramPath)) Log.Warning("program_path (" + wantedProgramPath + ") loaded from file is invalid.");
-                        else programPath = wantedProgramPath;
-                        Log.Info("   program_path: '" + programPath + "'");
-                        break;
-                    case "to_page":
-                        toPage = Convert.ToInt32(tokens.Last().Replace(";", ""));
-                        Log.Info("   to_page: " + toPage);
-                        break;
-                    case "img_scale":
-                        imgScale = (float)Convert.ToDouble(tokens.Last().Replace(";", "").Replace(".", ","));
-                        Log.Info("   img_scale: " + imgScale);
-                        break;
-
-                    case "bg_color_id":
-                        string[] col = tokens.Last().Split(":");
-                        string argb = col.Last().Replace(";", "");
-                        if (argb.Length != 9) {
-                            Log.Error("bg_color_id format wrong. Expected html style argb (#aarrggbb), got '" + argb + "'.");
-                            continue;
-                        }
-                        bgColors.TryAdd(col.First(), pdfWriter.argb2BaseColor(argb));
-                        break;
-
-                    default:
-                        if (String.IsNullOrWhiteSpace(tokens.First())) continue;
-                        Log.Warning("Unexpected token '" + tokens.First() + "' skipping...");
-                        break;
-                }
+                options.Add(line);   
             }
-
             file.Close();
 
-            if (bgColors.Count > 0)
-                Log.Info("Registered " + bgColors.Count + " additional background colors.");
+            setMissingFromOptions(options.ToArray());
+        }
+
+        public static string print() {
+            string log = "Config:";
+            foreach (PropertyInfo info in typeof(Config).GetProperties()) {
+                log += "\n\t\t" + info.Name + "=" + info.GetValue(null).ToString();
+            }
+            return log;
+        }
+
+        public static string toPascalCase(string pSnakeCase) {
+            // TODO not reliable. // TODO move to utils class?
+            string[] words = pSnakeCase.ToLower().Split("_");
+            string camelCase = "";
+            foreach (string word in words) {
+                if (String.IsNullOrWhiteSpace(word)) continue;
+                string upperfirst = word.Substring(0, 1).ToUpper();
+                camelCase += upperfirst + word.Substring(1); 
+            }
+            return camelCase;
         }
     }
 }

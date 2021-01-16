@@ -1,5 +1,4 @@
-﻿using iTextSharp.text;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -16,7 +15,7 @@ namespace Cewe2pdf {
             Log.Info("Initializing DesignIdConverter");
             _idPaths = new Dictionary<string, string>();
 
-            string path = Config.programPath + "\\Resources\\ls-R";
+            string path = Config.ProgramPath + "\\Resources\\ls-R";
 
             // check if path is valid
             if (!System.IO.File.Exists(path)) {
@@ -83,7 +82,7 @@ namespace Cewe2pdf {
                 return null;
             }
 
-            path = Config.programPath + "//Resources//" + path;
+            path = Config.ProgramPath + "//Resources//" + path;
 
             if (!System.IO.File.Exists(path)) {
                 Log.Error("DesignID file at: '" + path + "' does not exist.");

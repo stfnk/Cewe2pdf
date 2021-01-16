@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace Cewe2pdf {
 
@@ -6,6 +8,8 @@ namespace Cewe2pdf {
         public static readonly string version = "v0.3.0-alpha4";
         public static string mcfPath = "";
         public static string pdfPath = "";
+
+        private const string CONFIG_PATH = "config.txt";
 
         static void Main(string[] args) {
 
@@ -17,16 +21,9 @@ namespace Cewe2pdf {
             Log.Message("Cewe2pdf " + version + " [Release]");
 #endif
 
-            // initializes config with either defaults or from config file
-            Config.initialize();
-
-            if (String.IsNullOrWhiteSpace(Config.programPath)) {
-                Log.Error("Cewe Installation directory not found. Please specify installation folder in config.txt next to Cewe2pdf.exe."); // TODO: add manual link explaining config file.
-                return;
-            }
-
-            // overwrites config with arguments if given
-            CmdArgParser.parse(args);
+            List<string> cmdoptions;
+            
+            if (!CmdArgParser.parse(args, out cmdoptions)) return;
 
             // check for valid input file
             if (String.IsNullOrWhiteSpace(mcfPath)) { Log.Error("No input.mcf file specified."); return; }
@@ -34,12 +31,18 @@ namespace Cewe2pdf {
 
             // allow only input file as argument
             if (String.IsNullOrWhiteSpace(pdfPath)) pdfPath = mcfPath.Replace(".mcf", "-converted.pdf");
+            
+            // set config settings
+            Config.setMissingFromOptions(cmdoptions.ToArray());
+            Config.setMissingFromFile(CONFIG_PATH);
+            Config.setMissingToDefaults();
 
-            Log.Info("Config used:"
-                + "\n\t\t installation dir: " + Config.programPath
-                + "\n\t\t to page: " + Config.toPage
-                + "\n\t\t quality: " + Config.imgScale
-                );
+            Log.Info("Using " + Config.print());
+
+            if (String.IsNullOrWhiteSpace(Config.ProgramPath) || !System.IO.Directory.Exists(Config.ProgramPath + "//Resources")) {
+                Log.Error("Cewe Installation directory not found. Please specify installation folder in config.txt next to Cewe2pdf.exe. Check (https://github.com/stfnk/Cewe2pdf#troubleshooting) for more information.");
+                return;
+            }
 
             // for user information only
             System.Diagnostics.Stopwatch timer = System.Diagnostics.Stopwatch.StartNew();
@@ -51,14 +54,14 @@ namespace Cewe2pdf {
             mcfParser parser = new mcfParser(mcfPath);
             pdfWriter writer = new pdfWriter(pdfPath);
 
-            if (Config.toPage > 0)
-                Log.Message("Converting " + Config.toPage.ToString() + " pages.");
+            if (Config.ToPage > 0)
+                Log.Message("Converting " + Config.ToPage.ToString() + " pages.");
 
             Log.Message("Starting conversion. This may take several minutes.");
 
             // for user information
             int count = 0;
-            int pageCount = Config.toPage > 0 ? Config.toPage : parser.pageCount();
+            int pageCount = Config.ToPage > 0 ? Config.ToPage : parser.pageCount();
 
             //  iterate through all pages
             while (true) {
@@ -69,14 +72,14 @@ namespace Cewe2pdf {
                 writer.writePage(next);
                 float pageTime = (timer.ElapsedMilliseconds - lastTime) / 1000.0f;
                 count++;
-                if (count == Config.toPage) break;
+                if (count == Config.ToPage) break;
                 Log.Message("\tremaining: ~" + MathF.Ceiling(timer.ElapsedMilliseconds / count * (pageCount - count) / 1000.0f / 60.0f).ToString() + " minutes.");
             }
 
             // close files
             Log.Message("Writing '" + pdfPath + "'.");
             writer.close();
-            Log.Message("Conversion finished in " + timer.ElapsedMilliseconds/1000.0f + " seconds.");
+            Log.Message("Conversion finished after " + timer.ElapsedMilliseconds/1000.0f + " seconds.");
             Log.writeLogFile();
         }
     }

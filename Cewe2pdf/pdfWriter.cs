@@ -34,7 +34,7 @@ namespace Cewe2pdf {
             Log.Info("Loading fonts from " + fontPath);
             FontFactory.RegisterDirectory(fontPath);
 
-            string cwfontPath = Config.programPath + "\\Resources\\photofun\\fonts";
+            string cwfontPath = Config.ProgramPath + "\\Resources\\photofun\\fonts";
             Log.Info("Loading fonts from " + cwfontPath);
             FontFactory.RegisterDirectory(cwfontPath);
 
@@ -197,7 +197,7 @@ namespace Cewe2pdf {
                     ExifRotate(sysImg);
 
                     // calculate resizing factor, results in equal pixel density for all images.
-                    float scale = 1f / imgArea.scale * Config.imgScale; // the higher this value, the lower pixel density is. 0.0f = original resolution
+                    float scale = 1f / imgArea.scale * Config.ImgScale; // the higher this value, the lower pixel density is. 0.0f = original resolution
                     scale = scale < 1.0f ? 1.0f : scale; // never scale image up
 
                     // resize image

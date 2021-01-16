@@ -1,45 +1,66 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 namespace Cewe2pdf
 {
     class CmdArgParser {
-        public static void parse(string[] args)
+        public static bool parse(string[] args, out List<string> options)
         {
-            // handle arguments, overwriting config
+            options = new List<string>();
+
+            // handle arguments
             for (int i = 0; i < args.Length; i++)
             {
-                if (args[i] == "-h" || args[i] == "--help")
-                {
+
+                if (args[i] == "-h" || args[i] == "-help") {
+                    string optList = "";
+                    int padLen = 32;
+                    foreach (KeyValuePair<string, string> opt in Config.optionList) {
+                        string cmd = "-" + opt.Key; // TODO: pad for nicer formating
+                        cmd = cmd.PadLeft(padLen);
+
+                        optList += "\t" + cmd + " | " + opt.Value + "\n";
+                    }
                     Console.WriteLine(
-                      "\n  Cewe2pdf usage:\n"
-                      + "\n\t    argument | description\n"
-                      + "\n\t    'in.mcf' | input file to convert (required)"
-                      + "\n\t   'out.pdf' | output file to generate (optional)"
-                      + "\n\t  -to-page 0 | convert only up to this page nr, 0 converts all."
-                      + "\n\t-quality 1.0 | pixel size of images. Use lower value for higher resolution images in .pdf."
-                      + "\n\t-h || --help | lists all arguments."
+                      "  Cewe2pdf usage: "
+                      + "'Cewe2pdf.exe \"path/to/input.mcf\" \"optional/path/to/result.pdf\" -to_page=0'\n"
+                      + "\n\t" + "argument".PadLeft(padLen) + " | description\n"
+                      + "\n\t" + "\"in.mcf\"".PadLeft(padLen) + " | input file to convert (required)"
+                      + "\n\t" + "\"out.pdf\"".PadLeft(padLen) + " | output file to generate (optional)"
+                      + "\n\n"
+                      + optList
+                      + "\n\t" + "-help || -h".PadLeft(padLen) + " | lists all arguments"
+                      + "\n\t" + "-version || -v".PadLeft(padLen) + " | prints program version"
+                      + "\n\t" + "-verbose".PadLeft(padLen) + " | enables info level console output (default for Debug builds"
+                      + "\n\t" + "-silent".PadLeft(padLen) + " | enables error level console output (default for Release builds)"
                     );
-                    break;
-                }
-                else if (args[i].EndsWith(".mcf")) Program.mcfPath = args[i];
+                    return false;
+                } else if (args[i].EndsWith(".mcf")) Program.mcfPath = args[i];
                 else if (args[i].EndsWith(".pdf")) Program.pdfPath = args[i];
-                else if (args[i] == "-to-page")
-                {
-                    i++;
-                    if (i < args.Length) Config.toPage = Math.Max(0, Convert.ToInt32(args[i]));
-                }
-                else if (args[i] == "-quality")
-                {
-                    i++;
-                    if (i < args.Length) Config.imgScale = Math.Clamp(float.Parse(args[i], System.Globalization.CultureInfo.InvariantCulture), 0.0f, 100.0f);
-                }
-                else
-                {
-                    Log.Warning("invalid argument: '" + args[i] + "'.");
+                else if (args[i] == "-verbose") Log.level = Log.Level.Info;
+                else if (args[i] == "-silent") Log.level = Log.Level.Error;
+                else if (args[i] == "-v" || args[i] == "-version") {
+                    // printed by default, dont run software
+                    return false;
+                } else {
+                    if (args[i].StartsWith("-")) {
+                        // check if arg is available in options
+                        foreach (string opt in Config.optionList.Keys) {
+                            string argop = args[i].Substring(1); // remove leading "-"
+                            if (argop.StartsWith(opt.Split("=").First())) {
+                                options.Add(argop);
+                                break;
+                            }
+                        }
+                    } else {
+                        Log.Warning("invalid argument: '" + args[i] + "'.");
+                    }
                 }
             }
+
+            return true;
         }
     }
 }
