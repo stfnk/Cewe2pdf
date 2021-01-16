@@ -15,8 +15,13 @@ namespace Cewe2pdf {
         public pdfWriter(string pOutPath) {
             // TODO add more exception checking...
 
-            // Open file stream for exported pdf
-            _fileStream = new System.IO.FileStream(pOutPath, System.IO.FileMode.Create);
+            try {
+                // Open file stream for exported pdf
+                _fileStream = new System.IO.FileStream(pOutPath, System.IO.FileMode.Create);
+            } catch(Exception e) {
+                Log.Error("Creating pdf file at: '" + pOutPath + "' failed with error: '" + e.Message + "'.");
+                return;
+            }
 
             // initialize iTextSharp pdf writer
             _writer = PdfWriter.GetInstance(_doc, _fileStream);
@@ -58,8 +63,13 @@ namespace Cewe2pdf {
             _doc.SetPageSize(new Rectangle(0f, 0f, pPage.bundleSize.X, pPage.bundleSize.Y));
 
             // handle first page case
-            if (!_doc.IsOpen()) _doc.Open();
-            else _doc.NewPage();
+            try {
+                if (!_doc.IsOpen()) _doc.Open();
+                else _doc.NewPage();
+            } catch(Exception e) {
+                Log.Error("Creating pdf page failed with error: '" + e.Message + "'.");
+                return;
+            }
 
 
             PdfContentByte canvas = _writer.DirectContent;
@@ -175,6 +185,7 @@ namespace Cewe2pdf {
                         canvas.Rectangle(nullRect);
 
                         Log.Error("Image path was null. Probably caused by an empty image area.");
+                        canvas.RestoreState();
                         continue;
                     }
 
@@ -190,6 +201,7 @@ namespace Cewe2pdf {
                         else {
                             Log.Error("Loading image failed wit error: '" + e.Message + "'");
                         }
+                        canvas.RestoreState();
                         continue;
                     }
 
@@ -266,6 +278,7 @@ namespace Cewe2pdf {
                     // just in case something went wrong
                     if (String.IsNullOrWhiteSpace(textArea.text)) {
                         Log.Error("Text was empty.");
+                        canvas.RestoreState();
                         continue;
                     } else {
                         Log.Info("Rendering Text: font=" + textArea.font + "; size=" + textArea.fontsize + "; align=" + textArea.align + "; valign=" + textArea.valign);

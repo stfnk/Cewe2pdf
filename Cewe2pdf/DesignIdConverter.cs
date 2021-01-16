@@ -9,6 +9,7 @@ namespace Cewe2pdf {
         private static Dictionary<string, string> _idPaths;
 
         public static void initDesignIdDatabase() {
+            //TODO: design ids should be searched for on demand an then cached. No need to store all paths... 
 
             System.Diagnostics.Debug.Assert(_idPaths == null);
 
@@ -42,7 +43,7 @@ namespace Cewe2pdf {
                     string id = line.Split("/").Last().Split(".").First();
                     //Log.Info("Register ID: " + id + " at: " + line);
                     id = id.Split("-").Last(); // some ids have names... keep only the id number...
-                    _idPaths.TryAdd(id, line);
+                    _idPaths.TryAdd(id, Config.ProgramPath + "//Resources//" + line);
                 }
             }
 
@@ -53,11 +54,11 @@ namespace Cewe2pdf {
                 Log.Info("Loading DesignIDs from '" + dlpath + "'.");
                 foreach (string addfile in filenames) {
                     if (addfile.EndsWith(".jpg") || addfile.EndsWith(".bmp") || addfile.EndsWith(".webp")) {
-                        Log.Info("\t found '" + addfile + "'");
-                        string id = addfile.Split("/").Last().Split(".").First();
+                        string id = addfile.Split("\\").Last().Split(".").First();
                         //Log.Info("Register ID: " + id + " at: " + line);
                         id = id.Split("-").Last(); // some ids have names... keep only the id number...
-                        _idPaths.TryAdd(id, addfile);
+                        Log.Info("\t found id: '" + id + "' at: '" + addfile + "'");
+                        _idPaths.Add(id, addfile);
                     }
                 }
             } else {
@@ -82,7 +83,7 @@ namespace Cewe2pdf {
                 return null;
             }
 
-            path = Config.ProgramPath + "//Resources//" + path;
+            //path = Config.ProgramPath + "//Resources//" + path;
 
             if (!System.IO.File.Exists(path)) {
                 Log.Error("DesignID file at: '" + path + "' does not exist.");
