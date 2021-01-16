@@ -274,6 +274,7 @@ namespace Cewe2pdf {
                     // iTextSharp textbox
                     ColumnText colText = new ColumnText(canvas);
 
+
                     // calculate rect
                     float llx = textArea.rect.X;
                     float lly = pPage.bundleSize.Y - textArea.rect.Y - textArea.rect.Height;
@@ -303,15 +304,6 @@ namespace Cewe2pdf {
                     else
                         Log.Warning("Unhandled text align: '" + textArea.align + "'.");
 
-                    if (textArea.valign == "ALIGNVCENTER")
-                        par.Alignment = Element.ALIGN_MIDDLE;
-                    else if (textArea.valign == "ALIGNVTOP")
-                        par.Alignment = Element.ALIGN_TOP;
-                    else if (textArea.valign == "ALIGNVBOTTOM")
-                        par.Alignment = Element.ALIGN_BOTTOM;
-                    else
-                        Log.Warning("Unhandled text vertical align: '" + textArea.valign + "'.");
-
                     // add text chunks
                     foreach (TextElement elem in textArea.textElements) {
                         int style = 0;
@@ -323,8 +315,28 @@ namespace Cewe2pdf {
                         par.Add(new Chunk(elem.text + (elem.newline ? "\n" : " "), fnt));
                     }
 
+                    int valign = 0; 
+                    if (textArea.valign == "ALIGNVCENTER")
+                        valign = Element.ALIGN_MIDDLE;
+                    else if (textArea.valign == "ALIGNVTOP")
+                        valign = Element.ALIGN_TOP;
+                    else if (textArea.valign == "ALIGNVBOTTOM")
+                        valign = Element.ALIGN_BOTTOM;
+                    else
+                        Log.Warning("Unhandled text vertical align: '" + textArea.valign + "'.");
+
+                    // v align needs a table...
+                    PdfPTable table = new PdfPTable(1);
+                    table.SetWidths(new int[] { 1 });
+                    table.WidthPercentage = 100;
+                    table.AddCell(new PdfPCell(par) {
+                        HorizontalAlignment = par.Alignment,
+                        VerticalAlignment = valign,
+                        FixedHeight = textArea.rect.Height,
+                    });
+
                     // add paragraph to textbox
-                    colText.AddElement(par);
+                    colText.AddElement(table);
 
                     // draw textbox
                     colText.Go();
