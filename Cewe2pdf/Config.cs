@@ -37,8 +37,8 @@ namespace Cewe2pdf {
         };
 
         public static string ProgramPath { get; private set; } = "";
-        public static int ToPage { get; set; } = -1;
-        public static float ImgScale { get; set; } = -1.0f;
+        public static int ToPage { get; private set; } = -1;
+        public static float ImgScale { get; private set; } = -1.0f;
 
         public static void setMissingFromOptions(string[] pOptions) {
             foreach (string option in pOptions) {
