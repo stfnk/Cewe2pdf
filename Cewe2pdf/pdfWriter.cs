@@ -43,12 +43,17 @@ namespace Cewe2pdf {
             Log.Info("Loading fonts from " + cwfontPath);
             FontFactory.RegisterDirectory(cwfontPath);
 
-            const string pdataPath = "C:\\ProgramData\\hps\\6822\\photofun\\fonts"; // FIXME ^^
-            if (System.IO.Directory.Exists(pdataPath)) {
-                Log.Info("Loading fonts from " + pdataPath);
-                FontFactory.RegisterDirectory(pdataPath);
+            // recursivly search for fonts folders in full hps path
+            const string hpsPath = "C:\\ProgramData\\hps"; // FIXME ^^
+            if (System.IO.Directory.Exists(hpsPath)) {
+                Log.Info("Searching for fonts directory at " + hpsPath);
+                string[] fontDirs = System.IO.Directory.GetDirectories(hpsPath, "fonts", System.IO.SearchOption.AllDirectories);
+                foreach (string dir in fontDirs) {
+                    Log.Info("Loading fonts from: '" + dir + "'.");
+                    FontFactory.RegisterDirectory(dir);
+                }
             } else {
-                Log.Warning("Font directory at: '" + pdataPath + "' does not exist. Skipping.");
+                Log.Warning("Directory at: '" + hpsPath + "' does not exist. Skipping.");
             }
 
             Log.Info("Found " + FontFactory.RegisteredFonts.Count + " fonts.");
