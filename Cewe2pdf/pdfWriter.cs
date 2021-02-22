@@ -472,7 +472,17 @@ namespace Cewe2pdf {
         }
 
         private static iTextSharp.text.Image sysImageToITextImage(System.Drawing.Image pImg) {
-            return Image.GetInstance(pImg, BaseColor.WHITE);
+            try {
+                using (var ms = new MemoryStream()) {
+                    pImg.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    byte[] bytes = ms.ToArray();
+                    return Image.GetInstance(bytes);
+                }
+            } catch (Exception e) {
+                Log.Error("Converting image failed with error: '" + e.Message + "'. Falling back to temp.jpg.");
+                pImg.Save("temp.jpg");
+                return Image.GetInstance("temp.jpg");
+            }
         }
     }
 }
