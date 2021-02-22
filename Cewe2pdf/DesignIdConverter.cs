@@ -6,7 +6,7 @@ using System.Linq;
 namespace Cewe2pdf {
     class DesignIdConverter {
 
-        private static Dictionary<string, string> _idCache = new Dictionary<string, string>();
+        private static Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
         private static Dictionary<string, string> _resourceList;
 
         public static void initResourceList() {
@@ -45,28 +45,17 @@ namespace Cewe2pdf {
         }
 
         private static string getPath(string pId) {
-            // check if id is already loaded in cache
-            if (_idCache.ContainsKey(pId)) {
-                Log.Info("Loaded DesignID '" + pId + "' from cache.");
-                return _idCache[pId];
-            }
-
-            // no yet in cache. Search it.
             string path;
 
             // in installation
             path = getIdPathFromInstallation(pId);
             if (!String.IsNullOrWhiteSpace(path)) {
-                _idCache.Add(pId, path);
-                Log.Info("Added DesignID '" + pId + "' at '" + path + "' to cache.");
                 return path;
             }
 
             // in downloaded content
             path = getIdPathFromProgramData(pId);
             if (!String.IsNullOrWhiteSpace(path)) {
-                _idCache.Add(pId, path);
-                Log.Info("Added DesignID '" + pId + "' at '" + path + "' to cache.");
                 return path;
             }
 
@@ -110,7 +99,12 @@ namespace Cewe2pdf {
             return "";
         }
 
-        public static Bitmap getBitmapFromID(string pId) {
+        public static Image getImageFromID(string pId) {
+            if (_imageCache.ContainsKey(pId)) {
+                Log.Info("Using cached image for Design ID '" + pId + "'");
+                return _imageCache[pId];
+            }
+
             string path = getPath(pId);
 
             if (String.IsNullOrWhiteSpace(path)) {
@@ -129,23 +123,29 @@ namespace Cewe2pdf {
                 // load webp
                 try {
                     WebPWrapper.WebP webP = new WebPWrapper.WebP();
-                    return webP.Load(path);
-                } catch (Exception e) {
-                    Log.Error("Loading '" + path + "' failed with error: '" + e.Message + "'.");
-                    return null;
-                }
-            } else if (path.EndsWith(".bmp") || path.EndsWith(".jpg") || path.EndsWith(".png") || path.EndsWith(".JPG")) {
-                // load image
-                try {
-                    return (Bitmap)System.Drawing.Image.FromFile(path);
+                    Image bm = webP.Load(path);
+                    addToImageCache(pId, bm);
+                    return bm;
                 } catch (Exception e) {
                     Log.Error("Loading '" + path + "' failed with error: '" + e.Message + "'.");
                     return null;
                 }
             } else {
-                Log.Error("Unsupported DesignID format: " + path);
-                return null;
+                // load image
+                try {
+                    Image bm = Image.FromFile(path);
+                    addToImageCache(pId, bm);
+                    return bm;
+                } catch (Exception e) {
+                    Log.Error("Loading '" + path + "' failed with error: '" + e.Message + "'.");
+                    return null;
+                }
             }
+        }
+
+        private static void addToImageCache(string pId, Image pImg) {
+            // TODO: add a (memory) limit to cache size?
+            _imageCache.Add(pId, pImg);
         }
     }
 }

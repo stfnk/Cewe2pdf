@@ -2,6 +2,8 @@
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
+using System.Dynamic;
+using System.IO;
 using System.Linq;
 
 namespace Cewe2pdf {
@@ -88,13 +90,13 @@ namespace Cewe2pdf {
                 canvas.Fill();
 
                 string id = pPage.backgroundLeft;
-                System.Drawing.Bitmap bmp = DesignIdConverter.getBitmapFromID(id);
-                if (bmp == null) {
+                System.Drawing.Image sysImg = DesignIdConverter.getImageFromID(id);
+                if (sysImg == null) {
                     Log.Error("Background image for id '" + id + "' was null.");
                     canvas.SetColorFill(BaseColor.MAGENTA);
                     canvas.Fill();
                 } else {
-                    Image img = sysImageToITextImage(bmp);
+                    Image img = sysImageToITextImage(sysImg);
 
                     float facY = pPage.bundleSize.Y / img.PlainHeight;
                     float facX = pPage.bundleSize.X / img.PlainWidth;
@@ -124,13 +126,13 @@ namespace Cewe2pdf {
                 canvas.Fill();
 
                 string id = pPage.backgroundRight;
-                System.Drawing.Bitmap bmp = DesignIdConverter.getBitmapFromID(id);
-                if (bmp == null) {
+                System.Drawing.Image sysImg = DesignIdConverter.getImageFromID(id);
+                if (sysImg == null) {
                     Log.Error("Background image for id '" + id + "' was null.");
                     canvas.SetColorFill(BaseColor.MAGENTA);
                     canvas.Fill();
                 } else {
-                    Image img = sysImageToITextImage(bmp);
+                    Image img = sysImageToITextImage(sysImg);
 
                     float facY = pPage.bundleSize.Y / img.PlainHeight;
                     float facX = pPage.bundleSize.X / img.PlainWidth;
