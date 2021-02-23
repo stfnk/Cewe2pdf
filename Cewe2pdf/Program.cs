@@ -63,7 +63,7 @@ namespace Cewe2pdf {
             while (true) {
                 Page next = parser.nextPage();
                 if (next == null) break; // reached end of book
-                Log.Message("[" + (count / (float)pageCount * 100).ToString("F1") + "%]\tprocessing Page " + (count + 1) + "/" + pageCount + "...", false);
+                Log.Message("[" + (Math.Min(count / (float)pageCount * 100, 100.0f)).ToString("F1") + "%]\tprocessing Page " + Math.Min(count + 1, pageCount) + "/" + pageCount + "...", false);
                 long lastTime = timer.ElapsedMilliseconds;
                 writer.writePage(next);
                 float pageTime = (timer.ElapsedMilliseconds - lastTime) / 1000.0f;

@@ -116,7 +116,7 @@ namespace Cewe2pdf {
                 Log.Error("DesignID file at: '" + path + "' does not exist.");
                 return null;
             } else {
-                Log.Info("Loading DesignID from path: " + path);
+                Log.Info("Loading DesignID: " + path.Split("/").Last());
             }
 
             if (path.EndsWith(".webp")) {

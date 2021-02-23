@@ -220,9 +220,6 @@ namespace Cewe2pdf {
 
                     System.Drawing.Size newSize = new System.Drawing.Size((int)(sysImg.Width / scale), (int)(sysImg.Height / scale));
 
-                    string imgType = area is ImageBackgroundArea ? "ImageBackground" : "Image";
-                    Log.Info("Rendering " + imgType + ": original size=" + sysImg.Width + "x" + sysImg.Height + "; scaled size=" + newSize.Width + "x" + newSize.Height + " ");
-
                     // resize image
                     sysImg = (System.Drawing.Image)(new System.Drawing.Bitmap(sysImg, newSize));
 
@@ -243,6 +240,13 @@ namespace Cewe2pdf {
 
                     // move to mcf specified position
                     cropped.SetAbsolutePosition(imgArea.rect.X, posY);
+
+                    string imgType = area is ImageBackgroundArea ? "ImageBackground" : "Image";
+                    Log.Info("Rendering " + imgType + " (." + imgArea.path.Split(".").Last() + "): " +
+                        "original: " + sysImg.Width + "x" + sysImg.Height + "; " +
+                        "scaled: " + newSize.Width + "x" + newSize.Height + "; " +
+                        "cropped: " + (int)cropped.Width + "x" + (int)cropped.Height + "; " +
+                        "at: " + (int)cropped.AbsoluteX + ", " + (int)cropped.AbsoluteY);
 
                     // draw the image
                     canvas.AddImage(cropped);

@@ -137,20 +137,20 @@ namespace Cewe2pdf {
 
             // log some photobook info from .mcf
             string loginfo = "";
-            loginfo += "\n<fotobook>";
-            loginfo += "\n\tart_id=" + getAttributeStr(_fotobook, "art_id", "null");
-            loginfo += "\n\tproductname=" + getAttributeStr(_fotobook, "productname", "null");
+            loginfo += "\n\t\t<fotobook>";
+            loginfo += "\n\t\t  art_id=" + getAttributeStr(_fotobook, "art_id", "null");
+            loginfo += "\n\t\t  productname=" + getAttributeStr(_fotobook, "productname", "null");
 
             XmlNode project = _fotobook.SelectSingleNode("project");
-            loginfo += "\n\t<project>";
-            loginfo += "\n\t\tcreatedWithHPSVersion=" + getAttributeStr(project, "createdWithHPSVersion", "null");
+            loginfo += "\n\t\t  <project>";
+            loginfo += "\n\t\t    createdWithHPSVersion=" + getAttributeStr(project, "createdWithHPSVersion", "null");
 
             XmlNode artcfg = _fotobook.SelectSingleNode("articleConfig");
-            loginfo += "\n\t<articleConfig>";
-            loginfo += "\n\t\tnormalpages=" + getAttributeStr(artcfg, "normalpages", "null");
-            loginfo += "\n\t\ttotalpages=" + getAttributeStr(artcfg, "totalpages", "null");
+            loginfo += "\n\t\t  <articleConfig>";
+            loginfo += "\n\t\t    normalpages=" + getAttributeStr(artcfg, "normalpages", "null");
+            loginfo += "\n\t\t    totalpages=" + getAttributeStr(artcfg, "totalpages", "null");
 
-            Log.Info("mcf content:" + loginfo);
+            Log.Info(".mcf content:" + loginfo);
 
             // initialize page list
             _pages = new List<XmlNode>();
