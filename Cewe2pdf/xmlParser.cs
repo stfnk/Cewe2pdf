@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Numerics;
@@ -17,6 +18,13 @@ namespace Cewe2pdf {
             return "[Area] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2");
         }
     };
+
+    class ClipartArea : Area {
+        public string designID;
+        public override string toString() {
+            return "[ClipartArea] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2") + "; designID: " + designID;
+        }
+    }
 
     class ImageArea : Area {
         public string path;
@@ -316,6 +324,21 @@ namespace Cewe2pdf {
                                             type = bgtype
                                         };
 
+                                        break;
+                                    }
+
+                                case "clipartarea": {
+
+                                        XmlNode clipart = node.SelectSingleNode("clipart");
+
+                                        // get the design id
+                                        string designID = getAttributeStr(clipart, "designElementId");
+
+                                        newArea = new ClipartArea() {
+                                            designID = designID
+                                        };
+
+                                        Log.Error("Found clipart: " + ((ClipartArea)newArea).designID);
                                         break;
                                     }
 
