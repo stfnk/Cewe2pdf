@@ -2,12 +2,15 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Security.Cryptography;
+using System.Xml;
 
 namespace Cewe2pdf {
     class DesignIdConverter {
 
         private static Dictionary<string, Image> _imageCache = new Dictionary<string, Image>();
         private static Dictionary<string, string> _resourceList;
+        private static Dictionary<string, string> _clipartList;
 
         public static void initResourceList() {
             if (_resourceList == null) {
@@ -37,10 +40,40 @@ namespace Cewe2pdf {
                         }
                     }
                 } catch (Exception e) {
-                    Log.Error("Loading Design IDs failed with Error: '" + e.Message + "'");
+                    Log.Error("Initializing Design ID database failed with Error: '" + e.Message + "'");
                 }
 
                 Log.Info("Added " + _resourceList.Count + " Design IDs to resource cache.");
+            }
+
+            if (_clipartList == null) {
+                _clipartList = new Dictionary<string, string>();
+                string path = Config.ProgramPath + "/Resources/photofun/decorations/"; // the folder containing all cliparts
+                string xmlList = path + "cliparts_default.xml"; // this file contains the mapping for .clp file name <-> designID
+
+                XmlDocument doc = new XmlDocument();
+                try {
+                    doc.Load(xmlList);
+                    Log.Info("Reading cliparts_default.xml");
+                } catch (Exception e) {
+                    Log.Error("Loading cliparts_default.xml failed with error: '" + e.Message + "'");
+                }
+
+                XmlNode decorations = doc.SelectSingleNode("decorations");
+
+                foreach (XmlNode decoration in decorations.ChildNodes) {
+                    XmlNode clipart = decoration.SelectSingleNode("clipart");
+                    string designID = mcfParser.getAttributeStr(clipart, "designElementId");
+                    string file = mcfParser.getAttributeStr(clipart, "file").Replace(".svg", ".clp");
+                    Console.WriteLine("registered clipart: " + designID + " at " + file);
+                    try {
+                        _clipartList.Add(designID, file);
+                    } catch (Exception e) {
+                        Log.Warning("Skipping clipart with id '" + designID + "' because: " + e.Message);
+                    }
+                }
+
+                Log.Info("Added " + _clipartList.Count + " clipart Design IDs to clipart cache");
             }
         }
 

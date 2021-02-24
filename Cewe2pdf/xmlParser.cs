@@ -338,7 +338,6 @@ namespace Cewe2pdf {
                                             designID = designID
                                         };
 
-                                        Log.Error("Found clipart: " + ((ClipartArea)newArea).designID);
                                         break;
                                     }
 
@@ -609,7 +608,7 @@ namespace Cewe2pdf {
             }
         }
 
-        float getAttributeF(XmlNode node, string name, float or = 0.0f) {
+        static public float getAttributeF(XmlNode node, string name, float or = 0.0f) {
             if (node == null) return or; // return default if node is null
             XmlNode attr = node.Attributes?.GetNamedItem(name);
             if (attr == null) return or; // return default if attribute does not exist
@@ -619,7 +618,7 @@ namespace Cewe2pdf {
             return (float)Convert.ToDouble(value.Replace(".", ",")) * SCALE;
         }
 
-        string getAttributeStr(XmlNode node, string name, string or = "") {
+        static public string getAttributeStr(XmlNode node, string name, string or = "") {
             if (node == null) return or; // return default if node is null
             XmlNode attr = node.Attributes?.GetNamedItem(name);
             if (attr == null) return or; // return default if attribute does not exist
