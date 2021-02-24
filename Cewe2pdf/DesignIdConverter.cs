@@ -2,7 +2,6 @@
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Xml;
 
 namespace Cewe2pdf {
@@ -65,15 +64,25 @@ namespace Cewe2pdf {
                     XmlNode clipart = decoration.SelectSingleNode("clipart");
                     string designID = mcfParser.getAttributeStr(clipart, "designElementId");
                     string file = mcfParser.getAttributeStr(clipart, "file").Replace(".svg", ".clp");
-                    Console.WriteLine("registered clipart: " + designID + " at " + file);
                     try {
                         _clipartList.Add(designID, file);
                     } catch (Exception e) {
-                        Log.Warning("Skipping clipart with id '" + designID + "' because: " + e.Message);
+                        Log.Warning("Skipping clipart with id '" + designID + "' (" + e.Message + ")");
                     }
                 }
 
                 Log.Info("Added " + _clipartList.Count + " clipart Design IDs to clipart cache");
+            }
+        }
+
+        public static string getClipartPath(string pId) {
+            try {
+                string name = _clipartList[pId];
+                string path = Config.ProgramPath + "/Resources/photofun/decorations/" + name;
+                return path;
+            } catch (Exception e) {
+                Log.Error("Path for clipart '" + pId + "' not found. (" + e.Message + ")");
+                return "";
             }
         }
 
