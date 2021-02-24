@@ -334,8 +334,25 @@ namespace Cewe2pdf {
                                         // get the design id
                                         string designID = getAttributeStr(clipart, "designElementId");
 
-                                        newArea = new ClipartArea() {
-                                            designID = designID
+                                        //newArea = new ClipartArea() {
+                                        //    designID = designID
+                                        //};
+
+                                        // FIXME HACK BAD
+                                        string convPath = "converted-" + designID + ".png";
+
+                                        clpFile loader = new clpFile();
+                                        loader.fromFile(DesignIdConverter.getClipartPath(designID));
+
+                                        Image img = loader.getImage();
+
+                                        Log.Info("Saving converted clipart as: " + convPath);
+                                        img.Save(convPath, System.Drawing.Imaging.ImageFormat.Png);
+
+                                        newArea = new ImageArea() {
+                                            path = convPath,
+                                            cutout = Vector2.Zero,
+                                            scale = 1.0f
                                         };
 
                                         break;
