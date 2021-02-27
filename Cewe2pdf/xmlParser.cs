@@ -346,8 +346,10 @@ namespace Cewe2pdf {
 
                                         Image img = loader.getImage();
 
-                                        Log.Info("Saving converted clipart as: " + convPath);
-                                        img.Save(convPath, System.Drawing.Imaging.ImageFormat.Png);
+                                        if (img == null) convPath = "NULL";
+                                        else img.Save(convPath, System.Drawing.Imaging.ImageFormat.Png);
+
+                                        Log.Info("Saved converted clipart as: " + convPath);
 
                                         newArea = new ImageArea() {
                                             path = convPath,

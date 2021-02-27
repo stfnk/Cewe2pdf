@@ -10,8 +10,9 @@ namespace Cewe2pdf {
         private string _svg;
 
         public Image getImage() {
+            if (_svg == null) return null;
             SvgDocument doc = SvgDocument.FromSvg<SvgDocument>(_svg);
-            Image img = doc.Draw((int)doc.Width*2,(int)doc.Height*2); // raster at double resolution for now
+            Image img = doc.Draw();
             return img;
         }
 
