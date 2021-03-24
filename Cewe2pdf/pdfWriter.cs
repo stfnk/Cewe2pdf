@@ -86,14 +86,22 @@ namespace Cewe2pdf {
             if (pPage.backgroundLeft != null) {
 
                 canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
+#if DEBUG || _DEBUG
                 canvas.SetColorFill(BaseColor.CYAN);
+#else
+                canvas.SetColorFill(BaseColor.WHITE);
+#endif
                 canvas.Fill();
 
                 string id = pPage.backgroundLeft;
                 System.Drawing.Image sysImg = DesignIdConverter.getImageFromID(id);
                 if (sysImg == null) {
                     Log.Error("Background image for id '" + id + "' was null.");
+#if DEBUG || _DEBUG
                     canvas.SetColorFill(BaseColor.MAGENTA);
+#else
+                    canvas.SetColorFill(BaseColor.WHITE);
+#endif
                     canvas.Fill();
                 } else {
                     Image img = sysImageToITextImage(sysImg);
@@ -122,14 +130,22 @@ namespace Cewe2pdf {
             if (pPage.backgroundRight != null) {
 
                 canvas.Rectangle(pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
+#if DEBUG || _DEBUG
                 canvas.SetColorFill(BaseColor.CYAN);
+                canvas.SetColorFill(BaseColor.WHITE);
+#endif
                 canvas.Fill();
 
                 string id = pPage.backgroundRight;
                 System.Drawing.Image sysImg = DesignIdConverter.getImageFromID(id);
                 if (sysImg == null) {
                     Log.Error("Background image for id '" + id + "' was null.");
+#if DEBUG || _DEBUG
                     canvas.SetColorFill(BaseColor.MAGENTA);
+#else
+                canvas.SetColorFill(BaseColor.WHITE);
+#endif
+                    canvas.Fill();
                     canvas.Fill();
                 } else {
                     Image img = sysImageToITextImage(sysImg);
@@ -179,7 +195,7 @@ namespace Cewe2pdf {
 
                     // if image path was not valid draw magenta outline and print error
                     if (imgArea.path == "NULL") {
-
+#if DEBUG || _DEBUG
                         // calculate rect dimensions
                         Rectangle nullRect = new Rectangle(pX, pY, pX + imgArea.rect.Width, pY + imgArea.rect.Height);
 
@@ -193,6 +209,7 @@ namespace Cewe2pdf {
 
                         Log.Error("Image path was null. Probably caused by an empty image area.");
                         canvas.RestoreState();
+#endif
                         continue;
                     }
 
