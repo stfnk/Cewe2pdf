@@ -384,6 +384,13 @@ namespace Cewe2pdf {
                                 Width = getAttributeF(position, "width"),
                                 Height = getAttributeF(position, "height")
                             };
+
+                            if (newArea is TextArea) {
+                                // Sometime text fails if not rounded
+                                newArea.rect.Width = (float)Math.Round(newArea.rect.Width);
+                                newArea.rect.Height = (float)Math.Round(newArea.rect.Height);
+                            }
+
                             newArea.rotation = getAttributeF(position, "rotation") / SCALE; // undo scale for rotation
 
                             // store new page in list
