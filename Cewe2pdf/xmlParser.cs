@@ -351,7 +351,7 @@ namespace Cewe2pdf {
 
                                         // construct new area
                                         newArea = new TextArea() {
-                                            textElements = extractTextFromHTMLv2(text.InnerText),
+                                            textElements = extractTextFromHTMLv2(text.InnerText, ref color),
                                             text = str,
                                             fontsize = fontSize,
                                             color = color,
@@ -474,7 +474,7 @@ namespace Cewe2pdf {
             return res;
         }
 
-        private List<TextElement> extractTextFromHTMLv2(string html) {
+        private List<TextElement> extractTextFromHTMLv2(string html, ref string? textAreaColor) {
 
             List<TextElement> ret = new List<TextElement>();
 
@@ -482,7 +482,7 @@ namespace Cewe2pdf {
             // html basically is xml so... parse it as xml
             XmlDocument doc = new XmlDocument();
             doc.LoadXml(html);
-
+            
             // the body object contains everything we need
             XmlNode body = doc.SelectSingleNode("html/body");
 
@@ -496,7 +496,7 @@ namespace Cewe2pdf {
             int fontSize = 48;
             int fontWeight = 400;
             string fontStyle = "normal";
-            string color = "#ffffffff";
+            string color = textAreaColor != null ? textAreaColor : "#ffffffff";
             string textDecoration = "";
 
             string bodyStyle = getAttributeStr(body, "style");
