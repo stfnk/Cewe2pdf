@@ -343,9 +343,9 @@ namespace Cewe2pdf {
                                         // NOTE: <align> sometimes holds two comma-separated values (Horizontal and Vertical alignment)
                                         // for now only handles second (horizontal).
                                         string[] align = getAttributeStr(textFormat, "Alignment").Split(",");
-                                        alignLabel = align.Last();
+                                        alignLabel = align.First();
                                         if (align.Length > 1)
-                                            valignLabel = align.First();
+                                            valignLabel = align.Last();
 
                                         string str = extractTextFromHTML(text.InnerText, ref color);
 
