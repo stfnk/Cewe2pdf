@@ -26,6 +26,9 @@ namespace Cewe2pdf {
             
             "C://Program Files//CEWE Creator//CEWE Creator",
             "C://Program Files (x86)//CEWE Creator//CEWE Creator",
+
+            "C://Program Files//CEWE Creator//CEWE Fotoswiat",
+            "C://Program Files (x86)//CEWE Creator//CEWE Fotoswiat",
         };
         private const int DEFAULT_TO_PAGE = 0;
         private const float DEFAULT_IMG_SCALE = 1.0f;
