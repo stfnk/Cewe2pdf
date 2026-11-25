@@ -1,0 +1,2074 @@
+{
+  "spdxVersion": "SPDX-2.3",
+  "dataLicense": "CC0-1.0",
+  "SPDXID": "SPDXRef-DOCUMENT",
+  "name": "cewe2pdf-v0.4.4-book1-source-and-resolved-dependencies",
+  "documentNamespace": "https://spdx.org/spdxdocs/cewe2pdf-db94bde5-7e30-4268-8684-db396490b020",
+  "creationInfo": {
+    "created": "2026-11-18T18:51:31Z",
+    "creators": [
+      "Person: Robert Brendel",
+      "Tool: cewe2pdf-generate-sbom.py"
+    ],
+    "comment": "AI-assisted technical inventory. Main PDF and independent SVG utility have separate dependency graphs; no assertion of CEWE asset/font rights."
+  },
+  "packages": [
+    {
+      "SPDXID": "SPDXRef-Cewe2pdf",
+      "name": "Cewe2pdf",
+      "versionInfo": "v0.4.4-book1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright 2026 Robert Brendel; original PDF application copyright 2020 Stefan Kreller"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-BouncyCastle.Cryptography-2.7.0",
+      "name": "BouncyCastle.Cryptography",
+      "versionInfo": "2.7.0",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/bouncycastle.cryptography/2.7.0/bouncycastle.cryptography.2.7.0.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f091ffccab4d03993e660bace277659a79dee0972f54d7f1f4bd46d680966241"
+        }
+      ],
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "Copyright © Legion of the Bouncy Castle Inc. 2000-2026",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/BouncyCastle.Cryptography@2.7.0"
+        }
+      ],
+      "sourceInfo": "Upstream: https://github.com/bcgit/bc-csharp; commit: 4007498b13582d90ee1eda5d9920c324428b98b3",
+      "supplier": "Organization: Legion of the Bouncy Castle Inc."
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-iTextSharp.LGPLv2.Core-3.8.8",
+      "name": "iTextSharp.LGPLv2.Core",
+      "versionInfo": "3.8.8",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/itextsharp.lgplv2.core/3.8.8/itextsharp.lgplv2.core.3.8.8.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f3f1b63c46668a81f34e9ff74fd7ee91698fc3baf8ccaeb58f9a4297be267888"
+        }
+      ],
+      "licenseDeclared": "LGPL-2.0-only",
+      "licenseConcluded": "LGPL-2.0-only",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/iTextSharp.LGPLv2.Core@3.8.8"
+        }
+      ],
+      "sourceInfo": "Upstream: https://github.com/VahidN/iTextSharp.LGPLv2.Core; commit: fd11e71cce122b92b976115b49284f143b934af8",
+      "supplier": "Organization: Vahid Nasiri"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-Microsoft.Win32.SystemEvents-10.0.0",
+      "name": "Microsoft.Win32.SystemEvents",
+      "versionInfo": "10.0.0",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/microsoft.win32.systemevents/10.0.0/microsoft.win32.systemevents.10.0.0.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a74adf701c0cea991563e1b8f6e8d5707c30160ac4ab8e8518fa4614e8341f9c"
+        }
+      ],
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "© Microsoft Corporation. All rights reserved.",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/Microsoft.Win32.SystemEvents@10.0.0"
+        }
+      ],
+      "sourceInfo": "Upstream: https://github.com/dotnet/dotnet; commit: b0f34d51fccc69fd334253924abd8d6853fad7aa",
+      "supplier": "Organization: Microsoft"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-SkiaSharp-4.156.1",
+      "name": "SkiaSharp",
+      "versionInfo": "4.156.1",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/skiasharp/4.156.1/skiasharp.4.156.1.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c5c3a10242a4e9ac1f7acef4bc3f0ca84e9ef993f2876244e82082eb300e8504"
+        }
+      ],
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "© Microsoft Corporation. All rights reserved.",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/SkiaSharp@4.156.1"
+        }
+      ],
+      "sourceInfo": "Upstream: https://go.microsoft.com/fwlink/?linkid=868515; commit: c8c35b59e8de5efbc2abf52fc26202ae1731e593",
+      "supplier": "Organization: Microsoft"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-SkiaSharp.NativeAssets.macOS-4.156.1",
+      "name": "SkiaSharp.NativeAssets.macOS",
+      "versionInfo": "4.156.1",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/skiasharp.nativeassets.macos/4.156.1/skiasharp.nativeassets.macos.4.156.1.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c03586ee8295af788869728f2ffa381067183b91fc82691e1e55f3c88cbc50bb"
+        }
+      ],
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "© Microsoft Corporation. All rights reserved.",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/SkiaSharp.NativeAssets.macOS@4.156.1"
+        }
+      ],
+      "sourceInfo": "Upstream: https://go.microsoft.com/fwlink/?linkid=868515; commit: c8c35b59e8de5efbc2abf52fc26202ae1731e593",
+      "supplier": "Organization: Microsoft"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-SkiaSharp.NativeAssets.Win32-4.156.1",
+      "name": "SkiaSharp.NativeAssets.Win32",
+      "versionInfo": "4.156.1",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/skiasharp.nativeassets.win32/4.156.1/skiasharp.nativeassets.win32.4.156.1.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "05db2022af01f6f20e91d52fb91f1495714fd30fd5fc09ac5d36c43afcb5722f"
+        }
+      ],
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "© Microsoft Corporation. All rights reserved.",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/SkiaSharp.NativeAssets.Win32@4.156.1"
+        }
+      ],
+      "sourceInfo": "Upstream: https://go.microsoft.com/fwlink/?linkid=868515; commit: c8c35b59e8de5efbc2abf52fc26202ae1731e593",
+      "supplier": "Organization: Microsoft"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-Stub.System.Data.SQLite.Core.NetStandard-1.0.119",
+      "name": "Stub.System.Data.SQLite.Core.NetStandard",
+      "versionInfo": "1.0.119",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/stub.system.data.sqlite.core.netstandard/1.0.119/stub.system.data.sqlite.core.netstandard.1.0.119.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7bb3077eb5ac26983f216f00f0b466e35d32230a1ebd9b155daf2e46f3c4283b"
+        }
+      ],
+      "licenseDeclared": "LicenseRef-SQLite-Public-Domain",
+      "licenseConcluded": "LicenseRef-SQLite-Public-Domain",
+      "copyrightText": "Copyright © 2004-2008 Hipp, Wyrick & Company, Inc.",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/Stub.System.Data.SQLite.Core.NetStandard@1.0.119"
+        }
+      ],
+      "supplier": "Organization: SQLite Development Team"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-System.Data.SQLite.Core-1.0.119",
+      "name": "System.Data.SQLite.Core",
+      "versionInfo": "1.0.119",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/system.data.sqlite.core/1.0.119/system.data.sqlite.core.1.0.119.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2106b1fde378f6aebb4be4c6366b963780f3d400e36388ea44f7adcadb20c089"
+        }
+      ],
+      "licenseDeclared": "LicenseRef-SQLite-Public-Domain",
+      "licenseConcluded": "LicenseRef-SQLite-Public-Domain",
+      "copyrightText": "Copyright © 2004-2008 Hipp, Wyrick & Company, Inc.",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/System.Data.SQLite.Core@1.0.119"
+        }
+      ],
+      "supplier": "Organization: SQLite Development Team"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-System.Drawing.Common-10.0.0",
+      "name": "System.Drawing.Common",
+      "versionInfo": "10.0.0",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/system.drawing.common/10.0.0/system.drawing.common.10.0.0.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "6459de4a27c76c38f73be21bc07492b396290c4ba74debbd1e7cfd00f64a380f"
+        }
+      ],
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "© Microsoft Corporation. All rights reserved.",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/System.Drawing.Common@10.0.0"
+        }
+      ],
+      "sourceInfo": "Upstream: https://github.com/dotnet/dotnet; commit: b0f34d51fccc69fd334253924abd8d6853fad7aa",
+      "supplier": "Organization: Microsoft"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-Microsoft.NETCore.App.Runtime.win-x64-10.0.14",
+      "name": "Microsoft.NETCore.App.Runtime.win-x64",
+      "versionInfo": "10.0.14",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/microsoft.netcore.app.runtime.win-x64/10.0.14/microsoft.netcore.app.runtime.win-x64.10.0.14.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a3ea61b4a2da6d28e562dd1cdacf80eb4dd6b9727b0a2b47f9d6aba90dbbcb1f"
+        }
+      ],
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "© Microsoft Corporation. All rights reserved.",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/Microsoft.NETCore.App.Runtime.win-x64@10.0.14"
+        }
+      ],
+      "sourceInfo": "Upstream: https://github.com/dotnet/dotnet; commit: 0427b9abbead3fa64c6655eb4290c537397131fa",
+      "supplier": "Organization: Microsoft"
+    },
+    {
+      "SPDXID": "SPDXRef-SvgToPng",
+      "name": "SvgToPng",
+      "versionInfo": "v0.4.4-book1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MS-PL",
+      "licenseDeclared": "MS-PL",
+      "copyrightText": "Copyright 2026 Robert Brendel; original PDF application copyright 2020 Stefan Kreller"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-ExCSS-4.2.3",
+      "name": "ExCSS",
+      "versionInfo": "4.2.3",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/excss/4.2.3/excss.4.2.3.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "33f1fa3f9a7baaa745cff7e0008d8c301590ee778dfc6222798492c718ec33d2"
+        }
+      ],
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/ExCSS@4.2.3"
+        }
+      ],
+      "sourceInfo": "Upstream: https://github.com/TylerBrinks/ExCSS; commit: not declared",
+      "supplier": "Organization: Tyler Brinks"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-Microsoft.NET.ILLink.Tasks-10.0.14",
+      "name": "Microsoft.NET.ILLink.Tasks",
+      "versionInfo": "10.0.14",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/microsoft.net.illink.tasks/10.0.14/microsoft.net.illink.tasks.10.0.14.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e2a71b32b5c135dc2b0c87ea8fba6c9e677332e00bf959fbcdced239b825b75c"
+        }
+      ],
+      "licenseDeclared": "MIT",
+      "licenseConcluded": "MIT",
+      "copyrightText": "© Microsoft Corporation. All rights reserved.",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/Microsoft.NET.ILLink.Tasks@10.0.14"
+        }
+      ],
+      "sourceInfo": "Upstream: https://github.com/dotnet/dotnet; commit: 0427b9abbead3fa64c6655eb4290c537397131fa",
+      "comment": "Build-only tooling; not an application runtime dependency.",
+      "supplier": "Organization: Microsoft"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-Svg-3.4.7",
+      "name": "Svg",
+      "versionInfo": "3.4.7",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/svg/3.4.7/svg.3.4.7.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "59f3c5d51c302810c4ad8bcae029dc81b0c611e2d6628efa6b21353dc192a2b4"
+        }
+      ],
+      "licenseDeclared": "MS-PL",
+      "licenseConcluded": "MS-PL",
+      "copyrightText": "Copyright © vvvv.org",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/Svg@3.4.7"
+        }
+      ],
+      "sourceInfo": "Upstream: https://github.com/svg-net/SVG.git; commit: c53af12d973bffef486c3d6a32c941a0d15cd987",
+      "supplier": "Organization: davescriven, jvenema, mrbean-bremen, H1Gdev, Wiesław Šoltés, owaits, ddpruitt, Ralf1108, Tebjan Halm, and others"
+    },
+    {
+      "SPDXID": "SPDXRef-Tests",
+      "name": "tests",
+      "versionInfo": "v0.4.4-book1",
+      "downloadLocation": "NOASSERTION",
+      "filesAnalyzed": false,
+      "licenseConcluded": "MIT",
+      "licenseDeclared": "MIT",
+      "copyrightText": "Copyright 2026 Robert Brendel; original PDF application copyright 2020 Stefan Kreller"
+    },
+    {
+      "SPDXID": "SPDXRef-NuGet-PdfPig-0.1.16",
+      "name": "PdfPig",
+      "versionInfo": "0.1.16",
+      "downloadLocation": "https://api.nuget.org/v3-flatcontainer/pdfpig/0.1.16/pdfpig.0.1.16.nupkg",
+      "filesAnalyzed": false,
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d67171846ea8c28f50359137065fec4514266d7a32b23eae6c5f2ebed8ffcfc4"
+        }
+      ],
+      "licenseDeclared": "Apache-2.0",
+      "licenseConcluded": "Apache-2.0",
+      "copyrightText": "NOASSERTION",
+      "externalRefs": [
+        {
+          "referenceCategory": "PACKAGE-MANAGER",
+          "referenceType": "purl",
+          "referenceLocator": "pkg:nuget/PdfPig@0.1.16"
+        }
+      ],
+      "sourceInfo": "Upstream: https://github.com/UglyToad/PdfPig; commit: a7bb35662bbbf405efddad50aedc9bcdcf515afc",
+      "comment": "Build-only tooling; not an application runtime dependency.",
+      "supplier": "Organization: UglyToad"
+    }
+  ],
+  "files": [
+    {
+      "SPDXID": "SPDXRef-File-.gitattributes",
+      "fileName": "./.gitattributes",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "14deec74ba1a98e27ff189b8ebc565fafd04e2921360f1344e78508d614f1adf"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-.gitignore",
+      "fileName": "./.gitignore",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ca6a1203531bfa1664683905017fc2b86c062c6e9a6dfb8e6ea2accdd02b6093"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-AUTHORS.md",
+      "fileName": "./AUTHORS.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "80387fc5d7b48c58f472964420cf4893f29d25f37d6c6af6369cb12e849a0687"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-build.ps1",
+      "fileName": "./build.ps1",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fab28f5ce4ec9a4278ac00b9267896315129a6410fb8fecbdaef161faf281d39"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-Cewe2pdf.csproj",
+      "fileName": "./Cewe2pdf/Cewe2pdf.csproj",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e447ca9c9521ce757c2a4826937d54594b24f6ba56b2aef0e1327519788556bc"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-Cewe2pdf.sln",
+      "fileName": "./Cewe2pdf/Cewe2pdf.sln",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e3dab790d0011f589a19bf072d071d2e5ee4163562ca194c4e145be0ef41dc48"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-ClipartRenderer.cs",
+      "fileName": "./Cewe2pdf/ClipartRenderer.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "8f0f62ea677668b276c01b8c13c5ebc8185ddee04aab975a39c2ac7568679b31"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-CmdArgParser.cs",
+      "fileName": "./Cewe2pdf/CmdArgParser.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2b1fc153e844f5b94fed859ba17fe66492a41bf811df696077a20b809d8927d0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-Config.cs",
+      "fileName": "./Cewe2pdf/Config.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5c3b1ed5de4922f88b828dc839b55044c7d263698638ec9d2bc0b4b49587c5d9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-CoverLayout.cs",
+      "fileName": "./Cewe2pdf/CoverLayout.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "c3836b0d5bbc972aef419e7a1403cbbaa88b6cea33ea962de4ec9b40b7ea3dc8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-DesignIdConverter.cs",
+      "fileName": "./Cewe2pdf/DesignIdConverter.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "56c463288ba941d443c46ee192a581db284e11226a8a10a90eaddc8e1613df78"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-DesignResources.cs",
+      "fileName": "./Cewe2pdf/DesignResources.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ce12c05e46229d047cae13bf3382db1202004a5c9e5f0cb73ffbb8f79b4387a3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-ImageCornerPath.cs",
+      "fileName": "./Cewe2pdf/ImageCornerPath.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "68ffdfa83af5ca1f3ab471e59d2c0e70bb13788601981b5a0800293cb71611ef"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-ImageCorners.cs",
+      "fileName": "./Cewe2pdf/ImageCorners.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "522728ba139a74261c5b22bfa9f0f15e5715439ff5062f00b42d97506cb80224"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-Log.cs",
+      "fileName": "./Cewe2pdf/Log.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f92a91127a48cf0983e2dd574c318a33b2829d551d1ea545572a56e541f4ff29"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-McfParser.cs",
+      "fileName": "./Cewe2pdf/McfParser.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b9a2556b8fc63da79898b43ee7be5d5158329d8992c84b8631c4c204eb95e603"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-Mcfx.cs",
+      "fileName": "./Cewe2pdf/Mcfx.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "a0feff9c1b27697e03ddf417049b953a5a6d1d6ad740c44519d12839949a30bf"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-pdfWriter.cs",
+      "fileName": "./Cewe2pdf/pdfWriter.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "230d11f0b79d83d80ae71f3b112027bbb37368842c3402f3cf68daaecf807168"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-Program.cs",
+      "fileName": "./Cewe2pdf/Program.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ecc4b469028651d3817f259128325682c7a0c1b8ee4c8732a7f8516a443b87d7"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-ShadowRenderer.cs",
+      "fileName": "./Cewe2pdf/ShadowRenderer.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1f1f1e63578211a5fd8176c1a434162326932095cd58250e6c20504a7e1ab4a4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-ShadowSettings.cs",
+      "fileName": "./Cewe2pdf/ShadowSettings.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "90b9c5695e524a9d400324919ae5d9812b694f7b33f86a571a176e6dfe0cbe9b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-Cewe2pdf-WebPWrapper.cs",
+      "fileName": "./Cewe2pdf/WebPWrapper.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "aadab1de4d4ec216fcc99ab3ef7343a44ab0278a30380a9e12104b45e7fdb751"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-CHANGELOG.md",
+      "fileName": "./CHANGELOG.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b029cea4112bc41d58146960e42f3c0f04bad97589a6ea664a53ae6b45ab73a6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-launcher-Fotobuch-starten.cmd",
+      "fileName": "./launcher/Fotobuch-starten.cmd",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "4ad31ac6ff504b3d0d5852136809d3e22146c30c7bbe89f372b767a904d7e9e3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-LICENSE",
+      "fileName": "./LICENSE",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b9d997dd41702afe1a6eed09feb4bf78ac59ae760b1692ecf0de841ac3efea52"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-LICENSE-REVIEW.md",
+      "fileName": "./LICENSE-REVIEW.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e01b2917e44dbd83ffa0c77afeadc408c18411d5a2d92d8fcb65391884ecfc04"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-bouncycastle.cryptography-LICENSE.md",
+      "fileName": "./licenses/bouncycastle.cryptography-LICENSE.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7c20547eca5a50aca23852d5b0eb30de23ded9a04110b2ec355a9543d88aacc8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-Cewe2pdf-LICENSE",
+      "fileName": "./licenses/Cewe2pdf-LICENSE",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ecdd1f38f8bae87a15dea7636e0e23bc878d2e24aec37c664799c325f8114bac"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-ExCSS-MIT.txt",
+      "fileName": "./licenses/ExCSS-MIT.txt",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fe201d8ad7c9f2122b4813fe0811075b63fbac9f4fb0c9075f49f38718a728ad"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-itextsharp-lgplv2-core-LICENSE.md",
+      "fileName": "./licenses/itextsharp-lgplv2-core-LICENSE.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cb8a96e4bdc98d8223f4008e66b5835a2fb75155f6325f15d211bde823f4fd72"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-microsoft.netcore.app.runtime.win-x64-LICENSE.TXT",
+      "fileName": "./licenses/microsoft.netcore.app.runtime.win-x64-LICENSE.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-microsoft.netcore.app.runtime.win-x64-THIRD-PARTY-NOTICES.TXT",
+      "fileName": "./licenses/microsoft.netcore.app.runtime.win-x64-THIRD-PARTY-NOTICES.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "66f1d4e44973185519bb4aa8a9718eb22fc7af2cc532e3ae9cfc4c127ee7fc54"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-microsoft.win32.systemevents-THIRD-PARTY-NOTICES.TXT",
+      "fileName": "./licenses/microsoft.win32.systemevents-THIRD-PARTY-NOTICES.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "66f1d4e44973185519bb4aa8a9718eb22fc7af2cc532e3ae9cfc4c127ee7fc54"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-BouncyCastle.Cryptography-2.7.0-bouncycastle.cryptography.nuspec",
+      "fileName": "./licenses/nuget/BouncyCastle.Cryptography-2.7.0/bouncycastle.cryptography.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0a094576ec8464b00a00f96fd597e389a2b074e1206757b08e5e16edba59162c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-BouncyCastle.Cryptography-2.7.0-LICENSE.md",
+      "fileName": "./licenses/nuget/BouncyCastle.Cryptography-2.7.0/LICENSE.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0e01f1549c9022f406392ac2947d32223b7c2e977d21ea2f8c182fdeb4dae5fd"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-ExCSS-4.2.3-excss.nuspec",
+      "fileName": "./licenses/nuget/ExCSS-4.2.3/excss.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0ec7ef2084af5fc31f575111d9f5e8a887e131938e416fa7e788770c52836f5b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-iTextSharp.LGPLv2.Core-3.8.8-itextsharp.lgplv2.core.nuspec",
+      "fileName": "./licenses/nuget/iTextSharp.LGPLv2.Core-3.8.8/itextsharp.lgplv2.core.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f4086e2660777e2bfc386e1a111149562fca6eb3706b235799fc2cba12828b05"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-Microsoft.NET.ILLink.Tasks-10.0.14-microsoft.net.illink.tasks.nuspec",
+      "fileName": "./licenses/nuget/Microsoft.NET.ILLink.Tasks-10.0.14/microsoft.net.illink.tasks.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d787492844de5f565ab8861667cc36e7ea8668ae4b9b64030d319d1d2b4dbda2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-Microsoft.NET.ILLink.Tasks-10.0.14-THIRD-PARTY-NOTICES.TXT",
+      "fileName": "./licenses/nuget/Microsoft.NET.ILLink.Tasks-10.0.14/THIRD-PARTY-NOTICES.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "66f1d4e44973185519bb4aa8a9718eb22fc7af2cc532e3ae9cfc4c127ee7fc54"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-Microsoft.NETCore.App.Runtime.win-x64-10.0.14-LICENSE.TXT",
+      "fileName": "./licenses/nuget/Microsoft.NETCore.App.Runtime.win-x64-10.0.14/LICENSE.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cfc21f5e8bd655ae997eec916138b707b1d290b83272c02a95c9f821b8c87310"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-Microsoft.NETCore.App.Runtime.win-x64-10.0.14-microsoft.netcore.app.runtime.win-x64.nuspec",
+      "fileName": "./licenses/nuget/Microsoft.NETCore.App.Runtime.win-x64-10.0.14/microsoft.netcore.app.runtime.win-x64.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f8458f1b5740175db4454972931e13fc9016f685af3158d6fc2a97932d9c6f6e"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-Microsoft.NETCore.App.Runtime.win-x64-10.0.14-THIRD-PARTY-NOTICES.TXT",
+      "fileName": "./licenses/nuget/Microsoft.NETCore.App.Runtime.win-x64-10.0.14/THIRD-PARTY-NOTICES.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "66f1d4e44973185519bb4aa8a9718eb22fc7af2cc532e3ae9cfc4c127ee7fc54"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-Microsoft.Win32.SystemEvents-10.0.0-microsoft.win32.systemevents.nuspec",
+      "fileName": "./licenses/nuget/Microsoft.Win32.SystemEvents-10.0.0/microsoft.win32.systemevents.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bea326a85ca6937913ec3e6c6f120be865d766b69a795def349058e126864884"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-Microsoft.Win32.SystemEvents-10.0.0-THIRD-PARTY-NOTICES.TXT",
+      "fileName": "./licenses/nuget/Microsoft.Win32.SystemEvents-10.0.0/THIRD-PARTY-NOTICES.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "66f1d4e44973185519bb4aa8a9718eb22fc7af2cc532e3ae9cfc4c127ee7fc54"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-PdfPig-0.1.16-pdfpig.nuspec",
+      "fileName": "./licenses/nuget/PdfPig-0.1.16/pdfpig.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "22e8fbe5f3fdac9bddcc2a1900d2d85965798684e14da3fd51d9fa551b8984b1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-SkiaSharp-4.156.1-LICENSE.txt",
+      "fileName": "./licenses/nuget/SkiaSharp-4.156.1/LICENSE.txt",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bc2eb4f37d574f9b1b67da2b17e14d151618850527d78f7323239e7518df5b77"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-SkiaSharp-4.156.1-skiasharp.nuspec",
+      "fileName": "./licenses/nuget/SkiaSharp-4.156.1/skiasharp.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "0fb847c54d28fb969c9e0cc1a13ee0558d8a1c70b9905595783861b6b4c47486"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.macOS-4.156.1-LICENSE.txt",
+      "fileName": "./licenses/nuget/SkiaSharp.NativeAssets.macOS-4.156.1/LICENSE.txt",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bc2eb4f37d574f9b1b67da2b17e14d151618850527d78f7323239e7518df5b77"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.macOS-4.156.1-skiasharp.nativeassets.macos.nuspec",
+      "fileName": "./licenses/nuget/SkiaSharp.NativeAssets.macOS-4.156.1/skiasharp.nativeassets.macos.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ab8c1d61005f5b0ba9f1e3d506990120ca11ac1f89897892eec2210e04b6d16f"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.macOS-4.156.1-THIRD-PARTY-NOTICES.txt",
+      "fileName": "./licenses/nuget/SkiaSharp.NativeAssets.macOS-4.156.1/THIRD-PARTY-NOTICES.txt",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b70e053cbb26d84ff54dc67076bff5263da30d37172068de35e4d7fbbfcaaed0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.Win32-4.156.1-LICENSE.txt",
+      "fileName": "./licenses/nuget/SkiaSharp.NativeAssets.Win32-4.156.1/LICENSE.txt",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "bc2eb4f37d574f9b1b67da2b17e14d151618850527d78f7323239e7518df5b77"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.Win32-4.156.1-skiasharp.nativeassets.win32.nuspec",
+      "fileName": "./licenses/nuget/SkiaSharp.NativeAssets.Win32-4.156.1/skiasharp.nativeassets.win32.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2bf94df8038ce40a47020df93e83aa16f8eb5ee91b1b462f598d638c0dec6ac1"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.Win32-4.156.1-THIRD-PARTY-NOTICES.txt",
+      "fileName": "./licenses/nuget/SkiaSharp.NativeAssets.Win32-4.156.1/THIRD-PARTY-NOTICES.txt",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b70e053cbb26d84ff54dc67076bff5263da30d37172068de35e4d7fbbfcaaed0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-Stub.System.Data.SQLite.Core.NetStandard-1.0.119-stub.system.data.sqlite.core.netstandard.nuspec",
+      "fileName": "./licenses/nuget/Stub.System.Data.SQLite.Core.NetStandard-1.0.119/stub.system.data.sqlite.core.netstandard.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1c35c21c0ca9bdf88d8c4e1cff3d9a6af9b922d19df0ce88a4cc67969f53fe80"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-Svg-3.4.7-svg.nuspec",
+      "fileName": "./licenses/nuget/Svg-3.4.7/svg.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "e7917399135aaaefab93085bce95ce3b2b71f34100916b997fe9f30eddbaa159"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-System.Data.SQLite.Core-1.0.119-system.data.sqlite.core.nuspec",
+      "fileName": "./licenses/nuget/System.Data.SQLite.Core-1.0.119/system.data.sqlite.core.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "01cf5961c40ca5b753995e7b43d5c10856364119a0a8cb69e45abf3ab0d5ecd9"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-System.Drawing.Common-10.0.0-LICENSE.TXT",
+      "fileName": "./licenses/nuget/System.Drawing.Common-10.0.0/LICENSE.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ae48df11a335dc1a615f4f938b69cba73bcf4485c4f97af49b38efb0f216353b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-System.Drawing.Common-10.0.0-system.drawing.common.nuspec",
+      "fileName": "./licenses/nuget/System.Drawing.Common-10.0.0/system.drawing.common.nuspec",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d9341b2c897a0cbb5a24f94bb52f52ce6de8475896b361e09ee400c091248be3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-nuget-System.Drawing.Common-10.0.0-THIRD-PARTY-NOTICES.TXT",
+      "fileName": "./licenses/nuget/System.Drawing.Common-10.0.0/THIRD-PARTY-NOTICES.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5a412b38efae0b162dc0893b319023f4cd14a8985a0f9f9ae01ac052b37a36eb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-Svg-MS-PL.txt",
+      "fileName": "./licenses/Svg-MS-PL.txt",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d0ab1d6a97c328acf658b57141b6f2863d7eaf0066e42a9fd0792df0c4fd2521"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-system.drawing.common-LICENSE.TXT",
+      "fileName": "./licenses/system.drawing.common-LICENSE.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "ae48df11a335dc1a615f4f938b69cba73bcf4485c4f97af49b38efb0f216353b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-licenses-system.drawing.common-THIRD-PARTY-NOTICES.TXT",
+      "fileName": "./licenses/system.drawing.common-THIRD-PARTY-NOTICES.TXT",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5a412b38efae0b162dc0893b319023f4cd14a8985a0f9f9ae01ac052b37a36eb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-README.md",
+      "fileName": "./README.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "9229cd0ebda07a0e2f22695afd93e3df707dd51aa0a004792647cbae9bf9486c"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-scripts-generate-sbom.py",
+      "fileName": "./scripts/generate_sbom.py",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "594142a7f74ea99058f7b4fbcca2fdfad538b20d74e10662e3508324f144d2f6"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-scripts-verify-release.py",
+      "fileName": "./scripts/verify_release.py",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "b34b50380de11547bef44f6d2281bdf8366b664cb43f1027580acea0ab279c56"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-SOURCE-CODE.md",
+      "fileName": "./SOURCE-CODE.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "83c79e586ec5306db1bb5115ad0f9186e81597cae551d189b991f796108b1df5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-SvgToPng-LICENSE",
+      "fileName": "./SvgToPng/LICENSE",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d0ab1d6a97c328acf658b57141b6f2863d7eaf0066e42a9fd0792df0c4fd2521"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-SvgToPng-Program.cs",
+      "fileName": "./SvgToPng/Program.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "45e20fef31e8941247b082a8f1657597f7d04812d5341626f65eca1921dc0007"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-SvgToPng-SvgToPng.csproj",
+      "fileName": "./SvgToPng/SvgToPng.csproj",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "45bffa63f68e0513a43bcf5eb14def403307fb283f9a447f235d03a73f47ae7d"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-TEST-REPORT.md",
+      "fileName": "./TEST-REPORT.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3aec5d2c2202037318c10ef6ea465450c6986fea1b43075044411cb7f6970fa4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-BookTests.cs",
+      "fileName": "./tests/BookTests.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "68aa74f8377b081da25f566ac81c92ff43865329852ed89fe080e168035512f0"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-BookTests.csproj",
+      "fileName": "./tests/BookTests.csproj",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "fb82b0f93a4562c31fba07b2a0528bdef7855c5d024daffe3cdedcc210dd9ac3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-CultureTests.cs",
+      "fileName": "./tests/CultureTests.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3b6e864f56570bd870ad3c3e644f9329907cf7a7f83fde691898ea549125306a"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-CultureTests.csproj",
+      "fileName": "./tests/CultureTests.csproj",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "aa456362335d4e0699a9f97573370f6743fdd1f5d43e4c3093bbb08e9d21a6a4"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-DecorationTests.cs",
+      "fileName": "./tests/DecorationTests.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "d938166cf847f4844cd7c448275a60fd2331160a6a6a2ddffa8ccf045854a017"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-DecorationTests.csproj",
+      "fileName": "./tests/DecorationTests.csproj",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2b4f5acebb27505d2081d9d74411295ceeb366014ec17742e5e84b01da0ff902"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-Directory.Build.props",
+      "fileName": "./tests/Directory.Build.props",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7706546bf33db6290d037e41e7732168403cb990d12e5dfe280bb7e9a2e914a5"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-IntegrationTests.cs",
+      "fileName": "./tests/IntegrationTests.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "7c2d7309634a29883d7f2bd4f25d0fc42ea5e96ab1674426acc4e274b94f56c3"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-IntegrationTests.csproj",
+      "fileName": "./tests/IntegrationTests.csproj",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "1ea949a9a06361a8749489bceb03a560ada015d7b4946ab1615efc9ddc0aa721"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-LegacyTests.cs",
+      "fileName": "./tests/LegacyTests.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "08358676ccdc1e654ba72733e3c1098e651c6adc34e31b8521dd4e73445fbdb8"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-LegacyTests.csproj",
+      "fileName": "./tests/LegacyTests.csproj",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "f9cf63ec9cb24a9498cfb1e981eb60e8ff0ddf7dbe0774bd8e9d357fffb87a3b"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-PdfText.cs",
+      "fileName": "./tests/PdfText.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "248f61e78d1b6603e5cc2171e1f59873b8ca54029930299ccb58de480df724fa"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-ShadowTests.cs",
+      "fileName": "./tests/ShadowTests.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "741f2ab5f8b0b5f870eac11452c7e22c672468bb4ce8c233eb1196dd94e59448"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-ShadowTests.csproj",
+      "fileName": "./tests/ShadowTests.csproj",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "2b0feb6c8688b4f98c1f724c5fa0e3f28806fe8281138470a3033ec9376e76fe"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-ShapeTests.cs",
+      "fileName": "./tests/ShapeTests.cs",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "3baaf583e41410543ebb3007b60e2412aa12ef2a8d4b0be4b046dda441c595fb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-ShapeTests.csproj",
+      "fileName": "./tests/ShapeTests.csproj",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "5778a9ddabfb249f62bc84820dbb8aa04454aa9e2a44efb15c39a7bfc4ffa6c2"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-tests-verify-render.py",
+      "fileName": "./tests/verify_render.py",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "076d81560d99ec6617abe3aa276401247cfa12e37c815f91c5cda7c9b3477d35"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-THIRD-PARTY-NOTICES.md",
+      "fileName": "./THIRD-PARTY-NOTICES.md",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "cc81a0c511664b1bfe186346109cf4a55a1e3aa4c3a32d697edb8fc7e14386cb"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    },
+    {
+      "SPDXID": "SPDXRef-File-upstream-source-manifest.json",
+      "fileName": "./upstream-source-manifest.json",
+      "checksums": [
+        {
+          "algorithm": "SHA256",
+          "checksumValue": "eb557b24735a2e18a3a34c8c5f6f0eee6eb8958931cd037258a0a422422d0743"
+        }
+      ],
+      "licenseConcluded": "NOASSERTION",
+      "copyrightText": "NOASSERTION"
+    }
+  ],
+  "relationships": [
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-BouncyCastle.Cryptography-2.7.0"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-iTextSharp.LGPLv2.Core-3.8.8"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-Microsoft.Win32.SystemEvents-10.0.0"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-SkiaSharp-4.156.1"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-SkiaSharp.NativeAssets.macOS-4.156.1"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-SkiaSharp.NativeAssets.Win32-4.156.1"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-Stub.System.Data.SQLite.Core.NetStandard-1.0.119"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-System.Data.SQLite.Core-1.0.119"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-System.Drawing.Common-10.0.0"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-Microsoft.NETCore.App.Runtime.win-x64-10.0.14"
+    },
+    {
+      "spdxElementId": "SPDXRef-SvgToPng",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-ExCSS-4.2.3"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-Microsoft.NET.ILLink.Tasks-10.0.14",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-SvgToPng"
+    },
+    {
+      "spdxElementId": "SPDXRef-SvgToPng",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-Microsoft.Win32.SystemEvents-10.0.0"
+    },
+    {
+      "spdxElementId": "SPDXRef-SvgToPng",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-Svg-3.4.7"
+    },
+    {
+      "spdxElementId": "SPDXRef-SvgToPng",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-System.Drawing.Common-10.0.0"
+    },
+    {
+      "spdxElementId": "SPDXRef-SvgToPng",
+      "relationshipType": "DEPENDS_ON",
+      "relatedSpdxElement": "SPDXRef-NuGet-Microsoft.NETCore.App.Runtime.win-x64-10.0.14"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-BouncyCastle.Cryptography-2.7.0",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-iTextSharp.LGPLv2.Core-3.8.8",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-Microsoft.Win32.SystemEvents-10.0.0",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-PdfPig-0.1.16",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-SkiaSharp-4.156.1",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-SkiaSharp.NativeAssets.macOS-4.156.1",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-SkiaSharp.NativeAssets.Win32-4.156.1",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-Stub.System.Data.SQLite.Core.NetStandard-1.0.119",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-System.Data.SQLite.Core-1.0.119",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-System.Drawing.Common-10.0.0",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-NuGet-Microsoft.NETCore.App.Runtime.win-x64-10.0.14",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Tests"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "BUILD_DEPENDENCY_OF",
+      "relatedSpdxElement": "SPDXRef-Cewe2pdf"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-Cewe2pdf"
+    },
+    {
+      "spdxElementId": "SPDXRef-DOCUMENT",
+      "relationshipType": "DESCRIBES",
+      "relatedSpdxElement": "SPDXRef-SvgToPng"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-.gitattributes"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-.gitignore"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-AUTHORS.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-build.ps1"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-Cewe2pdf.csproj"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-Cewe2pdf.sln"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-ClipartRenderer.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-CmdArgParser.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-Config.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-CoverLayout.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-DesignIdConverter.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-DesignResources.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-ImageCornerPath.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-ImageCorners.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-Log.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-McfParser.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-Mcfx.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-pdfWriter.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-Program.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-ShadowRenderer.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-ShadowSettings.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-Cewe2pdf-WebPWrapper.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-CHANGELOG.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-launcher-Fotobuch-starten.cmd"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-LICENSE"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-LICENSE-REVIEW.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-bouncycastle.cryptography-LICENSE.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-Cewe2pdf-LICENSE"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-ExCSS-MIT.txt"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-itextsharp-lgplv2-core-LICENSE.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-microsoft.netcore.app.runtime.win-x64-LICENSE.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-microsoft.netcore.app.runtime.win-x64-THIRD-PARTY-NOTICES.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-microsoft.win32.systemevents-THIRD-PARTY-NOTICES.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-BouncyCastle.Cryptography-2.7.0-bouncycastle.cryptography.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-BouncyCastle.Cryptography-2.7.0-LICENSE.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-ExCSS-4.2.3-excss.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-iTextSharp.LGPLv2.Core-3.8.8-itextsharp.lgplv2.core.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-Microsoft.NET.ILLink.Tasks-10.0.14-microsoft.net.illink.tasks.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-Microsoft.NET.ILLink.Tasks-10.0.14-THIRD-PARTY-NOTICES.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-Microsoft.NETCore.App.Runtime.win-x64-10.0.14-LICENSE.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-Microsoft.NETCore.App.Runtime.win-x64-10.0.14-microsoft.netcore.app.runtime.win-x64.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-Microsoft.NETCore.App.Runtime.win-x64-10.0.14-THIRD-PARTY-NOTICES.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-Microsoft.Win32.SystemEvents-10.0.0-microsoft.win32.systemevents.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-Microsoft.Win32.SystemEvents-10.0.0-THIRD-PARTY-NOTICES.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-PdfPig-0.1.16-pdfpig.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-SkiaSharp-4.156.1-LICENSE.txt"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-SkiaSharp-4.156.1-skiasharp.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.macOS-4.156.1-LICENSE.txt"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.macOS-4.156.1-skiasharp.nativeassets.macos.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.macOS-4.156.1-THIRD-PARTY-NOTICES.txt"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.Win32-4.156.1-LICENSE.txt"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.Win32-4.156.1-skiasharp.nativeassets.win32.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-SkiaSharp.NativeAssets.Win32-4.156.1-THIRD-PARTY-NOTICES.txt"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-Stub.System.Data.SQLite.Core.NetStandard-1.0.119-stub.system.data.sqlite.core.netstandard.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-Svg-3.4.7-svg.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-System.Data.SQLite.Core-1.0.119-system.data.sqlite.core.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-System.Drawing.Common-10.0.0-LICENSE.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-System.Drawing.Common-10.0.0-system.drawing.common.nuspec"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-nuget-System.Drawing.Common-10.0.0-THIRD-PARTY-NOTICES.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-Svg-MS-PL.txt"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-system.drawing.common-LICENSE.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-licenses-system.drawing.common-THIRD-PARTY-NOTICES.TXT"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-README.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-scripts-generate-sbom.py"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-scripts-verify-release.py"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-SOURCE-CODE.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-SvgToPng",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-SvgToPng-LICENSE"
+    },
+    {
+      "spdxElementId": "SPDXRef-SvgToPng",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-SvgToPng-Program.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-SvgToPng",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-SvgToPng-SvgToPng.csproj"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-TEST-REPORT.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-BookTests.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-BookTests.csproj"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-CultureTests.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-CultureTests.csproj"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-DecorationTests.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-DecorationTests.csproj"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-Directory.Build.props"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-IntegrationTests.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-IntegrationTests.csproj"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-LegacyTests.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-LegacyTests.csproj"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-PdfText.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-ShadowTests.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-ShadowTests.csproj"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-ShapeTests.cs"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-ShapeTests.csproj"
+    },
+    {
+      "spdxElementId": "SPDXRef-Tests",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-tests-verify-render.py"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-THIRD-PARTY-NOTICES.md"
+    },
+    {
+      "spdxElementId": "SPDXRef-Cewe2pdf",
+      "relationshipType": "CONTAINS",
+      "relatedSpdxElement": "SPDXRef-File-upstream-source-manifest.json"
+    }
+  ],
+  "hasExtractedLicensingInfos": [
+    {
+      "licenseId": "LicenseRef-SQLite-Public-Domain",
+      "name": "SQLite public domain dedication",
+      "extractedText": "All deliverable SQLite code has been dedicated to the public domain. Anyone is free to copy, modify, publish, use, compile, sell, or distribute the original SQLite code for any purpose. See the upstream copyright statement and package licenseUrl; this is a public-domain dedication, not an SPDX-listed license.",
+      "seeAlsos": [
+        "https://www.sqlite.org/copyright.html"
+      ]
+    }
+  ]
+}

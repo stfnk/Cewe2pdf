@@ -1,0 +1,6 @@
+* text=auto eol=lf
+*.jpg binary
+*.png binary
+
+# Preserve third-party notices verbatim, including their original whitespace.
+licenses/nuget/** -whitespace

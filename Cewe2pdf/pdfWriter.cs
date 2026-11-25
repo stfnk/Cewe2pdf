@@ -1,4 +1,3 @@
-﻿using iTextSharp.awt.geom;
 using iTextSharp.text;
 using iTextSharp.text.pdf;
 using System;
@@ -42,6 +41,8 @@ namespace Cewe2pdf {
             const string fontPath = "C:\\Windows\\Fonts"; // FIXME: windows only obviously
             Log.Info("Loading fonts from " + fontPath);
             FontFactory.RegisterDirectory(fontPath);
+            string userFonts = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "Microsoft", "Windows", "Fonts");
+            if (Directory.Exists(userFonts)) FontFactory.RegisterDirectory(userFonts);
 
             string cwfontPath = Config.ProgramPath + "\\Resources\\photofun\\fonts";
             Log.Info("Loading fonts from " + cwfontPath);
@@ -66,10 +67,10 @@ namespace Cewe2pdf {
             _doc.Open();
         }
 
-        public void writePage(Page pPage) {
+        public void writePage(Page pPage, System.Drawing.RectangleF? viewport = null) {
 
             // page size is given per <fotobook/page>. iTextSharp needs it set before adding page or opening document.
-            _doc.SetPageSize(new Rectangle(0f, 0f, pPage.bundleSize.X, pPage.bundleSize.Y));
+            _doc.SetPageSize(new Rectangle(0f, 0f, viewport?.Width ?? pPage.bundleSize.X, viewport?.Height ?? pPage.bundleSize.Y));
 
             // handle first page case
             try {
@@ -83,15 +84,26 @@ namespace Cewe2pdf {
 
             PdfContentByte canvas = _writer.DirectContent;
 
+            canvas.SaveState();
+            try {
+                if (viewport is System.Drawing.RectangleF view) {
+                    canvas.Rectangle(0,0,view.Width,view.Height); canvas.Clip(); canvas.NewPath();
+                    canvas.ConcatCtm(1,0,0,1,-view.X,-(pPage.bundleSize.Y-view.Y-view.Height));
+                }
+                DrawPageContents(canvas,pPage,viewport);
+            } finally { canvas.RestoreState(); }
+        }
+
+        private void DrawPageContents(PdfContentByte canvas, Page pPage, System.Drawing.RectangleF? viewport) {
             // TOOD: de-duplicate
             // draw left part of background
             if (pPage.backgroundLeft != null) {
 
                 canvas.Rectangle(0, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
 #if DEBUG || _DEBUG
-                canvas.SetColorFill(BaseColor.CYAN);
+                canvas.SetColorFill(BaseColor.Cyan);
 #else
-                canvas.SetColorFill(BaseColor.WHITE);
+                canvas.SetColorFill(BaseColor.White);
 #endif
                 canvas.Fill();
 
@@ -100,9 +112,9 @@ namespace Cewe2pdf {
                 if (sysImg == null) {
                     Log.Error("Background image for id '" + id + "' was null.");
 #if DEBUG || _DEBUG
-                    canvas.SetColorFill(BaseColor.MAGENTA);
+                    canvas.SetColorFill(BaseColor.Magenta);
 #else
-                    canvas.SetColorFill(BaseColor.WHITE);
+                    canvas.SetColorFill(BaseColor.White);
 #endif
                     canvas.Fill();
                 } else {
@@ -133,8 +145,8 @@ namespace Cewe2pdf {
 
                 canvas.Rectangle(pPage.bundleSize.X / 2, 0, pPage.bundleSize.X / 2, pPage.bundleSize.Y);
 #if DEBUG || _DEBUG
-                canvas.SetColorFill(BaseColor.CYAN);
-                canvas.SetColorFill(BaseColor.WHITE);
+                canvas.SetColorFill(BaseColor.Cyan);
+                canvas.SetColorFill(BaseColor.White);
 #endif
                 canvas.Fill();
 
@@ -143,9 +155,9 @@ namespace Cewe2pdf {
                 if (sysImg == null) {
                     Log.Error("Background image for id '" + id + "' was null.");
 #if DEBUG || _DEBUG
-                    canvas.SetColorFill(BaseColor.MAGENTA);
+                    canvas.SetColorFill(BaseColor.Magenta);
 #else
-                canvas.SetColorFill(BaseColor.WHITE);
+                canvas.SetColorFill(BaseColor.White);
 #endif
                     canvas.Fill();
                     canvas.Fill();
@@ -175,24 +187,41 @@ namespace Cewe2pdf {
 
                 // calculate rect dimensions // TODO: de-duplicate?
                 float pX = area.rect.X;
+                if (area is ImageBackgroundArea bg && bg.type==ImageBackgroundArea.ImageBackgroundType.Right)
+                    pX += pPage.bundleSize.X/2 + pPage.spineSize/2;
+                if (viewport is System.Drawing.RectangleF view) {
+                    var bounds=area.rect; bounds.X=pX;
+                    float expansion=area.border?area.borderWidth+Math.Abs(area.BorderCenterOffset):0;
+                    if(area is TextArea text) expansion+=text.outlineWidth;
+                    if(area.shadow.Enabled) expansion+=area.shadow.Distance+area.shadow.Spread+area.shadow.Blur*3;
+                    if(!CoverLayout.Intersects(view,bounds,area.rotation,expansion))continue;
+                }
                 float pY = pPage.bundleSize.Y - area.rect.Y - area.rect.Height;
 
                 // handle rotation
                 canvas.SaveState();
-                AffineTransform tf = new AffineTransform();
-                double angle = area.rotation * Math.PI / 180.0;
-                tf.Rotate(-angle, pX + area.rect.Width / 2f, pY + area.rect.Height / 2f); // rotate around center ccw                                                                      
-                canvas.Transform(tf);
+                double angle = -area.rotation * Math.PI / 180.0;
+                double cos = Math.Cos(angle), sin = Math.Sin(angle);
+                double cx = pX + area.rect.Width / 2, cy = pY + area.rect.Height / 2;
+                canvas.ConcatCtm((float)cos, (float)sin, (float)-sin, (float)cos,
+                    (float)(cx - cos * cx + sin * cy), (float)(cy - sin * cx - cos * cy));
 
-                if (area is ImageArea || area is ImageBackgroundArea) {
-                    // TODO: This is somewhat hacky - there is probably a better way to do this.
-                    if (area is ImageBackgroundArea) {
-                        ImageBackgroundArea bgArea = (ImageBackgroundArea)area;
-
-                        if (bgArea.type == ImageBackgroundArea.ImageBackgroundType.Right)
-                            bgArea.rect.X += pPage.bundleSize.X / 2f + pPage.spineSize / 2f;
-                    }
-
+                if (area is ClipartArea clipart) {
+                    try {
+                        byte[] artBytes = ClipartRenderer.Render(clipart);
+                        if(clipart.shadow.Enabled) {
+                            using var stream = new MemoryStream(artBytes);
+                            using var mask = new System.Drawing.Bitmap(stream);
+                            DrawShadow(canvas,clipart,mask,pX,pY,clipart.opacity);
+                        }
+                        Image image = Image.GetInstance(artBytes);
+                        image.ScaleAbsolute(clipart.rect.Width,clipart.rect.Height);
+                        image.SetAbsolutePosition(pX,pY);
+                        if(clipart.opacity<1)canvas.SetGState(new PdfGState{FillOpacity=Math.Clamp(clipart.opacity,0,1)});
+                        canvas.AddImage(image);
+                        Log.Info("Rendering "+(clipart.spineLogo?"SpineLogo":"Clipart")+" "+clipart.designId);
+                    } catch(Exception e) { Log.Error("Rendering clipart "+clipart.designId+" failed: "+e.Message); }
+                } else if (area is ImageArea || area is ImageBackgroundArea) {
                     ImageArea imgArea = (ImageArea)area;
 
                     // if image path was not valid draw magenta outline and print error
@@ -203,15 +232,15 @@ namespace Cewe2pdf {
 
                         // configure border
                         nullRect.Border = 1 | 2 | 4 | 8;
-                        nullRect.BorderColor = BaseColor.MAGENTA;
+                        nullRect.BorderColor = BaseColor.Magenta;
                         nullRect.BorderWidth = 4.0f;
 
                         // draw to document
                         canvas.Rectangle(nullRect);
 
-                        Log.Error("Image path was null. Probably caused by an empty image area.");
-                        canvas.RestoreState();
 #endif
+                        Log.Warning("Empty image placeholder skipped.");
+                        canvas.RestoreState();
                         continue;
                     }
 
@@ -234,6 +263,11 @@ namespace Cewe2pdf {
                     // fix exif orientation
                     ExifRotate(sysImg);
 
+                    if(area.shadow.Enabled && area is not ImageBackgroundArea) {
+                        using var mask = ShadowRenderer.ImageMask(sysImg,imgArea);
+                        DrawShadow(canvas,area,mask,pX,pPage.bundleSize.Y-imgArea.rect.Y-imgArea.rect.Height);
+                    }
+                    bool sourceHasAlpha = System.Drawing.Image.IsAlphaPixelFormat(sysImg.PixelFormat);
                     // calculate resizing factor, results in equal pixel density for all images.
                     float scale = 1f / imgArea.scale * Config.ImgScale; // the higher this value, the lower pixel density is. 0.0f = original resolution
                     scale = scale < 1.0f ? 1.0f : scale; // never scale image up
@@ -243,13 +277,13 @@ namespace Cewe2pdf {
                     // resize image
                     sysImg = (System.Drawing.Image)(new System.Drawing.Bitmap(sysImg, newSize));
 
-                    Image img = sysImageToITextImage(sysImg);
+                    Image img = sysImageToITextImage(sysImg, sourceHasAlpha);
 
                     // apply scale as defined in .mcf
                     img.ScalePercent(imgArea.scale * 100.0f * scale);
 
                     // calculate image position in pdf page
-                    float posX = imgArea.rect.X + imgArea.cutout.X;
+                    float posX = pX + imgArea.cutout.X;
                     float posY = pPage.bundleSize.Y - imgArea.rect.Y - imgArea.rect.Height; // pdf origin is in lower left, mcf origin is in upper left
 
                     // yaaaaa... whatever. This way everything fits
@@ -259,7 +293,7 @@ namespace Cewe2pdf {
                     Image cropped = cropImage(img, _writer, -imgArea.cutout.X, cropBottom, imgArea.rect.Width, imgArea.rect.Height);
 
                     // move to mcf specified position
-                    cropped.SetAbsolutePosition(imgArea.rect.X, posY);
+                    cropped.SetAbsolutePosition(pX, posY);
 
                     string imgType = area is ImageBackgroundArea ? "ImageBackground" : "Image";
                     Log.Info("Rendering " + imgType + " (." + imgArea.filename.Split(".").Last() + "): " +
@@ -268,42 +302,45 @@ namespace Cewe2pdf {
                         "cropped: " + (int)cropped.Width + "x" + (int)cropped.Height + "; " +
                         "at: " + (int)cropped.AbsoluteX + ", " + (int)cropped.AbsoluteY);
 
-                    // draw the image
+                    // Clip only the photo, preserving vector resolution and later border/shadow state.
+                    canvas.SaveState();
+                    if (imgArea.corners.Rounded) {
+                        imgArea.corners.AppendPdfPath(canvas,pX,posY,imgArea.rect.Width,imgArea.rect.Height);
+                        canvas.Clip(); canvas.NewPath();
+                    }
                     canvas.AddImage(cropped);
+                    canvas.RestoreState();
 
-                    // draw image border if specified in .mcf
-                    if (imgArea.border) {
-                        // TODO mcf as an outside property that is currently not taken into account.
-                        // seems like all borders are 'outside' in photobook.
-                        // iTextSharp draws Borders centered (BorderWidth/2 pixels overlap image)
-                        // this should be corrected.
-
-                        // calc border rect
-                        Rectangle rect = new Rectangle(pX, pY, pX + imgArea.rect.Width, pY + imgArea.rect.Height);
-
-                        // convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
-                        int argb = Int32.Parse(imgArea.borderColor.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
-                        System.Drawing.Color clr = System.Drawing.Color.FromArgb(argb);
-
-                        // configure border
-                        rect.Border = 1 | 2 | 4 | 8;
-                        rect.BorderColor = new BaseColor(clr);
-                        rect.BorderWidth = imgArea.borderWidth;
-
-                        // draw border
-                        canvas.Rectangle(rect);
+                    if (imgArea.border && imgArea.borderWidth > 0) {
+                        BaseColor color = argb2BaseColor(imgArea.borderColor);
+                        if (ColorAlpha(color) > 0 && imgArea.rect.Width+2*imgArea.BorderCenterOffset>0 && imgArea.rect.Height+2*imgArea.BorderCenterOffset>0) {
+                            canvas.SaveState();
+                            canvas.SetColorStroke(color);
+                            canvas.SetGState(new PdfGState { StrokeOpacity=ColorAlpha(color)/255f });
+                            canvas.SetLineWidth(imgArea.borderWidth);
+                            imgArea.corners.AppendPdfPath(canvas,pX,posY,imgArea.rect.Width,imgArea.rect.Height,imgArea.BorderCenterOffset);
+                            canvas.Stroke();
+                            canvas.RestoreState();
+                        }
                     }
 
                 } else if (area is TextArea) {
                     TextArea textArea = (TextArea)area;
 
+                    if(area.shadow.Enabled && !string.IsNullOrWhiteSpace(textArea.text)) {
+                        using var mask = ShadowRenderer.TextMask(textArea);
+                        DrawShadow(canvas,area,mask,pX,pY);
+                    }
                     // Render text background if not transparent
-                    if (!textArea.backgroundcolor.EndsWith("00")) {
+                    if (!string.IsNullOrEmpty(textArea.backgroundcolor) && ColorAlpha(argb2BaseColor(textArea.backgroundcolor)) != 0) {
                         Log.Info("Rendering Text background: color=" + textArea.backgroundcolor);
 
+                        canvas.SaveState();
                         canvas.Rectangle(pX, pY, textArea.rect.Width, textArea.rect.Height);
                         canvas.SetColorFill(argb2BaseColor(textArea.backgroundcolor));
+                        canvas.SetGState(new PdfGState { FillOpacity = ColorAlpha(argb2BaseColor(textArea.backgroundcolor)) / 255f });
                         canvas.Fill();
+                        canvas.RestoreState();
                     }
 
                     // just in case something went wrong
@@ -327,7 +364,7 @@ namespace Cewe2pdf {
                     Rectangle textRect = new Rectangle(llx, lly, urx, ury);
 
                     // apply rect to textbox
-                    colText.SetSimpleColumn(textRect);
+                    colText.SetSimpleColumn(textRect.Left, textRect.Bottom, textRect.Right, textRect.Top);
 
                     // The actual text object
                     Paragraph par = new Paragraph();
@@ -354,9 +391,12 @@ namespace Cewe2pdf {
                         style += elem.bold ? Font.BOLD : 0;
                         style += elem.italic ? Font.ITALIC : 0;
                         style += elem.underlined ? Font.UNDERLINE : 0;
-                        Font fnt = FontFactory.GetFont(elem.family, elem.size, style, argb2BaseColor(elem.color));
+                        Font fnt = ResolveFont(elem.family, elem.size, style, argb2BaseColor(elem.color));
 
-                        par.Add(new Chunk(elem.text + (elem.newline ? "\n" : " "), fnt));
+                        var chunk = new Chunk(elem.text + (elem.newline ? "\n" : ""), fnt);
+                        if (textArea.outlineWidth > 0 && ColorAlpha(argb2BaseColor(textArea.outlineColor)) > 0)
+                            chunk.SetTextRenderMode(PdfContentByte.TEXT_RENDER_MODE_FILL_STROKE,textArea.outlineWidth,argb2BaseColor(textArea.outlineColor));
+                        par.Add(chunk);
                     }
 
                     int valign = 0;
@@ -377,14 +417,18 @@ namespace Cewe2pdf {
                         HorizontalAlignment = par.Alignment,
                         VerticalAlignment = valign,
                         FixedHeight = textArea.rect.Height,
+                        Padding = 0,
                         Border = 0,
                     });
 
                     // add paragraph to textbox
                     colText.AddElement(table);
 
+                    if(textArea.outlineWidth>0)
+                        canvas.SetGState(new PdfGState { StrokeOpacity=ColorAlpha(argb2BaseColor(textArea.outlineColor))/255f });
                     // draw textbox
-                    colText.Go();
+                    int status = colText.Go();
+                    if (ColumnText.HasMoreText(status)) Log.Warning("Text box overflow at " + textArea.rect);
                 }
 
                 // restore canvas transform before rotation
@@ -392,6 +436,8 @@ namespace Cewe2pdf {
             }
 
             // draw pagenumbers
+            // CEWE position=0 means numbering is disabled; designed text areas already render above.
+            if (!Page.pageNoEnabled || pPage.type == Page.Type.Fullcover) return;
             // TODO remove magic numbers, at least comment
             const float PAGE_NR_Y_OFFSET = -4.0f;
             const float PAGE_NR_X_OFFSET = 0.0f;
@@ -401,16 +447,15 @@ namespace Cewe2pdf {
 
             // TODO de-duplicate all these conversions and move to helper method
             // convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
-            int argb_ = Int32.Parse(Page.pageNoColor.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
-            System.Drawing.Color clr_ = System.Drawing.Color.FromArgb(argb_);
+            BaseColor numberColor = argb2BaseColor(Page.pageNoColor);
 
             // left
-            Paragraph pageNoLeft = new Paragraph(pPage.pageNoLeft, FontFactory.GetFont(Page.pageNoFont, PAGE_NR_FONT_SIZE, new BaseColor(clr_)));
+            Paragraph pageNoLeft = new Paragraph(pPage.pageNoLeft, ResolveFont(Page.pageNoFont, PAGE_NR_FONT_SIZE, Font.NORMAL, numberColor));
             pageNoLeft.Alignment = Element.ALIGN_LEFT + Element.ALIGN_BOTTOM;
 
             ColumnText leftNo = new ColumnText(_writer.DirectContent);
             Rectangle leftNoRect = new Rectangle(Page.pageNoMargin.X + PAGE_NR_X_OFFSET, PAGE_Y_POS, 500, PAGE_Y_POS + PAGE_NR_HEIGHT);
-            leftNo.SetSimpleColumn(leftNoRect);
+            leftNo.SetSimpleColumn(leftNoRect.Left, leftNoRect.Bottom, leftNoRect.Right, leftNoRect.Top);
 
             leftNo.AddElement(pageNoLeft);
             leftNo.Go();
@@ -421,12 +466,12 @@ namespace Cewe2pdf {
             //_writer.DirectContent.Rectangle(leftNoRect);
 
             // right
-            Paragraph pageNoRight = new Paragraph(pPage.pageNoRight, FontFactory.GetFont(Page.pageNoFont, PAGE_NR_FONT_SIZE, new BaseColor(clr_)));
+            Paragraph pageNoRight = new Paragraph(pPage.pageNoRight, ResolveFont(Page.pageNoFont, PAGE_NR_FONT_SIZE, Font.NORMAL, numberColor));
             pageNoRight.Alignment = Element.ALIGN_RIGHT;
 
             ColumnText rightNo = new ColumnText(_writer.DirectContent);
             Rectangle rightNoRect = new Rectangle(pPage.bundleSize.X - Page.pageNoMargin.X - PAGE_NR_X_OFFSET - 500, PAGE_Y_POS, pPage.bundleSize.X - Page.pageNoMargin.X - PAGE_NR_X_OFFSET, PAGE_Y_POS + PAGE_NR_HEIGHT);
-            rightNo.SetSimpleColumn(rightNoRect);
+            rightNo.SetSimpleColumn(rightNoRect.Left, rightNoRect.Bottom, rightNoRect.Right, rightNoRect.Top);
 
             rightNo.AddElement(pageNoRight);
             rightNo.Go();
@@ -438,6 +483,33 @@ namespace Cewe2pdf {
 
             //Console.WriteLine("Page drawn: " + pPage.type.ToString() + " left: " + pPage.pageNoLeft + "; right: " + pPage.pageNoRight + "!");
 
+        }
+
+        void DrawShadow(PdfContentByte canvas, Area area, System.Drawing.Bitmap mask, float x, float y, float opacity = 1) {
+            if(area.shadow.Opacity <= 0 || opacity <= 0 || area.rect.Width <= 0 || area.rect.Height <= 0)return;
+            using var shadow=ShadowRenderer.Create(mask,area.rect.Width,area.rect.Height,area.shadow,opacity);
+            using var stream=new MemoryStream();
+            shadow.Pixels.Save(stream,System.Drawing.Imaging.ImageFormat.Png);
+            Image image=Image.GetInstance(stream.ToArray());
+            image.ScaleAbsolute(area.rect.Width+shadow.Padding*2,area.rect.Height+shadow.Padding*2);
+            var offset=area.shadow.Offset(area.rotation);
+            image.SetAbsolutePosition(x-shadow.Padding+offset.X,y-shadow.Padding-offset.Y);
+            canvas.SaveState();
+            canvas.SetGState(new PdfGState { FillOpacity=1 });
+            canvas.AddImage(image);
+            canvas.RestoreState();
+            Log.Info("Rendering shadow: " + area.GetType().Name);
+        }
+
+        internal static Font ResolveFont(string family, float size, int style, BaseColor color) {
+            string requested = (family ?? "").Trim().Trim('\"', '\'');
+            Font font = FontFactory.GetFont(requested, BaseFont.IDENTITY_H, BaseFont.EMBEDDED, size, style, color);
+            if (font.BaseFont == null) {
+                Log.Warning("Font unavailable: '" + requested + "'. Falling back to Arial (embedded).");
+                font = FontFactory.GetFont("Arial", BaseFont.IDENTITY_H, BaseFont.EMBEDDED, size, style, color);
+            }
+            if (font.BaseFont == null) throw new InvalidOperationException("No embeddable font for '" + requested + "'. Install the required font or Arial.");
+            return font;
         }
 
         public Image cropImage(Image image, iTextSharp.text.pdf.PdfWriter writer, float fromLeft, float fromBottom, float width, float height) {
@@ -457,7 +529,7 @@ namespace Cewe2pdf {
             _fileStream.Close();
         }
 
-        public System.Drawing.RotateFlipType ExifRotate(System.Drawing.Image img) {
+        public static System.Drawing.RotateFlipType ExifRotate(System.Drawing.Image img) {
             // for some reason iText does not respect orientation stored in metadata as it seams...
             // try to fix it with this weird stuff...
             // based on https://www.cyotek.com/blog/handling-the-orientation-exif-tag-in-images-using-csharp
@@ -488,17 +560,29 @@ namespace Cewe2pdf {
             return rot;
         }
 
+        internal static int ColorAlpha(BaseColor color) => (int)((uint)color.ToArgb() >> 24);
+
         public static BaseColor argb2BaseColor(string color) {
-            //// convert .mcf's html style color hex code to Color, based on: https://stackoverflow.com/a/2109904
-            int argb = Int32.Parse(color.Replace("#", ""), System.Globalization.NumberStyles.HexNumber);
-            System.Drawing.Color clr = System.Drawing.Color.FromArgb(argb);
+            color = (color ?? "").Trim();
+            if (color == "" || color == "#") return new BaseColor(0,0,0,0);
+            uint argb;
+            if (color.StartsWith("#")) {
+                string hex = color.Substring(1);
+                argb = UInt32.Parse(hex, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.InvariantCulture);
+                if (hex.Length == 6) argb |= 0xff000000;
+            } else if (color.StartsWith("-")) {
+                argb = unchecked((uint)Int32.Parse(color, System.Globalization.CultureInfo.InvariantCulture));
+            } else {
+                argb = UInt32.Parse(color, System.Globalization.CultureInfo.InvariantCulture);
+            }
+            System.Drawing.Color clr = System.Drawing.Color.FromArgb(unchecked((int)argb));
             return new BaseColor(clr);
         }
 
-        private static iTextSharp.text.Image sysImageToITextImage(System.Drawing.Image pImg) {
+        private static iTextSharp.text.Image sysImageToITextImage(System.Drawing.Image pImg, bool preserveAlpha = false) {
             try {
                 using (var ms = new MemoryStream()) {
-                    pImg.Save(ms, System.Drawing.Imaging.ImageFormat.Jpeg);
+                    pImg.Save(ms, preserveAlpha ? System.Drawing.Imaging.ImageFormat.Png : System.Drawing.Imaging.ImageFormat.Jpeg);
                     byte[] bytes = ms.ToArray();
                     return Image.GetInstance(bytes);
                 }

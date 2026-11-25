@@ -1,0 +1,9 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><EnableDefaultCompileItems>false</EnableDefaultCompileItems></PropertyGroup>
+  <ItemGroup>
+    <Compile Include="CultureTests.cs" /><Compile Include="../Cewe2pdf/CoverLayout.cs"/><Compile Include="../Cewe2pdf/ImageCorners.cs"/><Compile Include="../Cewe2pdf/ShadowSettings.cs"/>
+    <Compile Include="../Cewe2pdf/McfParser.cs" Link="McfParser.cs" />
+    <Compile Include="../Cewe2pdf/Config.cs" Link="Config.cs" />
+    <Compile Include="../Cewe2pdf/Log.cs" Link="Log.cs" />
+  </ItemGroup>
+</Project>

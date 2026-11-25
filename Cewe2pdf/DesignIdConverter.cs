@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -10,12 +10,19 @@ namespace Cewe2pdf {
 
         private static string getPath(string pId) {
             string path;
+            path = DesignResources.Find(pId,"backgrounds");
+            if (!String.IsNullOrWhiteSpace(path)) return path;
 
             // from installation
             path = getIdPathFromInstallationDirectly(pId);
             if (!String.IsNullOrWhiteSpace(path)) {
                 return path;
             }
+
+            // Existing installations can have different bundled design collections.
+            string dm = System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.ProgramFiles), "dm", "dm-Fotowelt", "Resources", "photofun", "backgrounds");
+            path = getIdPathFromDirectory(pId, dm);
+            if (!String.IsNullOrWhiteSpace(path)) return path;
 
             // in downloaded content
             path = getIdPathFromProgramData(pId);
@@ -51,7 +58,9 @@ namespace Cewe2pdf {
         private static string getIdPathFromProgramData(string pId) {
             // scan dynamic download folder for matching design ids
             const string dlpath = "C:\\ProgramData\\hps";
-            return getIdPathFromDirectory(pId, dlpath);
+            string path = getIdPathFromDirectory(pId, dlpath);
+            if (!String.IsNullOrWhiteSpace(path)) return path;
+            return getIdPathFromDirectory(pId, System.IO.Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "CEWE", "hps"));
         }
 
         public static string getIdPathFromInstallationDirectly(string pId) {
