@@ -1,94 +1,98 @@
-## Cewe2pdf
+# cewe2pdf
 
-This commandline program converts **CEWE FOTOWELT/CEWE Creator** `.mcfx` photobook project files to high quality `.pdf` documents.
-It's still an early version with probably many missing features, see the [Known Issues](#known-issues) section below, but for photobooks containing images and text it gets the job done.
+Lokales Windows-Werkzeug zum Export alter und neuer CEWE-Fotobücher als PDF. Unterstützt `.mcf` mit externem Bilderordner und `.mcfx` mit eingebetteten Bildern. Die Quelldateien werden nicht verändert.
 
-If you encounter a bug or the generated pdf contains errors please [report an Issue](https://github.com/stfnk/Cewe2pdf/issues) Describe the problem and attach the `cewe2pdf.log` file, located next to the `Cewe2pdf.exe`.
-_This file may contain file- and foldernames from your computer. Open it in Notepad to review its content._
+## Benutzung
 
-### `.mcfx` support, 2025
-Recently Cewe updated the file format of the Designer Software - now ending in `.mcfx` instead of the old `.mcf`. 
-From version 0.4.0 onwards, `Cewe2pdf` only supports these new files. For old, regular `.mcf`files, use [previous releases](https://github.com/stfnk/Cewe2pdf/releases).
+Die portable Windows-Version vollständig entpacken und die Projektdatei auf `Fotobuch-starten.cmd` ziehen. Ohne Ausgabepfad entsteht neben dem Projekt `Buch-converted.pdf`. Ein bereits vorhandenes gleichnamiges PDF wird dabei überschrieben; für Vergleiche einen anderen Ausgabepfad angeben.
 
-#### Some findings on the new format
-Opposed to the old version, the new format actually contains the image data itself, images are no longer stored in a separate directory. An mcfx file is basically just a sqlite3 database with a custom file extension. The database consists of 3 columns: `Data`, `Filename` and `LastModified`. For the pdf conversion, only *Data* and *Filename* are relevant. All image files, as well as the old xml-format *mcf* file are stored in this database. The image paths from the xml now point to Data entries in the database and can be accessed by name. 
-To support the new fileformat, the old `McfParser` class was refactored to use the in-memory version of the mcf hierarchy, extracted from the database. To access the database, a new [`Mcfx`](https://github.com/stfnk/Cewe2pdf/blob/master/Cewe2pdf/Mcfx.cs) class was introduced that wraps the sqlite commands to retrieve the required data for the conversion.
-In it's current, initial state it supports extracting image files, as well as the mcf description as binary data.
+```powershell
+.\Cewe2pdf.exe 'C:\Fotobuecher\Buch.mcf' 'C:\Export\Buch.pdf' '-program_path=C:\Program Files\dm\dm-Fotowelt'
+.\Cewe2pdf.exe '\\NAS\Freigabe\Buch.mcfx' 'C:\Export\Buch.pdf' '-program_path=C:\Program Files\CEWE\CEWE Fotowelt'
+```
 
-## Download & Installation
-Head over to the [release](https://github.com/stfnk/Cewe2pdf/releases) section and download the latest build for your platform.</br>
-**Note:** *Currently only Windows Binaries provided.*</br>
+Bei alten MCF-Projekten muss der im Projekt angegebene Bilderordner neben der Datei erhalten bleiben. MCFX-Dateien auf UNC-Freigaben werden über eine private temporäre Kopie verarbeitet und anschließend entfernt. SQLite wird ausschließlich lesend geöffnet. Die EXE benötigt keine separat installierte .NET-Laufzeit; eine CEWE-Installation liefert Schriften und Gestaltungselemente.
 
-To run, this program requires the `.NET 10.0` runtime installed on your System. Get the appropriate version from:</br>
-https://dotnet.microsoft.com/en-us/download/dotnet/10.0/runtime
-</br>(`Run console apps` should be enough, but any version will work.)
+Optionen: `-to_page=2` für einen kurzen Probelauf, `-img_scale=1` für die Standard-Bildauflösung, `-verbose` für ausführliche Ausgabe, `-h` für die Hilfe. Die PDF beginnt mit einem einzelnen Vordercover, zeigt danach die Innendoppelseiten und endet mit einzelnem Rückcover plus vollständigem Umschlag.
 
-## Usage
-This is a commandline only program, there is no graphical interface to interact with. [Detailed Instructions](#detailed-instructions-for-windows)
+### Seitenfolge wie ein Buch
 
-Conversion with default settings, generates the pdf next to the mcfx file:
+Standardreihenfolge: **Vordercover einzeln → Innenseiten als Doppelseiten → Rückcover einzeln → kompletter Umschlag**. Die letzte breite Seite enthält Rückcover, Rücken und Vordercover. Die Wiederholung der Cover am Ende ist beabsichtigt. Cover und Innenseiten behalten ihre Projektmaße; ein Hardcover-Deckel kann etwas größer sein als die Papierseite.
 
-    Cewe2pdf <pathTo.mcfx>
+Der Rücken wird aus den einzelnen Coverseiten ausgeschlossen. Die Breite wird aus Umschlag- und Innenseitenmaßen bei gleichem Deckelüberstand in Breite und Höhe ermittelt; die schmalere Rücken-Textfläche ist dafür kein verlässliches Maß. Fehlen passende Maße oder sind sie unplausibel, bleibt der vollständige Umschlag erhalten und das Protokoll nennt die fehlende Zuordnung. Es werden keine Seiten abgeschnitten oder leere Cover erfunden.
 
-List options:
+Die Ausgabe erfolgt direkt mit passenden PDF-Seitengrößen und Vektor-Clipping. Klar außerhalb liegende Textobjekte werden auf Einzelcovern nicht ausgegeben. Innenseiten bleiben in ihrer Reihenfolge erhalten. `-to_page=` zählt weiterhin die gerenderten Quell-Doppelseiten; enthält ein Probelauf den Umschlag, kommen das einzelne Rückcover und der vollständige Umschlag zusätzlich ans Ende.
 
-    Cewe2pdf --help
+### Cliparts und Hintergründe
 
-### Detailed instructions for Windows
-Extract all files from the downloaded `.zip` to any location on your computer, for example your Desktop. 
-In Windows Explorer, drag your `photobook.mcfx` file onto the Cewe2pdf.exe. A commandline window appears and the conversion starts. Once the commandline window closes, the conversion is finished. You find a `photobook-converted.pdf` next to the original `photobook.mcfx` file.
+Installierte CEWE-/dm-Ressourcen und der lokale Ressourcencache werden nach den exakten Design-IDs durchsucht. Fehlt eine Ressource, lädt das Werkzeug das Original **während der Konvertierung automatisch** vom offiziellen CEWE-Dienst nach:
 
-### Known Issues
-_Currently only the following features are supported!_
-* Images
-* Text Boxes
-* Image Borders
+```powershell
+.\Cewe2pdf.exe 'C:\Buch.mcf' 'C:\Buch.pdf' '-resource_path=C:\CEWE-Ressourcen'
+```
 
-This works for my usecase, please report missing elements [here](https://github.com/stfnk/Cewe2pdf/issues).</br>
-Please also attach the `cewe2pdf.log` file, which is located next to the `Cewe2pdf.exe` _This file may contain file- and foldernames from your computer. Open it in Notepad to review its content._
+Mit `--offline` wird ausschließlich lokal gesucht. Standardcache: `%LOCALAPPDATA%\Cewe2pdf\resources`; `-resource_path=` wählt einen anderen Ordner. Bereits geladene Dateien werden wiederverwendet. Downloads umfassen nur die referenzierten Design-IDs, keine Buchdateien oder privaten Fotos. Quelle und SHA-256 werden je Ressourcenpaket im Cache dokumentiert. CEWE-Grafiken werden nicht im Quellcode-Repository mitgeliefert. `--download-resources` schaltet Downloads ausdrücklich wieder ein, falls sie in der Konfiguration deaktiviert wurden.
 
-## Development
-This program is written in C# for the .NET 10.0 runtime and should build on any platform. It uses [iTextSharp 5](https://github.com/itext/itextsharp/) for pdf rendering, and `System.Drawing.Commons` for image loading.</br>
-`mcfx`files are sqlite3 databases, queried using the `System.Data.SQLite` API.
-`.mcf` files are just plain XML files, parsed using the C# native `System.Xml` API.</br>
-Photobook backgrounds are stored as `.webp` images in the CEWE installation directory, loaded thorugh the excellent [WebP Wrapper](https://github.com/JosePineiro/WebP-wrapper).
+Cliparts aus SVG und CEWE-CLP werden mit transparentem Hintergrund gerendert. Position, Drehung, Farbeinstellungen, Alpha und unterstützte Spiegelungen bleiben erhalten.
 
-## Releases
+Das **CEWE-Rückenlogo ist standardmäßig ausgeschaltet**, auch wenn es im Projekt angelegt ist. Projektdatei und Konfigurationsdatei aktivieren es nicht; nur ein ausdrücklicher Kommandozeilenschalter:
 
-**Changelog**
+```powershell
+.\Cewe2pdf.exe 'C:\Buch.mcf' 'C:\Buch-mit-Logo.pdf' --spine-logo
+```
 
-    v0.4.0
-    [added] support new .mcfx file format, old mcf files are not longer supported, use an older release for those
-    [fixed] improve text handling to extract properly from the embedded html - introduced in a newer Cewe version
-    [changed] cleaned up some internal design id handling, instead of resorting to a predefined resource list, scan installation directory on demand
- 
-    v0.3.0
-    [added] new background system, loading color directly from .webp files
-    [fixed] multiline text with same color, did not inherit color from previous lines
-    
-    v0.2.0
-    [added] support for page numbers, inlcuding font, color & size
-    [added] support for colored, bold, italic, underlined text
-    [fixed] keep images resolution consistent
+Das Protokoll `cewe2pdf.log` wird im aktuellen Arbeitsordner geschrieben. Gleichzeitige Konvertierungen brauchen unterschiedliche Arbeitsordner. Die Startdatei startet jeweils einen einzelnen Lauf.
 
-    v0.1.0 Initial Release.
-    * images
-    * image borders
-    * background colors
-    * basic text boxes
+## Unterstützte Formatunterschiede
 
-**Roadmap**
-* more configuration options _some actually already exist, just not exposed to commandline_
+- MCF-Bilderverzeichnis aus `fotobook/@imagedir`, relative Dateipfade und `safecontainer:/`-Verweise.
+- Alte Positionen, Rotation, Bildausschnitte und Maßstab direkt als Attribute; neue `position`- und `cutout`-Elemente.
+- Alte Bildrahmenattribute (`borderenabled`, `sizeborder`, `colorborder`), direkte border-Elemente und neue `decoration/border`-Elemente; deaktivierte Einträge haben Vorrang. Außen-/Innenlage, Abstand und alter offset werden berücksichtigt.
+- Konvexe runde Bildecken je Ecke, auch gedreht, mit entsprechend geformten Rahmen und Schattenkonturen.
+- Schriftkonturen aus outline-Farbe und -Breite; Vordergrundtext bleibt Unicode-Text mit eingebetteten Fonts.
+- Alte dezimale ARGB-Farben, RGB-/ARGB-Hexfarben, transparente Textflächen und numerische Qt-Ausrichtung.
+- Leere Bildplatzhalter ohne beschädigten PDF-Grafikzustand.
+- Keine zusätzlichen automatischen Seitenzahlen, wenn diese im CEWE-Projekt ausgeschaltet sind.
+- EXIF-Ausrichtung vor dem Schließen des Bildstreams angewendet; abgetrennte Pixelkopie vermeidet verlorene Orientierung und doppelte Drehungen.
+- Gebietsschemaunabhängige Dezimalzahlen, Unicode-Schrifteinbettung, direkte HTML-Absatztexte und verschachtelte Textläufe.
+- CEWE-Ressourcen der angegebenen Installation, ergänzend installierte dm-Fotowelt und lokale CEWE-Downloadressourcen.
 
-## License
-The Code in this repository is licensed under the MIT License, but note that `iTextSharp` uses the AGPL License.
+## Build und Tests
 
-    MIT License
+Windows und .NET SDK 10 erforderlich:
 
-    Copyright (C) 2025 Stefan Kreller
+```powershell
+.\build.ps1
+# Bei einer portablen SDK-Installation:
+.\build.ps1 -Dotnet 'C:\SDK\dotnet.exe'
+```
 
-    Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+Der Build führt CultureTests, IntegrationTests, LegacyTests DecorationTests, ShadowTests und ShapeTests und BookTests aus und erstellt danach `windows-x64`. Die Tests erzeugen ausschließlich künstliche Projekte. Geprüft werden Gebietsschemata, Texte, Schriften, alte Geometrie, Bilddateien und EXIF-Drehungen sowie Clipart-Transparenz, Umfärbung, CLP-Decodierung, Cache-Suche und der optionale Logo-Schalter.
 
-    The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+Zusätzlicher Textvergleich für eigene Projekte:
 
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+```powershell
+dotnet run --project tests/IntegrationTests.csproj -c Release -- --audit 'C:\Buch.mcf' 'C:\Export\Buch.pdf'
+```
+
+### Schatten
+
+Bild-, Clipart- und Textschatten werden aus der sichtbaren Alpha-Kontur erzeugt; transparente Aussparungen bleiben erhalten. Unterstützt sind alte `shadowEnabled`/`shadowDistance`-Attribute und neue `decoration/shadow`- bzw. direkte `shadow`-Elemente. Winkel, Abstand, Intensität, Ausdehnung und Unschärfe werden berücksichtigt. Deaktivierte Schatten werden nicht erfunden. Der Winkel bleibt auch bei gedrehten Objekten seitenbezogen. Vordergrundtext bleibt durchsuchbar und die Fonts bleiben eingebettet.
+
+Die CEWE-Darstellung ist nicht öffentlich spezifiziert: Ausdehnung und Unschärfe sind Näherungen. Textschatten verwenden GDI-Schriftmetriken; bei komplexem Umbruch oder nur privat geladenen CEWE-Fonts kann ihre Kontur etwas vom PDF-Text abweichen. Die Rasterkontur ist auf 1536 Pixel je Achse begrenzt; Fotos und Vordergrundtext behalten ihre bisherige Auflösung. Andere Bildmasken und Eckenformen außer convex bleiben unimplementiert. Ein exakter CEWE-Schattenvergleich benötigt ein kontrolliertes Original samt Editorvorschau.
+
+## Grenzen
+
+Der Renderer bildet nur einen Teil des CEWE-Formats nach. Weitere Bildmasken/Eckenformen und einzelne CSS-/Layout-Eigenschaften können abweichen oder fehlen. Nicht mehr verfügbare Design-IDs werden ausdrücklich protokolliert. Eine fertige PDF ist keine automatische Druckfreigabe; für maßgetreue Druckausgaben mit der CEWE-Vorschau vergleichen.
+
+Ein Komplettlauf am 11.11.2026 hat 18 vorhandene ältere Projektstände verarbeitet. Seitenzahl, Zahl gerenderter Fotos, extrahierte Textinhalte, unveränderte Quellen und SHA-256 der NAS-Kopien wurden separat geprüft. Persönliche Bücher, Fotos, PDFs, Pfade und Zugangsdaten gehören nicht in dieses Repository.
+
+## Herkunft und Lizenz
+
+Basis: stfnk/Cewe2pdf, Commit `79cee89c4c7d02d6f31d2e47b391bd6b1f598555`, ergänzt um lokale Korrekturen. Anwendung und lokale Änderungen ab v0.4.2-shadowfix1: MIT; Copyrights von Stefan Kreller und Robert Brendel bleiben erhalten. Die PDF-Bibliothek ist jetzt **iTextSharp.LGPLv2.Core 3.8.8 (LGPL-2.0-only)** statt iTextSharp 5 (AGPL). Historische AGPL-Releases werden dadurch nicht rückwirkend umgestellt.
+
+Die portable Ausgabe enthält eine EXE und austauschbare DLLs; immer den gesamten Ordner entpacken. Die LGPL-DLL wird nicht als Einzeldatei eingebettet, getrimmt oder statisch verlinkt. Mitgeliefert werden passende Bibliotheksquellen und Hinweise zum Austausch/Neubau. Änderungen zur eigenen Verwendung und Reverse Engineering zum Debuggen solcher Änderungen sind erlaubt. Keine Lizenz wird als pauschale Freigabe für CEWE-Grafiken oder Schriftarten dargestellt.
+
+SvgToPng bleibt ein unabhängiges MS-PL-Kommando (`input.svg output.png width height`), SVG.NET 3.4.7: MS-PL, ExCSS 4.2.3: MIT. Die PDF-Anwendung kommuniziert nur über Standarddateien. `CEWE2PDF_SVG_TOOL` wählt einen kompatiblen unabhängigen Renderer. Die Windows-EXE ist nicht signiert.
+
+Details: [Lizenzprüfung](LICENSE-REVIEW.md), [Quellcode und DLL-Austausch](SOURCE-CODE.md), [SPDX-Bestand](SBOM.spdx.json), [Drittanbieterhinweise](THIRD-PARTY-NOTICES.md), [Autoren](AUTHORS.md). Öffentliche CLP-Formatreferenz: https://github.com/bash0/cewe2pdf/blob/master/CLP%20file%20format.txt.

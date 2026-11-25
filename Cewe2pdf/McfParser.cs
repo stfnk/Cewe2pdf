@@ -1,7 +1,8 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
+using System.Globalization;
 using System.Numerics;
 using System.Xml;
 
@@ -10,15 +11,26 @@ namespace Cewe2pdf {
     class Area {
         public RectangleF rect;
         public float rotation;
+        public ShadowSettings shadow = new();
         public bool border;
         public float borderWidth;
         public string borderColor;
+        public string borderPosition = "outside";
+        public float borderGap, borderOffset;
+        public float BorderCenterOffset => borderOffset + (borderPosition switch {
+            "outside" => borderWidth / 2,
+            "outsideWithGap" => borderWidth / 2 + Math.Max(0, borderGap),
+            "insideWithGap" => -borderWidth / 2 - Math.Max(0, borderGap),
+            "inside" => -borderWidth / 2,
+            _ => 0,
+        });
         public virtual string toString() {
             return "[Area] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2");
         }
     };
 
     class ImageArea : Area {
+        public ImageCorners corners = new();
         public string filename; // the filename stored in mcfx database
         public Vector2 cutout;
         public float scale;
@@ -26,6 +38,15 @@ namespace Cewe2pdf {
             return "[ImageArea] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2") + "; path: " + filename;
         }
     };
+
+    class ClipartArea : Area {
+        public string designId;
+        public string uniqueName;
+        public string mirror;
+        public float opacity = 1;
+        public bool spineLogo;
+        public Dictionary<string,string> colors = new(StringComparer.OrdinalIgnoreCase);
+    }
 
     class ImageBackgroundArea : ImageArea {
         public enum ImageBackgroundType { Undefined, Left, Right, Bundle }
@@ -56,6 +77,8 @@ namespace Cewe2pdf {
         public string align;
         public string valign;
         public string backgroundcolor;
+        public float outlineWidth;
+        public string outlineColor;
         public override string toString() {
             return "[TextArea] rect: " + rect.ToString() + "; rotation: " + rotation.ToString("F2") + "; font size: " + fontsize + "; text:\n\n" + text + "\n\n";
         }
@@ -94,6 +117,7 @@ namespace Cewe2pdf {
         static public float pageNoFontSize;
         static public Vector2 pageNoMargin;
         static public string pageNoColor;
+        static public bool pageNoEnabled;
     };
 
     class McfParser {
@@ -106,19 +130,22 @@ namespace Cewe2pdf {
         private XmlNode _stats;         // the <statistics> tag rfom .mcf file
 
         private List<XmlNode> _pages;   // all <page> nodes in .mcf
+        public CoverLayout CoverLayout { get; private set; }
         private int _pageIterator = 0;  // keep track of current page
 
         public McfParser(System.IO.MemoryStream mcf) {
+            Page.pageNoEnabled = false;
             // load xml into memory
             try {
                 _xmlDoc.Load(mcf);
                 Log.Message("Loaded .mcf from stream.");
             } catch (Exception e) {
                 Log.Error("Loading .mcf from stream failed with message: " + e.Message);
-                return;
+                throw;
             }
 
             _parseXmlDocument();
+            ReadCoverLayout();
         }
 
         private void _parseXmlDocument() {
@@ -164,6 +191,7 @@ namespace Cewe2pdf {
                         break;
 
                     case "pagenumbering":
+                        Page.pageNoEnabled = getAttributeStr(node, "position", "0") != "0" && getAttributeStr(node, "enabled", "1") != "0";
                         float margin = getAttributeF(node, "margin");
                         float verticalMargin = getAttributeF(node, "verticalMargin");
                         Page.pageNoMargin = new Vector2(margin, verticalMargin);
@@ -179,6 +207,15 @@ namespace Cewe2pdf {
                 }
             }
         }
+        private void ReadCoverLayout() {
+            var cover = _pages.FirstOrDefault(p => getAttributeStr(p,"type") == "fullcover")?.SelectSingleNode("bundlesize");
+            var inside = _pages.Where(p => getAttributeStr(p,"type") is "normalpage" or "emptypage")
+                .Select(p => p.SelectSingleNode("bundlesize")).FirstOrDefault(p => p != null);
+            if (cover == null) return;
+            if (inside != null) CoverLayout = Cewe2pdf.CoverLayout.FromSizes(getAttributeF(cover,"width"),getAttributeF(cover,"height"),getAttributeF(inside,"width"),getAttributeF(inside,"height"));
+            if (CoverLayout == null) Log.Warning("Cover panel dimensions could not be determined; keeping the original full cover page.");
+        }
+
 
         public Page nextPage() {
             // walk all pages found in .mcf, return null on last
@@ -219,8 +256,9 @@ namespace Cewe2pdf {
                         // NOTE: currently only handles background id
                         case "designElementIDs":
                             // store background for left and right individually
-                            if (!isDouble) page.backgroundLeft = getAttributeStr(node, "background");
-                            else page.backgroundRight = getAttributeStr(node, "background");
+                            string background = getAttributeStr(node, "background");
+                            if (!isDouble) page.backgroundLeft = string.IsNullOrWhiteSpace(background) ? null : background;
+                            else page.backgroundRight = string.IsNullOrWhiteSpace(background) ? null : background;
                             break;
 
                         // area is the root class of all content objects
@@ -232,12 +270,30 @@ namespace Cewe2pdf {
                             // trick area system...
                             if (type == "spinetextarea") {
                                 type = "textarea";
-                                page.spineSize = getAttributeF(node.SelectSingleNode("position"), "height");
+                                page.spineSize = getAttributeF(node.SelectSingleNode("position") ?? node, "height");
                             }
 
                             Area newArea;
 
                             switch (type) {
+
+                                case "spinelogoarea":
+                                case "clipartarea": {
+                                        bool logo = type == "spinelogoarea";
+                                        if (logo && !Config.SpineLogo) { newArea = new Area(); break; }
+                                        XmlNode clip = node.SelectSingleNode("clipart");
+                                        XmlNode settings = clip?.SelectSingleNode("ClipartConfiguration");
+                                        var art = new ClipartArea {
+                                            designId = logo ? "spine-logo" : getAttributeStr(clip,"designElementId",getAttributeStr(node.SelectSingleNode("designElementIDs"),"clipart")),
+                                            uniqueName = getAttributeStr(clip,"uniqueName"),
+                                            mirror = getAttributeStr(settings,"mirror"),
+                                            opacity = (float)ParseNumber(getAttributeStr(node,"alpha","1")),
+                                            spineLogo = logo
+                                        };
+                                        if (settings != null) foreach(XmlNode colorNode in settings.SelectNodes("colors/color"))
+                                            art.colors[getAttributeStr(colorNode,"source")] = getAttributeStr(colorNode,"target");
+                                        newArea = art; break;
+                                    }
 
                                 case "imagearea": {
                                         // imagearea? image subnode exists!
@@ -251,9 +307,12 @@ namespace Cewe2pdf {
                                         string fileName = filename != "" ? filename.Replace("safecontainer:/", "") : "NULL";
 
                                         // get & store cutout information
-                                        XmlNode cutout = image.SelectSingleNode("cutout");
+                                        XmlNode cutout = image.SelectSingleNode("cutout") ?? image;
                                         Vector2 cutoutLeftTop = new Vector2(getAttributeF(cutout, "left"), getAttributeF(cutout, "top"));
                                         float scale = getAttributeF(cutout, "scale", 1.0f);
+                                        // Pre-cutout MCF stores translation in source-image pixels.
+                                        // New cutout elements already use layout units.
+                                        if (image.SelectSingleNode("cutout") == null) cutoutLeftTop *= scale / SCALE;
 
                                         // construct new area
                                         newArea = new ImageArea() {
@@ -263,12 +322,20 @@ namespace Cewe2pdf {
                                         };
 
                                         // get & store border settings
-                                        XmlNode border = node.SelectSingleNode("decoration/border");
+                                        XmlNode border = node.SelectSingleNode("decoration/border") ?? node.SelectSingleNode("border");
                                         if (border != null) {
-                                            newArea.border = true;
-                                            newArea.borderWidth = getAttributeF(border, "width");
+                                            newArea.border = getAttributeStr(border, "enabled", "1") is not ("0" or "false" or "no");
+                                            newArea.borderWidth = Math.Max(0, getAttributeF(border, "width"));
                                             newArea.borderColor = getAttributeStr(border, "color");
+                                            newArea.borderPosition = getAttributeStr(border, "position", border.Attributes?["offset"] != null ? "centered" : "outside");
+                                            newArea.borderGap = getAttributeF(border, "gap");
+                                            newArea.borderOffset = getAttributeF(border, "offset");
+                                        } else {
+                                            newArea.border = getAttributeStr(node,"borderenabled","0") is "1" or "true" or "yes";
+                                            newArea.borderWidth = Math.Max(0,getAttributeF(node,"sizeborder"));
+                                            newArea.borderColor = getAttributeStr(node,"colorborder");
                                         }
+                                        ((ImageArea)newArea).corners = ImageCorners.Parse(node);
 
                                         break;
                                     }
@@ -287,9 +354,10 @@ namespace Cewe2pdf {
                                         string fileName = filename != "" ? filename.Replace("safecontainer:/", "") : "NULL";
 
                                         // get & store cutout information
-                                        XmlNode cutout = imgbg.SelectSingleNode("cutout");
+                                        XmlNode cutout = imgbg.SelectSingleNode("cutout") ?? imgbg;
                                         Vector2 cutoutLeftTop = new Vector2(getAttributeF(cutout, "left"), getAttributeF(cutout, "top"));
                                         float scale = getAttributeF(cutout, "scale", 1.0f);
+                                        if (imgbg.SelectSingleNode("cutout") == null) cutoutLeftTop *= scale / SCALE;
 
                                         string bgPosition = getAttributeStr(imgbg, "backgroundPosition");
                                         ImageBackgroundArea.ImageBackgroundType bgtype = ImageBackgroundArea.ImageBackgroundType.Undefined;
@@ -323,13 +391,15 @@ namespace Cewe2pdf {
                                         string[] fontInfo = getAttributeStr(textFormat, "font").Split(",");
 
                                         // get the fontsize, take pdf scale into account and adjust to photobook settings
-                                        int fontSize = (int)(Convert.ToInt32(fontInfo[1]) * SCALE * FONT); // somewhat matches the result in photobook
+                                        int fontSize = (int)(ParseNumber(fontInfo[1]) * SCALE * FONT); // somewhat matches the result in photobook
 
                                         // text color
                                         string color = getAttributeStr(textFormat, "foregroundColor");
 
                                         // text box background color
                                         string bgColor = getAttributeStr(textFormat, "backgroundColor");
+                                        // Legacy projects serialized ARGB zero as '#000000'.
+                                        if (node.SelectSingleNode("position") == null && bgColor == "#000000") bgColor = "#00000000";
 
                                         // by default align left top
                                         string alignLabel = "ALIGNLEFT";
@@ -341,12 +411,24 @@ namespace Cewe2pdf {
                                         alignLabel = align.First();
                                         if (align.Length > 1)
                                             valignLabel = align.Last();
+                                        if (int.TryParse(align[0], out int qtAlign)) {
+                                            alignLabel = (qtAlign & 4) != 0 ? "ALIGNHCENTER" : (qtAlign & 2) != 0 ? "ALIGNRIGHT" : (qtAlign & 8) != 0 ? "ALIGNJUSTIFY" : "ALIGNLEFT";
+                                            valignLabel = (qtAlign & 128) != 0 ? "ALIGNVCENTER" : (qtAlign & 64) != 0 ? "ALIGNVBOTTOM" : "ALIGNVTOP";
+                                        }
 
-                                        string str = extractTextFromHTML(text.InnerText, ref color);
+                                        var elements = extractTextFromHTMLv2(text.InnerText, ref color, fontInfo[0], fontSize);
+                                        string str = string.Concat(elements.Select(e => e.text + (e.newline ? "\n" : "")));
+
+                                        XmlNode outline = text.SelectSingleNode("outline");
+                                        bool outlineEnabled = outline != null
+                                            ? getAttributeStr(outline,"enabled","1") is not ("0" or "false" or "no")
+                                            : getAttributeStr(textFormat,"hasOutline","0") == "1";
+                                        float outlineWidth = outlineEnabled ? Math.Max(0, getAttributeF(outline ?? textFormat, outline != null ? "width" : "outlineWidth")) : 0;
+                                        string outlineColor = getAttributeStr(outline,"color",getAttributeStr(textFormat,"outlineColor"));
 
                                         // construct new area
                                         newArea = new TextArea() {
-                                            textElements = extractTextFromHTMLv2(text.InnerText, ref color),
+                                            textElements = elements,
                                             text = str,
                                             fontsize = fontSize,
                                             color = color,
@@ -354,6 +436,8 @@ namespace Cewe2pdf {
                                             align = alignLabel,
                                             valign = valignLabel,
                                             backgroundcolor = bgColor,
+                                            outlineWidth = outlineWidth,
+                                            outlineColor = outlineColor,
                                         };
 
                                         break;
@@ -370,7 +454,7 @@ namespace Cewe2pdf {
                             if (newArea == null) break;
 
                             // all areas contain position information
-                            XmlNode position = node.SelectSingleNode("position");
+                            XmlNode position = node.SelectSingleNode("position") ?? node;
 
                             // apply position information to current area
                             newArea.rect = new RectangleF() {
@@ -386,6 +470,7 @@ namespace Cewe2pdf {
                                 newArea.rect.Height = (float)Math.Round(newArea.rect.Height);
                             }
 
+                            newArea.shadow = ShadowSettings.Parse(node);
                             newArea.rotation = getAttributeF(position, "rotation") / SCALE; // undo scale for rotation
 
                             // store new page in list
@@ -401,18 +486,11 @@ namespace Cewe2pdf {
 
                 // Handle all these specific page types and cases
 
-                if (page.type == Page.Type.Fullcover) {
-                    // check if next page is spine, otherwise this was the back side of the cover
-                    XmlNode nextPage = _pages[_pageIterator + 1];
-                    Page.Type nextType = Page.convert(nextPage.Attributes.GetNamedItem("type").Value);
-                    if (nextType == Page.Type.Spine) xmlPage = nextPage;
-                    else xmlPage = null; // cover page is done, proceed
-                } else if (page.type == Page.Type.Spine) {
-                    // check if next page is Fullcover (should be anyway)
-                    XmlNode nextPage = _pages[_pageIterator + 1];
-                    Page.Type nextType = Page.convert(nextPage.Attributes.GetNamedItem("type").Value);
-                    if (nextType == Page.Type.Fullcover) xmlPage = nextPage;
-                    else xmlPage = null;
+                if (page.type == Page.Type.Fullcover || page.type == Page.Type.Spine) {
+                    XmlNode nextPage = _pageIterator+1<_pages.Count ? _pages[_pageIterator+1] : null;
+                    var nextType = nextPage != null ? Page.convert(getAttributeStr(nextPage,"type")) : Page.Type.Unknown;
+                    xmlPage = nextType is Page.Type.Fullcover or Page.Type.Spine ? nextPage : null;
+                    page.type = Page.Type.Fullcover;
                 } else if (page.type == Page.Type.Emptypage) {
                     // check if next page exists... otherwise end of book.
                     if (_pageIterator + 1 < _pages.Count) {
@@ -423,7 +501,7 @@ namespace Cewe2pdf {
                         xmlPage = null;
                     }
                 } else if (page.type == Page.Type.Normalpage && !isDouble) {
-                    XmlNode nextPage = _pages[_pageIterator + 1];
+                    XmlNode nextPage = _pageIterator+1<_pages.Count ? _pages[_pageIterator+1] : null;
                     // next is second half of a double page...
                     xmlPage = nextPage;
                     isDouble = true;
@@ -436,141 +514,65 @@ namespace Cewe2pdf {
                 _pageIterator++;
             }
 
+            if(page.type==Page.Type.Fullcover && CoverLayout!=null)page.spineSize=CoverLayout.SpineWidth;
             // return the newly constructed page
             return page;
         }
 
-        string extractTextFromHTML(string html, ref string? color) {
-
-            // the text to return
-            string res = "";
-
-            // text is stored in html inside the .mcf
-            // html basically is xml so... parse it as xml
-            XmlDocument doc = new XmlDocument();
-            doc?.LoadXml(html);
-
-            // get the node that contains span objects for each line of text
-            XmlNode node = doc?.SelectSingleNode("html/body");
-
-            if (node == null) {
-                Log.Error("Text node not found. Stopping text parsing.");
-                return "";
-            }
-
-            // extract text from each <span> and store in single string with newline character
-            string styleInfo = "";
-            foreach (XmlNode p in node.ChildNodes) {
-                XmlNode span = p.SelectSingleNode("span");
-                res += span?.InnerText + "\n"; // if span exists... add text + newline
-                styleInfo = getAttributeStr(span, "style");
-            }
-
-            if (color != null && styleInfo.Contains("color:")) {
-                string[] t = styleInfo.Split("color:");
-                string colorhex = t.Last().Split(";").First();
-                color = colorhex.Insert(1, "ff");
-            }
-
-            // return all lines
-            return res;
-        }
-
-        private List<TextElement> extractTextFromHTMLv2(string html, ref string? textAreaColor) {
-
-            List<TextElement> ret = new List<TextElement>();
-
-            // text is stored in html inside the .mcf
-            // html basically is xml so... parse it as xml
-            XmlDocument doc = new XmlDocument();
+        private List<TextElement> extractTextFromHTMLv2(string html, ref string? textAreaColor, string defaultFamily, int defaultSize) {
+            var doc = new XmlDocument { XmlResolver = null };
             doc.LoadXml(html);
-            
-            // the body object contains everything we need
-            XmlNode body = doc.SelectSingleNode("html/body");
-
-            if (body == null) {
-                Log.Error("Extracting text from html failed. HTML string:\n\n" + html + "\n\n");
-                return ret;
-            }
-
-            // unless specified different these are the main font settings
-            string fontFamily = "Calibri";
-            int fontSize = 48;
-            int fontWeight = 400;
-            string fontStyle = "normal";
-            string color = textAreaColor != null ? textAreaColor : "#ffffffff";
-            string textDecoration = "";
-
-            string bodyStyle = getAttributeStr(body, "style");
-            if (String.IsNullOrWhiteSpace(bodyStyle)) Log.Error("Body style for given html text was null.");
-            else parseBodyStyle(bodyStyle, ref fontFamily, ref fontSize, ref fontWeight, ref fontStyle, ref color, ref textDecoration);
-
-            // now loop through all <p> elements in <body> (new lines)
-            foreach (XmlNode p in body.ChildNodes) {
-                if (p.Name != "p") continue;
-
-                string align = getAttributeStr(p, "align", "Center");
-
-                int i = 0;
-
-                foreach (XmlNode span in p.ChildNodes) {
-                    string style = getAttributeStr(span, "style"); // get the span specific style
-
-                    // these might change per span
-                    string fontFamilySpan = fontFamily;
-                    int fontSizeSpan = fontSize;
-                    int fontWeightSpan = fontWeight;
-                    string fontStyleSpan = fontStyle;
-                    //string colorSpan = color; // color is not specified per item, but repeats last settings.
-                    string textDecorationSpan = textDecoration;
-
-                    if (String.IsNullOrWhiteSpace(style)) Log.Warning("No style for span: '" + span.InnerText + "'.");
-                    else parseBodyStyle(style, ref fontFamilySpan, ref fontSizeSpan, ref fontWeightSpan, ref fontStyleSpan, ref color, ref textDecorationSpan);
-
-                    i++; // increment to check for last span element
-
-                    // construct a new TextElement
-                    TextElement text = new TextElement() {
-                        text = span.InnerText,
-                        bold = fontWeightSpan > 400,
-                        italic = fontStyleSpan == "italic",
-                        underlined = textDecorationSpan == "underline",
-                        newline = i == p.ChildNodes.Count,
-                        color = color,
-                        family = fontFamilySpan,
-                        size = fontSizeSpan,
-                        align = align,
-                    };
-
-                    // add to return list
-                    ret.Add(text);
+            var body = doc.SelectSingleNode("html/body");
+            var result = new List<TextElement>();
+            if (body == null) throw new FormatException("CEWE text has no HTML body.");
+            string baseColor = textAreaColor ?? "#ff000000";
+            var initial = new TextElement { color = baseColor, family = defaultFamily, size = defaultSize };
+            void Visit(XmlNode node, TextElement inherited) {
+                string family = inherited.family, color = inherited.color;
+                int size = inherited.size, weight = inherited.bold ? 700 : 400;
+                string style = inherited.italic ? "italic" : "normal";
+                string decoration = inherited.underlined ? "underline" : "";
+                parseBodyStyle(getAttributeStr(node, "style"), ref family, ref size, ref weight, ref style, ref color, ref decoration);
+                var current = new TextElement { family = family, size = size, color = color,
+                    bold = weight > 400, italic = style == "italic", underlined = decoration.Contains("underline"),
+                    align = getAttributeStr(node, "align", inherited.align) };
+                if (node.NodeType == XmlNodeType.Text || node.NodeType == XmlNodeType.CDATA || node.NodeType == XmlNodeType.SignificantWhitespace) {
+                    current.text = node.Value;
+                    result.Add(current);
+                    return;
+                }
+                if (node.Name == "br") { current.text = "\n"; result.Add(current); return; }
+                int start = result.Count;
+                foreach (XmlNode child in node.ChildNodes) Visit(child, current);
+                if (node.Name == "p") {
+                    if (result.Count == start) { current.text = ""; result.Add(current); }
+                    result[result.Count - 1].newline = true;
                 }
             }
-
-            return ret;
+            Visit(body, initial);
+            return result;
         }
 
         void parseBodyStyle(string bodyStyle, ref string fontFamily, ref int fontSize, ref int fontWeight, ref string fontStyle, ref string color, ref string textDecoration) {
             string[] styles = bodyStyle.Split(";");
             foreach (string style in styles) {
-                string curr = style;
-                if (style.StartsWith(" "))
-                    curr = style.TrimStart();
+                string curr = style.Trim();
 
                 if (curr.StartsWith("font-family:")) {
-                    fontFamily = curr.Replace("font-family:", "").Replace("'", "");
+                    fontFamily = curr.Replace("font-family:", "").Trim().Split(',')[0].Trim().Trim('\"', '\'');
                 } else
                 if (curr.StartsWith("font-size:")) {
-                    fontSize = (int)(Convert.ToDouble(curr.Replace("font-size:", "").Replace("pt", "")) * SCALE * FONT);
+                    fontSize = (int)(ParseNumber(curr.Replace("font-size:", "").Replace("pt", "")) * SCALE * FONT);
                 } else
                 if (curr.StartsWith("font-weight:")) {
-                    fontWeight = Convert.ToInt32(curr.Replace("font-weight:", ""));
+                    fontWeight = int.Parse(curr.Replace("font-weight:", ""), NumberStyles.Integer, CultureInfo.InvariantCulture);
                 } else
                 if (curr.StartsWith("font-style:")) {
-                    fontStyle = curr.Replace("font-style:", "");
+                    fontStyle = curr.Replace("font-style:", "").Trim();
                 } else
                 if (curr.StartsWith("color:")) {
-                    color = curr.Replace("color:", "").Insert(1, "ff");
+                    string value = curr.Replace("color:", "").Trim();
+                    color = value.Length == 7 ? value.Insert(1, "ff") : value;
                 } else
                 if (curr.StartsWith("text-decoration:")) {
                     textDecoration = curr.Replace("text-decoration:", "").TrimStart();
@@ -581,6 +583,13 @@ namespace Cewe2pdf {
             }
         }
 
+        // XML/CSS numbers use decimal points. Do not accept thousands separators.
+        internal static double ParseNumber(string value) {
+            double number = double.Parse(value, NumberStyles.Float, CultureInfo.InvariantCulture);
+            if (!double.IsFinite(number) || Math.Abs(number) > float.MaxValue)
+                throw new FormatException("Invalid finite CEWE number: '" + value + "'.");
+            return number;
+        }
         float getAttributeF(XmlNode node, string name, float or = 0.0f) {
             if (node == null) return or; // return default if node is null
             XmlNode attr = node.Attributes?.GetNamedItem(name);
@@ -588,7 +597,7 @@ namespace Cewe2pdf {
             string value = attr.Value;
             if (String.IsNullOrWhiteSpace(value)) return or; // return default if attribute was empty
             // convert attribute string to float, including pdf scale
-            return (float)Convert.ToDouble(value.Replace(".", ",")) * SCALE;
+            return (float)ParseNumber(value) * SCALE;
         }
 
         string getAttributeStr(XmlNode node, string name, string or = "") {

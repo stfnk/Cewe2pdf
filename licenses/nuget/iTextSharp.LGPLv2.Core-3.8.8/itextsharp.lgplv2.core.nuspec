@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>iTextSharp.LGPLv2.Core</id>
+    <version>3.8.8</version>
+    <authors>Vahid Nasiri</authors>
+    <license type="expression">LGPL-2.0-only</license>
+    <licenseUrl>https://licenses.nuget.org/LGPL-2.0-only</licenseUrl>
+    <readme>README.md</readme>
+    <projectUrl>https://github.com/VahidN/iTextSharp.LGPLv2.Core</projectUrl>
+    <description>iTextSharp.LGPLv2.Core is an unofficial port of the last LGPL version of the iTextSharp (V4.1.6) to .NET Core.</description>
+    <tags>PdfReport Excel Export iTextSharp PDF Report Reporting Persian .NET Core aspnetcore</tags>
+    <repository type="git" url="https://github.com/VahidN/iTextSharp.LGPLv2.Core" branch="refs/heads/master" commit="fd11e71cce122b92b976115b49284f143b934af8" />
+    <dependencies>
+      <group targetFramework="net10.0">
+        <dependency id="BouncyCastle.Cryptography" version="2.7.0" exclude="Build,Analyzers" />
+        <dependency id="SkiaSharp" version="4.156.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework="net11.0">
+        <dependency id="BouncyCastle.Cryptography" version="2.7.0" exclude="Build,Analyzers" />
+        <dependency id="SkiaSharp" version="4.156.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETFramework4.6.2">
+        <dependency id="BouncyCastle.Cryptography" version="2.7.0" exclude="Build,Analyzers" />
+        <dependency id="SkiaSharp" version="4.156.1" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>

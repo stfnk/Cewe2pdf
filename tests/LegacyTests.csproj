@@ -1,0 +1,5 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup><OutputType>Exe</OutputType><TargetFramework>net10.0</TargetFramework><StartupObject>LegacyTests</StartupObject><EnableDefaultCompileItems>false</EnableDefaultCompileItems><RuntimeIdentifier>win-x64</RuntimeIdentifier><NoWarn>CA1416;CS8632;CS0169;NU1701</NoWarn></PropertyGroup>
+  <ItemGroup><Compile Include="LegacyTests.cs"/><Compile Include="../Cewe2pdf/*.cs"/><ProjectReference Include="../Cewe2pdf/Cewe2pdf.csproj"/></ItemGroup>
+  <ItemGroup><None Update="fixtures/*.jpg" CopyToOutputDirectory="PreserveNewest"/></ItemGroup>
+<ItemGroup><PackageReference Include="PdfPig" Version="0.1.16"/><Compile Include="PdfText.cs"/></ItemGroup></Project>

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
@@ -35,15 +35,22 @@ namespace Cewe2pdf {
             { "program_path="+"\"C:\\Program Files\"", "Path to the cewe software installation." },
             { "to_page="+DEFAULT_TO_PAGE, "Number of pages to convert. 0 converts all pages."},
             { "img_scale="+DEFAULT_IMG_SCALE, "Pixel size of images in pdf. Use smaller values for higher resolution images." },
+            { "resource_path=", "Additional CEWE resource cache folder." },
+            { "download_resources=true", "Fetch missing originals from CEWE; --offline disables downloads." },
+            { "spine_logo=false", "Render the CEWE spine logo only when enabled (alias: --spine-logo)." },
         };
         private static int toPage = -1;
         private static float imgScale = -1.0f;
 
         public static string ProgramPath { get; private set; } = "";
+        public static string ResourcePath { get; private set; } = "";
+        public static bool DownloadResources { get; private set; } = true;
+        public static bool SpineLogo { get; private set; } = false;
         public static int ToPage { get => toPage; private set => toPage = Math.Max(value, 0); }
         public static float ImgScale { get => imgScale; private set => imgScale = Math.Clamp(value, 0.0f, 100.0f); }
 
-        public static void setMissingFromOptions(string[] pOptions) {
+        private static readonly HashSet<string> assignedBooleans = new(StringComparer.Ordinal);
+        public static void setMissingFromOptions(string[] pOptions, bool fromFile = false) {
             foreach (string option in pOptions) {
                 if (!option.Contains("=")) {
                     Log.Error("invalid option: '" + option + "'.");
@@ -61,6 +68,12 @@ namespace Cewe2pdf {
                 // property exists. Let's parse it.
                 string type = info.PropertyType.Name;
                 switch (type) {
+                    case "Boolean":
+                        if(fromFile && key=="SpineLogo") { Log.Warning("The spine logo can only be enabled on the command line."); break; }
+                        if(!fromFile || !assignedBooleans.Contains(key)) {
+                            info.SetValue(null, bool.Parse(value));assignedBooleans.Add(key);
+                        }
+                        break;
                     case "String":
                         if (String.IsNullOrWhiteSpace((string)info.GetValue(null))) {
                             info.SetValue(null, value.Replace("\"", ""));
@@ -69,14 +82,14 @@ namespace Cewe2pdf {
                         break;
                     case "Int32":
                         if ((int)info.GetValue(null) < 0) {
-                            int i32 = Convert.ToInt32(value);
+                            int i32 = int.Parse(value, System.Globalization.NumberStyles.Integer, System.Globalization.CultureInfo.InvariantCulture);
                             info.SetValue(null, i32);
                             Log.Info("Set '" + key + "' to '" + value + "'.");
                         }
                         break;
                     case "Single":
                         if ((float)info.GetValue(null) < 0.0f) {
-                            float single = float.Parse(value, System.Globalization.CultureInfo.InvariantCulture);
+                            float single = (float)McfParser.ParseNumber(value);
                             info.SetValue(null, single);
                             Log.Info("Set '" + key + "' to '" + value + "'.");
                         }
@@ -100,7 +113,7 @@ namespace Cewe2pdf {
                     }
                 }
             }
-            setMissingFromOptions(optionList.Keys.ToArray());
+            setMissingFromOptions(optionList.Keys.Where(option => typeof(Config).GetProperty(toPascalCase(option.Split('=')[0]))?.PropertyType != typeof(bool)).ToArray());
         }
 
         public static void setMissingFromFile(string pFile) {
@@ -147,7 +160,7 @@ namespace Cewe2pdf {
             }
             file.Close();
 
-            setMissingFromOptions(options.ToArray());
+            setMissingFromOptions(options.ToArray(), true);
         }
 
         public static string print() {
@@ -160,11 +173,11 @@ namespace Cewe2pdf {
 
         public static string toPascalCase(string pSnakeCase) {
             // TODO not reliable. // TODO move to utils class?
-            string[] words = pSnakeCase.ToLower().Split("_");
+            string[] words = pSnakeCase.ToLowerInvariant().Split("_");
             string camelCase = "";
             foreach (string word in words) {
                 if (String.IsNullOrWhiteSpace(word)) continue;
-                string upperfirst = word.Substring(0, 1).ToUpper();
+                string upperfirst = word.Substring(0, 1).ToUpperInvariant();
                 camelCase += upperfirst + word.Substring(1);
             }
             return camelCase;
